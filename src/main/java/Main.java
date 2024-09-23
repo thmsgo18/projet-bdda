@@ -7,6 +7,5 @@ public class Main {
         System.out.println("Malik");
         System.out.println("Hala Madrid");
         System.out.println("Mès que un club");
-
     }
 }
