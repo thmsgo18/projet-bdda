@@ -5,6 +5,7 @@ public class Main {
         System.out.println("Hello World");
         System.out.println("ali");
         System.out.println("Malik");
+        System.out.println("Hala Madrid");
 
     }
 }
