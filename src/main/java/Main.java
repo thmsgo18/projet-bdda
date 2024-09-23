@@ -4,5 +4,7 @@ public class Main {
         DBConfig.LoadDBConfig("src/main/json/file-config.json");
         System.out.println("Hello World");
         System.out.println("ali");
+        System.out.println("Malik");
+
     }
 }
