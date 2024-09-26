@@ -1,5 +1,5 @@
 {
-  "dbpath" : "thomas",
+  "dbpath" : "Database/BinData",
   "pagesize" : 4096,
   "filesize" : 12288
 }
