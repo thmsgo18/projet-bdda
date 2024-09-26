@@ -6,10 +6,10 @@ import org.json.*;
 public class DBConfig{
 
     private String dbpath; //chemin d'accès sous forme de string
-    private double pagesize;
-    private double filesize;
+    private long pagesize;
+    private long filesize;
 
-    public DBConfig(String dbpath,double pagesize, double filesize){ //Constructeur
+    public DBConfig(String dbpath,long pagesize, long filesize){ //Constructeur
 
         this.dbpath = dbpath;
         this.pagesize = pagesize;
@@ -28,7 +28,10 @@ public class DBConfig{
             }
             bfr.close();//Fermeture de la lecture du fichier
             JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
-            return new DBConfig(js.getString("dbpath"),0.0,0.0);//recupere la valeur de la clé dbpath et retourne une nouvelle instance de DBConfig.
+            String path = js.getString("dbpath");
+            long pagesizeMax = js.getLong("pagesize");
+            long filesizeMax = js.getLong("filesize");
+            return new DBConfig(js.getString("dbpath"),pagesizeMax,filesizeMax);//recupere la valeur de la clé dbpath et retourne une nouvelle instance de DBConfig.
 
 
         }catch(IOException io){ //Si fichier marche pas donc retourner nul
@@ -40,21 +43,27 @@ public class DBConfig{
     }
 
     public String getDbpath(){ //getteur
+
         return dbpath;
     }
     public void setDbpath(String dbpath){//setteur
+
         this.dbpath = dbpath;
     }
-    public double getPagesize(){
+
+    public long getPagesize(){
         return pagesize;
     }
-    public void setPagesize(double pagesize){
+
+    public void setPagesize(long pagesize){
         this.pagesize = pagesize;
     }
-    public double getFilesize(){
+
+    public long getFilesize(){
         return filesize;
     }
-    public void setFilesize(double filesize){
+
+    public void setFilesize(long filesize){
         this.filesize = filesize;
     }
 

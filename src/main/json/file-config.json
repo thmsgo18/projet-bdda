@@ -1,3 +1,5 @@
 {
-  "dbpath" : "thomas"
+  "dbpath" : "thomas",
+  "pagesize" : 4096,
+  "filesize" : 12288
 }
