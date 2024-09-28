@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class DiskManager {
@@ -97,12 +98,32 @@ public class DiskManager {
     }
 
     public void WritePage(PageId pageId,ByteBuffer buff){
+        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".txt";
+        File fichier = new File(cheminFichier);
 
     }
 
-    public void DeallocPage(PageId pageId){
+    // supprime les elements de la page et mets la page dans pagesDesaloc
+    public void DeallocPage(PageId pageId) {
+        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".txt";
+        File fichier = new File(cheminFichier);
+        if(!pagesDesaloc.contains(pageId)){  // vérifie si la page n'est pas deja dans la liste
+            pagesDesaloc.add(pageId);
+            try {
+                RandomAccessFile raf = new RandomAccessFile(fichier, "rw");
+                raf.seek(pageId.getPageIdx()*dbConfig.getPagesize()); // on se positionne au premier octet de la page
+                byte [] byteVide = new byte[(int) dbConfig.getPagesize()];
+                raf.write(byteVide); // on écrit un tableau vide de longueur d'une page, pour 'supprimer' les donnes de la page
+                raf.close();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+
+        }
+
 
     }
+
 
     public void SaveState(){
 
