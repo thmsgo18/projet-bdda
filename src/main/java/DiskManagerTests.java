@@ -25,8 +25,29 @@ public class DiskManagerTests {
 
     public static void TestDeallocPage(DiskManager dm){
         System.out.println("************* Test de DeallocPage *************");
-        PageId p = new PageId(2,1); // Création d'une page n°1 dans le fichier F2.bin
+        PageId p = new PageId(0,0); // Création d'une page n°1 dans le fichier F2.bin
         dm.DeallocPage(p); // Appel de la fonction de désalocation de page sur la page créé précédement
+        PageId pa = dm.AllocPage();
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) dm.getDbConfig().getPagesize()); // Création du ByteBuffer
+        Scanner sc = new Scanner(System.in); // Création d'un scanner
+
+        // Demande du caractère à mettre dans la page :
+        System.out.println("Entrez le code Asci du caractère à mettre dans toute la page :");
+        int choix = sc.nextInt(); // Récupération du choix de l'utilisateur
+        byte [] tabBytes = new byte[(int) dm.getDbConfig().getPagesize()]; // Création d'un tableau de la taille d'une page contenant des bytes
+        for(int i = 0; i < tabBytes.length; i++){
+            tabBytes[i]= (byte) choix; // Ajout du code binaire du caractère dans le tableau
+        }
+
+        // Ajout des caractères dans le buffer :
+        byteBuffer.put(tabBytes); // Ajout du tableau dans le buffer
+        byteBuffer.flip(); // Retour de la tete de lecture du bytebuffer au debut de ce dernier
+        System.out.println("Avant l'ecriture dans la page\n");
+        affichagePage(dm,pa); // Affichage de la page avant modification
+        dm.WritePage(pa,byteBuffer); // Ecrire dans la page
+        System.out.println("Après l'ecriture dans la page\n");
+        affichagePage(dm,pa); // Affichage de la page modifier
+
     }
 
     public  static void TestEcriturePage(DiskManager dm){
