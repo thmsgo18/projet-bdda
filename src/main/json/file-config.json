@@ -1,7 +1,7 @@
 {
   "dbpath" : "Database/BinData",
   "pagesize" : 4,
-  "filesize" : 32,
+  "filesize" : 12,
   "_comment" : "Ceci est un commentaire, j'ai modifié pageSize et filesize pour correspondre à l'exemple de fichier 0,(ps : ça va créer automatiquement un nouveau fichier)"
 
 }

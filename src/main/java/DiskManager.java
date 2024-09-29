@@ -1,12 +1,8 @@
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Random;
 
 public class DiskManager {
 
@@ -31,7 +27,6 @@ public class DiskManager {
         PageId pageAlloue; // la page qu'on va renvoyer
         long currentSize =0; // la taille courante de l'accumulation des octets des pages , ex : pour page 3 -> currentSize = 4* la taille d'une page
         int pageCourante= 0;
-        int test;
         File repertoire = new File(dbConfig.getDbpath());
         String cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".bin";
         File fichier = new File(cheminFichier);
@@ -45,22 +40,25 @@ public class DiskManager {
                     System.out.println("Le fichier "+numeroFichier+" existe");
                     System.out.println("La longueur du fichier"+numeroFichier+" est  : "+fichier.length());
                     System.out.println("************ Rappel: les indices d'octets sont en x2 à cause des '\n'");
-                    while(currentSize<dbConfig.getFilesize()*8){
+                    while(currentSize<dbConfig.getFilesize()){
                         try{
                             raf = new RandomAccessFile(fichier,"rw");
                             // On se place à la premier octet d'une page à chaque fois
                             raf.seek(currentSize);
-                            System.out.println("Lecture à l'indice "+currentSize+" = "+ (char) raf.read());
+                            System.out.println("Lecture à l'indice "+currentSize+", caractere : "+ (char) raf.read());
                             /* On vérifie s'il y a un truc dans la page
                                     -> si oui : on incremente la taille courante du montant d'octets de la page
                                     -> sinon : ça veut dire qu'on peut retourner la pageId correspondante à l'endroit
                             */
-                            if (((test = raf.read())!=-1)){
-                                currentSize+=dbConfig.getPagesize()*8; // on mets le x2 car on test avec un fichier txt où il faut compter les '\n' en plus
+                            if ((raf.read() !=-1)){
+                                currentSize+=dbConfig.getPagesize(); // on mets le x2 car on test avec un fichier txt où il faut compter les '\n' en plus
                                 pageCourante++;
 
                             }else{
                                 pageAlloue = new PageId(numeroFichier,pageCourante);
+                                // mettre un tableau vide de bytes pour simuler qu'il est alloué
+                                byte [] tabBytes = new byte[(int) dbConfig.getPagesize()];
+                                raf.write(tabBytes);
                                 return pageAlloue;
                             }
                             raf.close();
@@ -70,7 +68,7 @@ public class DiskManager {
                    }
                     // passage à l'itération avec le prochain fichier
                     numeroFichier++;
-                    cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".txt";
+                    cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".bin";
                     fichier = new File(cheminFichier);
                     System.out.println("Numero = "+numeroFichier+" chemin = "+cheminFichier+"fichier = "+fichier);
                 }
@@ -146,10 +144,7 @@ public class DiskManager {
             }catch(IOException e){
                 e.printStackTrace();
             }
-
         }
-
-
     }
 
 
@@ -170,16 +165,26 @@ public class DiskManager {
 
 
     public void newFile(int numeroFichier) throws IOException {
-        File nouveauFichier = new File(dbConfig.getDbpath()+"/F"+numeroFichier+".txt");
+        File nouveauFichier = new File(dbConfig.getDbpath()+"/F"+numeroFichier+".bin");
         System.out.println("Le fichier "+numeroFichier+" n'existe pas ");
             if(nouveauFichier.createNewFile()){
                 System.out.println("Création du fichier : "+ nouveauFichier.getName());
-                RandomAccessFile raf = new RandomAccessFile(nouveauFichier,"rw");
+                RandomAccessFile raf = new RandomAccessFile(nouveauFichier, "rw");
                 raf.seek(0);
-                raf.write('A');
+                byte[] tabBytes = new byte[(int) dbConfig.getPagesize()];
+                raf.write(tabBytes);
                 raf.close();
+            }else{
+                System.out.println("La création du fichier n'as pas fonctionné, existe t'il deja ?");
             }
 
+    }
+    public ArrayList<PageId> getPagesDesaloc(){
+        return pagesDesaloc;
+    }
+
+    public ArrayList<PageId> getListes_pages(){
+        return liste_pages;
     }
 
 
