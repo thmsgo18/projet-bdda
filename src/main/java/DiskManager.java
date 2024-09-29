@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -32,7 +33,7 @@ public class DiskManager {
         int pageCourante= 0;
         int test;
         File repertoire = new File(dbConfig.getDbpath());
-        String cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".txt";
+        String cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".bin";
         File fichier = new File(cheminFichier);
         // On verifie si le repertoire existe
         if (repertoire.exists()){
@@ -44,7 +45,7 @@ public class DiskManager {
                     System.out.println("Le fichier "+numeroFichier+" existe");
                     System.out.println("La longueur du fichier"+numeroFichier+" est  : "+fichier.length());
                     System.out.println("************ Rappel: les indices d'octets sont en x2 à cause des '\n'");
-                    while(currentSize<dbConfig.getFilesize()){
+                    while(currentSize<dbConfig.getFilesize()*8){
                         try{
                             raf = new RandomAccessFile(fichier,"rw");
                             // On se place à la premier octet d'une page à chaque fois
@@ -55,8 +56,9 @@ public class DiskManager {
                                     -> sinon : ça veut dire qu'on peut retourner la pageId correspondante à l'endroit
                             */
                             if (((test = raf.read())!=-1)){
-                                currentSize+=dbConfig.getPagesize()*2; // on mets le x2 car on test avec un fichier txt où il faut compter les '\n' en plus
+                                currentSize+=dbConfig.getPagesize()*8; // on mets le x2 car on test avec un fichier txt où il faut compter les '\n' en plus
                                 pageCourante++;
+
                             }else{
                                 pageAlloue = new PageId(numeroFichier,pageCourante);
                                 return pageAlloue;
@@ -74,7 +76,7 @@ public class DiskManager {
                 }
                 // on sort de la boucle car on atteint un fichier qui n'existe pas
                 try {
-                    creationFichier(numeroFichier);
+                    newFile(numeroFichier);
                     pageAlloue= new PageId(numeroFichier,0);
                     return pageAlloue;
                     } catch (IOException e) {
@@ -94,24 +96,50 @@ public class DiskManager {
     }
 
     public void ReadPage(PageId pageId, ByteBuffer buff){
+        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin";
+        File fichier = new File(cheminFichier);
+        long position = dbConfig.getPagesize()*pageId.getPageIdx(); // positionnement dans le fichier au premier octet d'une page
+        try {
+            RandomAccessFile raf = new RandomAccessFile(fichier, "rw");
+            raf.seek(position); // On se postionnne au bonne endroit de la page d'un fichier
+            byte[] tabBytes = new byte[(int) dbConfig.getPagesize()]; // On crée un tableau de byte pour tous les octets
+            raf.readFully(tabBytes); //ajoute d'un seul coup tous les octets de la page dans le tableau de bytes jusqu'à ce qu'il soit plein
+            buff.put(tabBytes); // rempli le buffer des valeurs du tableau de bytes
+            buff.flip(); // quand on fait buff.put() la position du buff est à la fin, buff.flip() permet de revenir à la position de depart
+            raf.close();
+
+
+        }catch(IOException e ){
+            e.printStackTrace();
+        }
+
 
     }
 
     public void WritePage(PageId pageId,ByteBuffer buff){
-        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".txt";
+        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin";
         File fichier = new File(cheminFichier);
+        long position = dbConfig.getPagesize()*pageId.getPageIdx(); // positionnement dans le fichier au premier octet d'une page
+        try {
+            RandomAccessFile raf = new RandomAccessFile(fichier, "rw");
+            raf.seek(position);  // On se postionnne au bonne endroit de la page d'un fichier
+            raf.write(buff.array()); // le RandomAcessFile ne prend pas directement de ByteBuffer en parametre, faut le transformer en un tableau de bytes
+        }catch(IOException e){
+            e.printStackTrace();
+        }
 
     }
 
     // supprime les elements de la page et mets la page dans pagesDesaloc
     public void DeallocPage(PageId pageId) {
-        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".txt";
+        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin";
         File fichier = new File(cheminFichier);
+        long position = dbConfig.getPagesize()*pageId.getPageIdx();
         if(!pagesDesaloc.contains(pageId)){  // vérifie si la page n'est pas deja dans la liste
             pagesDesaloc.add(pageId);
             try {
                 RandomAccessFile raf = new RandomAccessFile(fichier, "rw");
-                raf.seek(pageId.getPageIdx()*dbConfig.getPagesize()); // on se positionne au premier octet de la page
+                raf.seek(position); // on se positionne au premier octet de la page
                 byte [] byteVide = new byte[(int) dbConfig.getPagesize()];
                 raf.write(byteVide); // on écrit un tableau vide de longueur d'une page, pour 'supprimer' les donnes de la page
                 raf.close();
@@ -141,7 +169,7 @@ public class DiskManager {
     }
 
 
-    public void creationFichier(int numeroFichier) throws IOException {
+    public void newFile(int numeroFichier) throws IOException {
         File nouveauFichier = new File(dbConfig.getDbpath()+"/F"+numeroFichier+".txt");
         System.out.println("Le fichier "+numeroFichier+" n'existe pas ");
             if(nouveauFichier.createNewFile()){
