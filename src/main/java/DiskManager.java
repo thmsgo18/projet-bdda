@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
@@ -147,10 +145,36 @@ public class DiskManager {
 
 
     public void SaveState(){
+        String chemin = dbConfig.getDbpath()+"/../dm.save.json";
+        try{
+            FileWriter fw = new FileWriter(chemin);
+            BufferedWriter bfw = new BufferedWriter(fw);
+            bfw.write("{");
+            bfw.newLine();
+            int courant = 0;
+            while(courant<pagesDesaloc.size()){
+                bfw.write("\""+courant+"\": \""+pagesDesaloc.get(courant)+"\"");
+                bfw.newLine();
+                ++courant;
+                if(courant<pagesDesaloc.size()) {
+                    bfw.write(",");
+                    bfw.newLine();
+                    bfw.newLine();
+                }
+            }
+            bfw.write("}");
+            bfw.close();
+            }catch (IOException e) {
+            System.out.println("Le fichier n'a pas pu être sauvegarder");
+            e.printStackTrace();
+
+        }
+
 
     }
 
     public void LoadState(){
+
 
     }
 

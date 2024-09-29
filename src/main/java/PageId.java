@@ -11,6 +11,10 @@ public class PageId {
         this.PageIdx = PageIdx;
     }
 
+    public String toString(){
+        return "("+FileIdx+","+PageIdx+")";
+    }
+
 
 
     // Get

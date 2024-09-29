@@ -15,7 +15,6 @@ public class DiskManagerTests {
         DiskManagerTests.TestEcriturePage(dM); // Appel de la fonction écriture
         DiskManagerTests.TestLecturePage(dM); // Appel de la fonction de lecture
 
-
     }
 
     public static void TestAllocPage(DiskManager dm){
@@ -27,6 +26,7 @@ public class DiskManagerTests {
         System.out.println("************* Test de DeallocPage *************");
         PageId p = new PageId(0,0); // Création d'une page n°1 dans le fichier F2.bin
         dm.DeallocPage(p); // Appel de la fonction de désalocation de page sur la page créé précédement
+        dm.SaveState();
         PageId pa = dm.AllocPage();
         ByteBuffer byteBuffer = ByteBuffer.allocate((int) dm.getDbConfig().getPagesize()); // Création du ByteBuffer
         Scanner sc = new Scanner(System.in); // Création d'un scanner
