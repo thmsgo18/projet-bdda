@@ -3,82 +3,85 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class DiskManagerTests {
     public static void main(String[] args) {
         DBConfig config;
-        config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        config = DBConfig.LoadDBConfig("src/main/json/file-config.json"); // Création d'un objet DBconfig avec la config d'un fichier json
+        DiskManager dM = new DiskManager(config); // Création d'un DiskManager
+        DiskManagerTests.TestAllocPage(dM);
+        DiskManagerTests.TestDeallocPage(dM);
+        DiskManagerTests.TestEcriturePage(dM); // Appel de la fonction écriture
+        DiskManagerTests.TestLecturePage(dM); // Appel de la fonction de lecture
 
-        DiskManager dM = new DiskManager(config);
-        PageId p = new PageId(2,1);
-        dM.DeallocPage(p);
-        DiskManagerTests.TestEcriturePage(dM);
-        DiskManagerTests.TestLecturePage(dM);
-
-
-    }
-
-    public void TestAllocPage(DiskManager dm){
 
     }
 
-    public void TestDeallocPage(DiskManager dm){
+    public static void TestAllocPage(DiskManager dm){
+        System.out.println("************* Test de AllocPage *************");
+        dm.AllocPage();
+    }
 
+    public static void TestDeallocPage(DiskManager dm){
+        System.out.println("************* Test de DeallocPage *************");
+        PageId p = new PageId(2,1); // Création d'une page n°1 dans le fichier F2.bin
+        dm.DeallocPage(p); // Appel de la fonction de désalocation de page sur la page créé précédement
     }
 
     public  static void TestEcriturePage(DiskManager dm){
-        System.out.println("*********************************$$\n");
-        System.out.println("Test Ecriture Page \n");
-        System.out.println("Nous somme dans le cas où les pages font seulement 4 octets et non 4096");
-        System.out.println("Prenon une page arbitrairement, à réecrire \n");
-        System.out.println("On prend ici la PageID(2,1) ,dcp F2.bin / page 1");
-        PageId p = new PageId(2,1);
-        // création du ByteBuffer
-        ByteBuffer byteBuffer = ByteBuffer.allocate((int) dm.getDbConfig().getPagesize());
-        // là on remplit un tableau de bytes par des bytes 66
-        // changer la valeur pour tester différents cas
-        byte [] tabBytes = new byte[(int) dm.getDbConfig().getPagesize()];
+            // Explication du test à l'utilisateur :
+        System.out.println("************* Test de Write *************");
+        System.out.println("Nous somme dans le cas où les pages font : "+ dm.getDbConfig().getPagesize() + "octets");
+        System.out.println("Prenons ici la PageID(2,1) ,donc F2.bin / page 1");
+
+            // Création de page / de bytebuffer / d'un scanner :
+        PageId p = new PageId(2,1); // Création d'une page n°1 dans le fichier F2.bin
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) dm.getDbConfig().getPagesize()); // Création du ByteBuffer
+        Scanner sc = new Scanner(System.in); // Création d'un scanner
+
+            // Demande du caractère à mettre dans la page :
+        System.out.println("Entrez le code Asci du caractère à mettre dans toute la page :");
+        int choix = sc.nextInt(); // Récupération du choix de l'utilisateur
+        byte [] tabBytes = new byte[(int) dm.getDbConfig().getPagesize()]; // Création d'un tableau de la taille d'une page contenant des bytes
         for(int i = 0; i < tabBytes.length; i++){
-            tabBytes[i]= 66;
+            tabBytes[i]= (byte) choix; // Ajout du code binaire du caractère dans le tableau
         }
-        byteBuffer.put(tabBytes);
-        byteBuffer.flip(); // pour revenir à la position 0, on veut écrire les valeurs depuis le debut du ByteBuffer
-        System.out.println("Injectons 4 valeurs arbitraires en bytes pour remplir la page : 66 66 66 66 (rappel : 66='B') ");
+
+            // Ajout des caractères dans le buffer :
+        byteBuffer.put(tabBytes); // Ajout du tableau dans le buffer
+        byteBuffer.flip(); // Retour de la tete de lecture du bytebuffer au debut de ce dernier
         System.out.println("Avant l'ecriture dans la page\n");
-        affichagePage(dm,p);
-        dm.WritePage(p,byteBuffer);
+        affichagePage(dm,p); // Affichage de la page avant modification
+        dm.WritePage(p,byteBuffer); // Ecrire dans la page
         System.out.println("Après l'ecriture dans la page\n");
-        affichagePage(dm,p);
+        affichagePage(dm,p); // Affichage de la page modifier
     }
 
     public static void TestLecturePage(DiskManager dm){
-        System.out.println("*********************************$$\n");
-        System.out.println("Test Lecture Page \n");
-        System.out.println("Nous somme dans le cas où les pages font seulement 4 octets et non 4096");
-        System.out.println("Prenon une page arbitrairement, à lire \n");
-        System.out.println("On prend ici la PageID(2,0) ,dcp F2.bin / page 1");
+            // Explication du test à l'utilisateur :
+        System.out.println("************* Test de Read *************");
+        System.out.println("Nous somme dans le cas où les pages font : "+ dm.getDbConfig().getPagesize() + "octets"); // Spécification de la taille d'une page
+        System.out.println("Prenons ici la PageID(2,0) ,dcp F2.bin / page 0");
 
+            // Création de page / de bytebuffer :
         PageId p = new PageId(2,0);
-        // création du ByteBuffer
-        ByteBuffer byteBuffer = ByteBuffer.allocate((int) dm.getDbConfig().getPagesize());
-        dm.ReadPage(p,byteBuffer);
-        // Affichhe les valeus du ByteBuffer
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) dm.getDbConfig().getPagesize()); // Création d'un ByteBuffer
+        dm.ReadPage(p,byteBuffer); // Mise des valeurs de la page dans le bytebuffer
 
+            // Affichage du contenue du bytebuffer :
         System.out.println("Affichons les bytes du ByteBuffer :");
         for (int i = 0; i < byteBuffer.capacity(); i++){
             System.out.print(byteBuffer.get()+" ");
         }
-        byteBuffer.flip();
+        byteBuffer.flip();// Retour de la tete de lecture du bytebuffer au debut de ce dernier
+
+            //Affichage du contenue du bytebuffer traduit en caractère :
         System.out.println("\nAffichons en caractère le resultat");
         for (int i = 0; i < byteBuffer.capacity(); i++){
             System.out.print((char) byteBuffer.get()+" ");
         }
-        byteBuffer.flip();
-
-
-
-
-
+        byteBuffer.flip();// Retour de la tete de lecture du bytebuffer au debut de ce dernier
 
     }
 
