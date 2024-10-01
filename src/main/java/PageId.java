@@ -12,7 +12,7 @@ public class PageId {
     }
 
     public String toString(){
-        return "("+FileIdx+","+PageIdx+")";
+        return "["+FileIdx+","+PageIdx+"]";
     }
 
 

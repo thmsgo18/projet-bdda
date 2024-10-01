@@ -10,10 +10,14 @@ public class DiskManagerTests {
         DBConfig config;
         config = DBConfig.LoadDBConfig("src/main/json/file-config.json"); // Création d'un objet DBconfig avec la config d'un fichier json
         DiskManager dM = new DiskManager(config); // Création d'un DiskManager
-        DiskManagerTests.TestAllocPage(dM);
-        DiskManagerTests.TestDeallocPage(dM);
-        DiskManagerTests.TestEcriturePage(dM); // Appel de la fonction écriture
-        DiskManagerTests.TestLecturePage(dM); // Appel de la fonction de lecture
+
+        DiskManagerTests.TestLoadState(dM);
+
+        //dM.SaveState();
+       // DiskManagerTests.TestAllocPage(dM);
+        //DiskManagerTests.TestDeallocPage(dM);
+        //DiskManagerTests.TestEcriturePage(dM); // Appel de la fonction écriture
+        //DiskManagerTests.TestLecturePage(dM); // Appel de la fonction de lecture
 
     }
 
@@ -24,6 +28,7 @@ public class DiskManagerTests {
 
     public static void TestDeallocPage(DiskManager dm){
         System.out.println("************* Test de DeallocPage *************");
+        System.out.println("Prenons ici la pageID (0,0), donc F0bin / page 1");
         PageId p = new PageId(0,0); // Création d'une page n°1 dans le fichier F2.bin
         dm.DeallocPage(p); // Appel de la fonction de désalocation de page sur la page créé précédement
         dm.SaveState();
@@ -106,11 +111,21 @@ public class DiskManagerTests {
 
     }
 
-    public void TestSaveState(DiskManager dm){
+    public static void TestSaveState(DiskManager dm){
+      System.out.println("************* Test de Save State ************");
+      dm.SaveState();
+      System.out.println("Save State reussi, allé voir dans le fichier dm.save.json");
 
     }
 
-    public void TestLoadState(DiskManager dm){
+    public static void TestLoadState(DiskManager dm){
+        System.out.println("************* Test de Load State ************");
+
+        System.out.println("Affichage pagesDesalloués : "+ dm.getPagesDesaloc().toString());
+        System.out.println("**** Load State ****");
+        dm.LoadState();
+        System.out.printf("Chargement des données effectués avec succès");
+        System.out.println("Affichage pagesDesalloués : "+ dm.getPagesDesaloc().toString());
 
     }
 

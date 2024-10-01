@@ -1,11 +1,15 @@
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.List;
+
+import org.json.*;
 
 public class DiskManager {
-
-    private ArrayList<PageId> liste_pages;
-    private ArrayList<PageId> pagesDesaloc; // La liste des pages désalloulés.
+    private PageId pageCourante;
+    private ArrayList<PageId> pagesDesaloc= new ArrayList<>(); // La liste des pages désalloulés.
 
 
     private DBConfig dbConfig;
@@ -13,8 +17,7 @@ public class DiskManager {
     public DiskManager(DBConfig dbConfig) {
 
         this.dbConfig = dbConfig;
-        this.liste_pages = new ArrayList<PageId>();
-        this.pagesDesaloc = new ArrayList<PageId>();
+        LoadState();
     }
 
 
@@ -25,7 +28,7 @@ public class DiskManager {
         int numeroFichier =0;
         PageId pageAlloue; // la page qu'on va renvoyer
         long currentSize =0; // la taille courante de l'accumulation des octets des pages , ex : pour page 3 -> currentSize = 4* la taille d'une page
-        int pageCourante= 0;
+        int pC= 0;
 
         File repertoire = new File(dbConfig.getDbpath()); // Initialisation du rerpertoire
         String cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".bin"; // Initialisation du chemin du fichier
@@ -52,12 +55,10 @@ public class DiskManager {
                             */
                             if ((raf.read() !=-1)){
                                 currentSize+=dbConfig.getPagesize(); // Calcule de la position de la prochaine page
-                                pageCourante++;
+                                pC++;
 
                             }else{
-                                pageAlloue = new PageId(numeroFichier,pageCourante);
-                                byte [] tabBytes = new byte[(int) dbConfig.getPagesize()]; // Création d'un tableau de byte vide
-                                raf.write(tabBytes); // Écriture d'un tableau de byte vide
+                                pageAlloue = new PageId(numeroFichier,pC);
                                 return pageAlloue; // Retour la page allouée
                             }
                             raf.close();
@@ -131,15 +132,9 @@ public class DiskManager {
         long position = dbConfig.getPagesize()*pageId.getPageIdx(); // Calcule de la position en octet de debut de la page
         if(!pagesDesaloc.contains(pageId)){  // vérifie si la page n'est pas deja désalouée
             pagesDesaloc.add(pageId);
-            try {
-                RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
-                raf.seek(position); // Positionnement sur le premier octet de la page voulu
-                byte [] byteVide = new byte[(int) dbConfig.getPagesize()];
-                raf.write(byteVide); // Écriture d'un tableau vide de longueur d'une page. (recouvrement)
-                raf.close();
-            }catch(IOException e){
-                e.printStackTrace();
-            }
+            System.out.println("La pageID : "+pageId.toString()+" a été correctement désalloué");
+        }else{
+            System.out.println("La pageID : "+pageId.toString()+" est deja desalloué");
         }
     }
 
@@ -149,20 +144,25 @@ public class DiskManager {
         try{
             FileWriter fw = new FileWriter(chemin);
             BufferedWriter bfw = new BufferedWriter(fw);
-            bfw.write("{");
-            bfw.newLine();
+            bfw.write("{"); // ouverture de la première accolade
+            bfw.newLine(); // saut de ligne
+            bfw.write("    \"pageDesalloues\":{"); // ouverture accolade Desalloues
+            bfw.newLine(); // saut de ligne
             int courant = 0;
             while(courant<pagesDesaloc.size()){
-                bfw.write("\""+courant+"\": \""+pagesDesaloc.get(courant)+"\"");
-                bfw.newLine();
+                bfw.write("        \""+courant+"\": "+pagesDesaloc.get(courant));
                 ++courant;
                 if(courant<pagesDesaloc.size()) {
                     bfw.write(",");
-                    bfw.newLine();
-                    bfw.newLine();
+                    bfw.newLine(); // saut de ligne
                 }
             }
-            bfw.write("}");
+            bfw.newLine();
+            bfw.write("    },"); // fermeture accolade pageDesalloue
+            bfw.newLine(); // saut de ligne
+            bfw.write("    \"pageCourante\": "+pageCourante);
+            bfw.newLine(); // saut de ligne
+            bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
             }catch (IOException e) {
             System.out.println("Le fichier n'a pas pu être sauvegarder");
@@ -174,8 +174,30 @@ public class DiskManager {
     }
 
     public void LoadState(){
+        String chemin = dbConfig.getDbpath()+"/../dm.save.json";
+        try{
+            FileReader fr = new  FileReader(chemin); //Utilisation des classes FileReader et BufferReader pour lire le fichier
+            BufferedReader bfr = new BufferedReader(fr);
+            StringBuilder sb =new StringBuilder();
+            String ligne;
+            while((ligne = bfr.readLine())!=null){ //line vaut la ligne du fichier(ex: si fichier contient une ligne : "dbpath : ././DB" alors line vaut dbpath. boucle continue jusqu'a plus de ligne.
+                sb.append(ligne); // on ajoute la ligne au StringBuffer car StringBuffer est plus flexible d'utilisation.
+            }
+            bfr.close();//Fermeture de la lecture du fichier
+            JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
+            pageCourante = new PageId(js.getJSONArray("pageCourante").getInt(0),js.getJSONArray("pageCourante").getInt(1));
 
+            pagesDesaloc.clear();
+            JSONObject pagesDesallouesJson= js.getJSONObject("pageDesalloues");
+            JSONArray page;
+            for(String key : pagesDesallouesJson.keySet()){
+                page = pagesDesallouesJson.getJSONArray(key);
+                pagesDesaloc.add( new PageId(page.getInt(0),page.getInt(1)));
+            }
+        }catch(IOException io){
+            io.printStackTrace();
 
+        }
     }
 
     public DBConfig getDbConfig() {
@@ -203,10 +225,5 @@ public class DiskManager {
     public ArrayList<PageId> getPagesDesaloc(){
         return pagesDesaloc;
     }
-
-    public ArrayList<PageId> getListes_pages(){
-        return liste_pages;
-    }
-
 
 }
