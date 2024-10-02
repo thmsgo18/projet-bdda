@@ -10,14 +10,25 @@ public class DiskManagerTests {
         DBConfig config;
         config = DBConfig.LoadDBConfig("src/main/json/file-config.json"); // Création d'un objet DBconfig avec la config d'un fichier json
         DiskManager dM = new DiskManager(config); // Création d'un DiskManager
+       /* Normalement a chaque fois que vous allez executez ce programme, une page sera alloué, si vous n'avez pas de fichier 0
+          ça va vous en créer un en allouant la 1er page.
+          Le programme va écrire la lettre Z pour remplir la page (vous pouvez changer la la lettre si vous voulez
+          À chaque execution vous pouvez voir dans dm.save.json que pageCourante change, elle correspond à la derniere pageID alloué
+        */
 
+        // je vous conseille pour le test de supprimer vos précédents fichier.bin
+        // et de bien vérifier que la pageCourante est [0,0] dans dm.save.json pour une bonne initialisation
+
+        PageId p=dM.AllocPage();
         DiskManagerTests.TestLoadState(dM);
+        ByteBuffer buff=ByteBuffer.allocate((int)dM.getDbConfig().getPagesize());
+        for(int i=0;i<buff.capacity();i++){
+           buff.put((byte)'Z');
+        }
+        dM.WritePage(p,buff);
+        affichagePage(dM,p);
 
-        //dM.SaveState();
-       // DiskManagerTests.TestAllocPage(dM);
-        //DiskManagerTests.TestDeallocPage(dM);
-        //DiskManagerTests.TestEcriturePage(dM); // Appel de la fonction écriture
-        //DiskManagerTests.TestLecturePage(dM); // Appel de la fonction de lecture
+       // Noter que vous pouvez tester de desalloué une page apres avoir alloués quelques pages (!!! ON NE DESALOUE PAS UNE PAGE QUI N'A JAMAIS ÉTÉ ALLOUÉ !!!)
 
     }
 

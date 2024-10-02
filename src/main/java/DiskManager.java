@@ -3,35 +3,25 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.List;
 
 import org.json.*;
 
 public class DiskManager {
     private PageId pageCourante;
     private ArrayList<PageId> pagesDesaloc= new ArrayList<>(); // La liste des pages désalloulés.
-
-
     private DBConfig dbConfig;
 
     public DiskManager(DBConfig dbConfig) {
-
         this.dbConfig = dbConfig;
         LoadState();
     }
 
-
-// à changer le type de retour void pour PageId c'est juste pour tester sans retourner de valeurs
     public PageId AllocPage(){
-            // Initialisation :
-        RandomAccessFile raf = null;
-        int numeroFichier =0;
+        // Initialisation :
         PageId pageAlloue; // la page qu'on va renvoyer
-        long currentSize =0; // la taille courante de l'accumulation des octets des pages , ex : pour page 3 -> currentSize = 4* la taille d'une page
-        int pC= 0;
-
+        long currentSizeTotalPages = dbConfig.getPagesize()*(pageCourante.getPageIdx()+1); // la taille courante de l'accumulation des octets des pages , ex : pour page 3 -> currentSize = 4* la taille d'une page
         File repertoire = new File(dbConfig.getDbpath()); // Initialisation du rerpertoire
-        String cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".bin"; // Initialisation du chemin du fichier
+        String cheminFichier = dbConfig.getDbpath()+"/F"+pageCourante.getFileIdx()+".bin"; // Initialisation du chemin du fichier
         File fichier = new File(cheminFichier); // Création d'un object fichier
 
         if (repertoire.exists()){ // Verification de l'existance du repertoire
@@ -40,49 +30,36 @@ public class DiskManager {
             if(pagesDesaloc.isEmpty()){ // Vérification de si la liste des pages desalloués est vide
                 System.out.println("La liste des pages alloués est vide ");
                 
-                while(fichier.exists()){ // Vérification
-                    System.out.println("Le fichier "+numeroFichier+" existe");
-                    System.out.println("La longueur du fichier"+numeroFichier+" est  : "+fichier.length());
-                    while(currentSize<dbConfig.getFilesize()){// Parcourt des pages d'un fichier
-                        try{
-                            raf = new RandomAccessFile(fichier,"rw"); // Ouverture du fichier en lecture/écriture
-                            raf.seek(currentSize); // Placement de la tete de lecture/écriture au premier octet de la page
+                if(fichier.exists()) { // Vérification
+                    System.out.println("Le fichier " + pageCourante.getFileIdx() + " existe");
+                    System.out.println("La longueur du fichier" + pageCourante.getFileIdx() + " est  : " + fichier.length());
 
-                            System.out.println("Lecture à l'indice "+currentSize+", caractere : "+ (char) raf.read());
-                            /* Vérification de si la page contient des valeurs ou non :
-                                    -> si oui : Passage à la page suivante
-                                    -> sinon : Nous pouvons retourner cette page. Donc allouer
-                            */
-                            if ((raf.read() !=-1)){
-                                currentSize+=dbConfig.getPagesize(); // Calcule de la position de la prochaine page
-                                pC++;
-
-                            }else{
-                                pageAlloue = new PageId(numeroFichier,pC);
-                                return pageAlloue; // Retour la page allouée
-                            }
-                            raf.close();
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                   }
-                    numeroFichier++;
-                    cheminFichier = dbConfig.getDbpath()+"/F"+numeroFichier+".bin"; // chemin du nouveau numero de fichier
-                    fichier = new File(cheminFichier);
-                    System.out.println("Numero = "+numeroFichier+" chemin = "+cheminFichier+"fichier = "+fichier);
+                    if (currentSizeTotalPages+ dbConfig.getPagesize() <= dbConfig.getFilesize()) { // vérifie qu'il y a de la place dans un fichier pour crer une page
+                        pageCourante = new PageId(pageCourante.getFileIdx(), pageCourante.getPageIdx() + 1);
+                        SaveState();
+                        return pageCourante; // Retour la page allouée
+                    } else {
+                        // partie à modifier pour prendre en compte qu'on ne boucle plus
+                        pageCourante = new PageId(pageCourante.getFileIdx()+1, 0); // c'est la pagecouante qu'on va renvoyer mais elle ne sera donc plus la page courante apres la sortie de la focntion
+                        newFile(pageCourante.getFileIdx()); // création du nouveau fichier
+                        pageAlloue = pageCourante;
+                        SaveState();
+                        return pageAlloue; // Retourne la page 0 du nouveau fichier
+                    }
                 }
-                // On sort de la boucle quand on atteint un fichier qui n'existe pas
-                try {
-                    newFile(numeroFichier); // Création d'un nouveau fichier
-                    pageAlloue= new PageId(numeroFichier,0);
+                else{
+                    // le cas pour initialiser la premier fichier 0,  car le fichier existera toujours après.
+                    newFile(0); // création du nouveau premier fichier
+                    pageCourante = new PageId(0, 0);
+                    pageAlloue =pageCourante;
+                    SaveState();
                     return pageAlloue; // Retourne la page 0 du nouveau fichier
-                    } catch (IOException e) {
-                        e.printStackTrace();
                 }
             }
             else{
                 System.out.println(" La liste des pages désalloués est non-vide"); // Pas besoin de créer une page, il existe deja une page de disponible
-                pageAlloue =pagesDesaloc.remove(0);
+                pageAlloue =pagesDesaloc.remove(0); // Prends un élément des pages libres pour le retourner
+                SaveState();
                 return pageAlloue;
             }
         }else{
@@ -133,6 +110,7 @@ public class DiskManager {
         if(!pagesDesaloc.contains(pageId)){  // vérifie si la page n'est pas deja désalouée
             pagesDesaloc.add(pageId);
             System.out.println("La pageID : "+pageId.toString()+" a été correctement désalloué");
+            SaveState();
         }else{
             System.out.println("La pageID : "+pageId.toString()+" est deja desalloué");
         }
@@ -145,23 +123,23 @@ public class DiskManager {
             FileWriter fw = new FileWriter(chemin);
             BufferedWriter bfw = new BufferedWriter(fw);
             bfw.write("{"); // ouverture de la première accolade
-            bfw.newLine(); // saut de ligne
+            bfw.newLine(); // revient à la ligne
             bfw.write("    \"pageDesalloues\":{"); // ouverture accolade Desalloues
-            bfw.newLine(); // saut de ligne
+            bfw.newLine(); // revient à la ligne
             int courant = 0;
             while(courant<pagesDesaloc.size()){
                 bfw.write("        \""+courant+"\": "+pagesDesaloc.get(courant));
                 ++courant;
                 if(courant<pagesDesaloc.size()) {
                     bfw.write(",");
-                    bfw.newLine(); // saut de ligne
+                    bfw.newLine(); // revient à la ligne
                 }
             }
-            bfw.newLine();
+            bfw.newLine(); // revient à la ligne
             bfw.write("    },"); // fermeture accolade pageDesalloue
-            bfw.newLine(); // saut de ligne
+            bfw.newLine(); // revient à la ligne
             bfw.write("    \"pageCourante\": "+pageCourante);
-            bfw.newLine(); // saut de ligne
+            bfw.newLine(); // revient à la ligne
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
             }catch (IOException e) {
@@ -169,8 +147,6 @@ public class DiskManager {
             e.printStackTrace();
 
         }
-
-
     }
 
     public void LoadState(){
@@ -186,17 +162,16 @@ public class DiskManager {
             bfr.close();//Fermeture de la lecture du fichier
             JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
             pageCourante = new PageId(js.getJSONArray("pageCourante").getInt(0),js.getJSONArray("pageCourante").getInt(1));
-
-            pagesDesaloc.clear();
-            JSONObject pagesDesallouesJson= js.getJSONObject("pageDesalloues");
+            pagesDesaloc.clear(); // supprime les éléments de la liste des pages désallou&s pour les remplir du fichier dm.save.json
+            JSONObject pagesDesallouesJson= js.getJSONObject("pageDesalloues"); // representation de l'objet Json pageDesalloues
             JSONArray page;
+            // Parcourt l'ensemble des clés de l'objet JSON, puis enregistre les listes correspondants aux valeurs des pageID
             for(String key : pagesDesallouesJson.keySet()){
                 page = pagesDesallouesJson.getJSONArray(key);
                 pagesDesaloc.add( new PageId(page.getInt(0),page.getInt(1)));
             }
         }catch(IOException io){
             io.printStackTrace();
-
         }
     }
 
@@ -208,19 +183,17 @@ public class DiskManager {
     }
 
 
-    public void newFile(int numeroFichier) throws IOException {
+    public void newFile(int numeroFichier) {
         File nouveauFichier = new File(dbConfig.getDbpath()+"/F"+numeroFichier+".bin"); // Chemin du fichier à désalouer
-            if(nouveauFichier.createNewFile()){ // Création du fichier
-                System.out.println("Création du fichier : "+ nouveauFichier.getName());
-                RandomAccessFile raf = new RandomAccessFile(nouveauFichier, "rw"); // Ouverture du fichier
-                raf.seek(0); // Placement  au debut du fichier
-                byte[] tabBytes = new byte[(int) dbConfig.getPagesize()]; // Création d'un tableau de bytes vide
-                raf.write(tabBytes); // Ajoute du tableau de bytes vides. / Création d'une page
-                raf.close();
-            }else{
-                System.out.println("La création du fichier n'as pas fonctionné, existe t'il deja ?"); // Error
+            try {
+                if (nouveauFichier.createNewFile()) { // Création du fichier
+                    System.out.println("Création du fichier : " + nouveauFichier.getName());
+                } else {
+                    System.out.println("La création du fichier n'as pas fonctionné, existe t'il deja ?"); // Error
+                }
+            }catch(IOException e){
+                e.printStackTrace();
             }
-
     }
     public ArrayList<PageId> getPagesDesaloc(){
         return pagesDesaloc;

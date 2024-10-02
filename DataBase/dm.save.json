@@ -1,7 +1,5 @@
 {
     "pageDesalloues":{
-        "0": [0,0],
-        "1": [1,0]
     },
-    "pageCourante": [0,1]
+    "pageCourante": [0,0]
 }
