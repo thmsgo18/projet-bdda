@@ -8,12 +8,16 @@ public class DBConfig{
     private String dbpath; //chemin d'accès sous forme de string
     private long pagesize;
     private long filesize;
+    private int bm_buffercount;
+    private String bm_policy;
 
-    public DBConfig(String dbpath,long pagesize, long filesize){ //Constructeur
+    public DBConfig(String dbpath,long pagesize, long filesize,int bm_buffercount, String bm_policy){ //Constructeur
 
         this.dbpath = dbpath;
         this.pagesize = pagesize;
         this.filesize = filesize;
+        this.bm_buffercount = bm_buffercount;
+        this.bm_policy = bm_policy;
     }
 
 
@@ -31,7 +35,9 @@ public class DBConfig{
             String path = js.getString("dbpath");
             long pagesizeMax = js.getLong("pagesize");
             long filesizeMax = js.getLong("filesize");
-            return new DBConfig(js.getString("dbpath"),pagesizeMax,filesizeMax);//recupere la valeur de la clé dbpath et retourne une nouvelle instance de DBConfig.
+            int bm_buffercount = js.getInt("bm_buffercount");
+            String bm_policy = js.getString("bm_policy");
+            return new DBConfig(js.getString("dbpath"),pagesizeMax,filesizeMax, bm_buffercount,bm_policy);//recupere la valeur de la clé dbpath et retourne une nouvelle instance de DBConfig.
 
 
         }catch(IOException io){ //Si fichier marche pas donc retourner nul
