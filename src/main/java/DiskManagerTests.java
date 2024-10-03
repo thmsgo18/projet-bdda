@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class DiskManagerTests {
     public static void main(String[] args) {
+        System.out.println("Thomas vaut 8 elixir");
         DBConfig config;
         config = DBConfig.LoadDBConfig("src/main/json/file-config.json"); // Création d'un objet DBconfig avec la config d'un fichier json
         DiskManager dM = new DiskManager(config); // Création d'un DiskManager

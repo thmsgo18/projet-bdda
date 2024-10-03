@@ -142,6 +142,7 @@ public class DiskManager {
             bfw.newLine(); // revient à la ligne
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
+            System.out.println("Thomas vaut 8 elixir");
             }catch (IOException e) {
             System.out.println("Le fichier n'a pas pu être sauvegarder");
             e.printStackTrace();
