@@ -198,5 +198,6 @@ public class DiskManager {
     public ArrayList<PageId> getPagesDesaloc(){
         return pagesDesaloc;
     }
+    // commit pour le V
 
 }

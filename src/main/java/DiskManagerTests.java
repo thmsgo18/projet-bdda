@@ -19,15 +19,18 @@ public class DiskManagerTests {
         // je vous conseille pour le test de supprimer vos précédents fichier.bin
         // et de bien vérifier que la pageCourante est [0,0] dans dm.save.json pour une bonne initialisation
 
-        PageId p=dM.AllocPage();
-        DiskManagerTests.TestLoadState(dM);
-        ByteBuffer buff=ByteBuffer.allocate((int)dM.getDbConfig().getPagesize());
-        for(int i=0;i<buff.capacity();i++){
-           buff.put((byte)'Z');
-        }
-        dM.WritePage(p,buff);
-        affichagePage(dM,p);
+        PageId p2 = new PageId(0,0);
+        dM.DeallocPage(p2);
+       PageId p=dM.AllocPage();
 
+        //DiskManagerTests.TestLoadState(dM);
+        ByteBuffer buff=ByteBuffer.allocate((int)dM.getDbConfig().getPagesize());
+
+        for(int i=0;i<buff.capacity();i++){
+           buff.put((byte)'A');
+        }
+        dM.WritePage(p2,buff);
+        affichagePage(dM,p2);
        // Noter que vous pouvez tester de desalloué une page apres avoir alloués quelques pages (!!! ON NE DESALOUE PAS UNE PAGE QUI N'A JAMAIS ÉTÉ ALLOUÉ !!!)
 
     }
@@ -40,7 +43,7 @@ public class DiskManagerTests {
     public static void TestDeallocPage(DiskManager dm){
         System.out.println("************* Test de DeallocPage *************");
         System.out.println("Prenons ici la pageID (0,0), donc F0bin / page 1");
-        PageId p = new PageId(0,0); // Création d'une page n°1 dans le fichier F2.bin
+        PageId p = new PageId(0,0); // Création d'une page n°1 dans le fichier F2 / bin
         dm.DeallocPage(p); // Appel de la fonction de désalocation de page sur la page créé précédement
         dm.SaveState();
         PageId pa = dm.AllocPage();
@@ -70,10 +73,10 @@ public class DiskManagerTests {
             // Explication du test à l'utilisateur :
         System.out.println("************* Test de Write *************");
         System.out.println("Nous somme dans le cas où les pages font : "+ dm.getDbConfig().getPagesize() + "octets");
-        System.out.println("Prenons ici la PageID(2,1) ,donc F2.bin / page 1");
+        System.out.println("Prenons ici la PageID(2,1) ,donc F2/ sbin / page 1");
 
             // Création de page / de bytebuffer / d'un scanner :
-        PageId p = new PageId(2,1); // Création d'une page n°1 dans le fichier F2.bin
+        PageId p = new PageId(2,1); // Création d'une page n°1 dans le fichier F2 bin
         ByteBuffer byteBuffer = ByteBuffer.allocate((int) dm.getDbConfig().getPagesize()); // Création du ByteBuffer
         Scanner sc = new Scanner(System.in); // Création d'un scanner
 
@@ -99,7 +102,7 @@ public class DiskManagerTests {
             // Explication du test à l'utilisateur :
         System.out.println("************* Test de Read *************");
         System.out.println("Nous somme dans le cas où les pages font : "+ dm.getDbConfig().getPagesize() + "octets"); // Spécification de la taille d'une page
-        System.out.println("Prenons ici la PageID(2,0) ,dcp F2.bin / page 0");
+        System.out.println("Prenons ici la PageID(2,0) ,dcp F2 bin / page 0");
 
             // Création de page / de bytebuffer :
         PageId p = new PageId(2,0);
@@ -161,6 +164,6 @@ public class DiskManagerTests {
         }catch(IOException e ){
             e.printStackTrace();
         }
-
+ // commit pour le V
     }
 }
