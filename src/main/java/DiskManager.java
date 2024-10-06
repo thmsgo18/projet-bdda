@@ -71,21 +71,24 @@ public class DiskManager {
     public void ReadPage(PageId pageId, ByteBuffer buff){
         String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à lire
         File fichier = new File(cheminFichier);
-        long position = dbConfig.getPagesize()*pageId.getPageIdx(); // Calcule de la position en octet de debut de la page
-        try {
-            RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
-            raf.seek(position); // Positionnement sur le premier octet de la page voulu
-            byte[] tabBytes = new byte[(int) dbConfig.getPagesize()]; // Création d'un tableau de byte pour les octets de la page
-            raf.readFully(tabBytes); // Ajoute de tous les octets de la page dans le tableau de bytes
-            buff.put(tabBytes); // Rempli le buffer avec les valeurs du tableau de bytes
-            buff.flip(); // Revient à la position de depart du bytebuffer
-            raf.close();
+        if(fichier.exists()) {
+            long position = dbConfig.getPagesize() * pageId.getPageIdx(); // Calcule de la position en octet de debut de la page
+            try {
+                RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
+                raf.seek(position); // Positionnement sur le premier octet de la page voulu
+                byte[] tabBytes = new byte[(int) dbConfig.getPagesize()]; // Création d'un tableau de byte pour les octets de la page
+                raf.readFully(tabBytes); // Ajoute de tous les octets de la page dans le tableau de bytes
+                buff.put(tabBytes); // Rempli le buffer avec les valeurs du tableau de bytes
+                buff.flip(); // Revient à la position de depart du bytebuffer
+                raf.close();
 
-        }catch(IOException e ){
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            System.out.println("Vous tentez de lireun fichier qui n'existe pas");
         }
-
-
     }
 
     public void WritePage(PageId pageId,ByteBuffer buff){

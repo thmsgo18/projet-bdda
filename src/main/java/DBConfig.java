@@ -73,4 +73,10 @@ public class DBConfig{
         this.filesize = filesize;
     }
 
+    public int getBm_buffercount(){
+        return bm_buffercount;
+    }
+    public String getBm_policy(){
+        return bm_policy;
+    }
 }
