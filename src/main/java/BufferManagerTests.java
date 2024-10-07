@@ -14,8 +14,10 @@ public class BufferManagerTests {
             System.out.print(buffer.get()+" ");
 
         }
+        System.out.println();
+
         buffer.flip();
-        System.out.println("**************** Tentons maintenant d'acceder à cette page lorsqu'il y a deja un buffer le prenant*****************");
+        System.out.println("**************** Tentons maintenant d'acceder à cette page lorsqu'il y a deja un buffer la prenant*****************");
         buffer=bm.GetPage(p);
         System.out.println("***************Lecture du Buffer***************");
         for(int i=0;i<buffer.capacity();i++) {
@@ -23,6 +25,9 @@ public class BufferManagerTests {
 
         }
         buffer.flip();
+
+
+
 
 
 
