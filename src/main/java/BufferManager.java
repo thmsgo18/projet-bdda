@@ -81,9 +81,6 @@ public class BufferManager {
             diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // on fait lire au buffer les elements de la page
             return bufferPool[indiceBuffer]; // On retourne le buffer
         }
-
-
-
     }
 
 
@@ -98,11 +95,11 @@ public class BufferManager {
     }
 
     public void SetCurrentReplacementPolicy (String policy){
-        // vérifie que la politque de remplacement est valide
+        // vérifie que la politique de remplacement est valide
         if ( ( !policy.equals("LRU") && ( !policy.equals("MRU") ) ) ){
             System.out.println(policy+" ne fait partie des politiques acceptés : LRU / MRU");
         }else {
-            // vérifie si la politque de remplacement renseigné est la meme que celle actuelle
+            // vérifie si la politique de remplacement renseigné est la même que celle actuelle
             if( policy.equals( getPolicy() ) ){
                 System.out.println("On utilise deja la politique "+policy);
             }else{
@@ -114,7 +111,7 @@ public class BufferManager {
 
     public void FlushBuffers(){
         for(int i =0; i<bufferMap.size(); i++){
-            // si le dirty 1, ecrire dans sa page les modifications
+            // si le dirty = 1, ecrire dans sa page les modifications
             if (bufferMap.get(i).get(1).equals(true)){
                 diskManager.WritePage((PageId) bufferMap.get(i).get(0),bufferPool[i]);
                 bufferMap.get(i).set(1,false);
@@ -122,11 +119,13 @@ public class BufferManager {
             bufferMap.get(i).set(0,null);
             bufferMap.get(i).set(2,0);
         }
+        for(int i =0;i<bufferPool.length;i++){
+            bufferPool[i].clear();
+        }
 
     }
 
     private void initBufferPoolAndMap() {
-        PageId p = new PageId(0,0);
         for (int i = 0; i < config.getBm_buffercount(); i++) {
             List<Object> bufferInfo = new ArrayList<>();
             bufferInfo.add(null);  // pageId (initialisé à null)
