@@ -6,10 +6,10 @@ import org.json.*;
 public class DBConfig{
 
     private String dbpath; //chemin d'accès sous forme de string
-    private long pagesize;
-    private long filesize;
-    private int bm_buffercount;
-    private String bm_policy;
+    private long pagesize; // Taille d'une page
+    private long filesize; // Taille d'un fichier
+    private int bm_buffercount; // Nombre de buffer
+    private String bm_policy; // Politique de gestion des buffer. Ex: LRU
 
     public DBConfig(String dbpath,long pagesize, long filesize,int bm_buffercount, String bm_policy){ //Constructeur
 

@@ -3,7 +3,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
-
 import org.json.*;
 
 public class DiskManager {
@@ -145,7 +144,6 @@ public class DiskManager {
             bfw.newLine(); // revient à la ligne
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
-            System.out.println("Thomas vaut 8 elixir");
             }catch (IOException e) {
             System.out.println("Le fichier n'a pas pu être sauvegarder");
             e.printStackTrace();
