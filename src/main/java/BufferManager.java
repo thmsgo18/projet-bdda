@@ -27,7 +27,7 @@ public class BufferManager {
             // Recherche dans le bufferPool de la présence de la page
 
             if (pageId.equals(( bufferMap.get(i).get(0)) )) { // Page trouvée dans le tableau de buffer
-                System.out.println("TEST : La pageId "+ pageId+" est deja dans le buffer "+i+" : "+bufferMap.get(i));
+                System.out.println("La page ID : "+bufferMap.get(i).get(0)+" est deja présent dans le buffer "+i);
                 pinCount=  (Integer) bufferMap.get(i).get(2);
                 bufferMap.get(i).set(2, pinCount+1); // Incrémentation du pin count
                 diskManager.ReadPage(pageId,bufferPool[i]); // Strockage de la page dans le buffer
@@ -49,7 +49,7 @@ public class BufferManager {
             if(!framePC0.isEmpty()){ // Vérification de la présence d'au moins un buffer avec un pin count =O
                 System.out.println("TEST : Il y a des frames possedant des pin_count à 0");
 
-                int indiceBuffer= indicePolitique(framePC0); // Indice de la page à remplacer selon la politique
+                int indiceBuffer= indicePolicy(framePC0); // Indice de la page à remplacer selon la politique
                 if ( bufferMap.get(indiceBuffer ).get(1).equals(true) ){ // Vérification du buffer pour voir s'il a été modifer (dirty à 1)
                     System.out.println("TEST : Dirty = true, la page a été modifié");
                     // dirty = 1
@@ -69,8 +69,7 @@ public class BufferManager {
                 return null;
             }
         } else{ // frameDispo n'est pas vide
-            System.out.println("TEST : Des frames sont disponibles");
-            int indiceBuffer =indicePolitique(framePC0); // Choix de l'indice du buffer à remplacer en fonction de la politique de remplacement
+            int indiceBuffer = indicePolicy(framePC0); // Choix de l'indice du buffer à remplacer en fonction de la politique de remplacement
             bufferMap.get( indiceBuffer ).set(2,1); // Mise du pin count à 1
             bufferMap.get(indiceBuffer ).set(0,pageId); // On ajout le pageId correspondante dans la map.
             diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // Strockage de la page dans le buffer
@@ -146,7 +145,7 @@ public class BufferManager {
         this.policy = policy;
     }
 
-    private int indicePolitique(List<Integer> framePC0){
+    private int indicePolicy(List<Integer> framePC0){
         // Pour LRU: on prends la première frame qui a un pin count =0
         if (getPolicy().equals("LRU")) {
             return framePC0.get(0);
