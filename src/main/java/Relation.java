@@ -19,8 +19,7 @@ public class Relation {
         return nbColonnes;
     }
 
-    public int writeRecordtoBuffer(Record r, ByteBuffer buff,int pos) {
-
+    public int writeRecordToBuffer(Record r, ByteBuffer buff,int pos) {
 
         return 0;
     }
