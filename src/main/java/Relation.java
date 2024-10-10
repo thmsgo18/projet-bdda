@@ -1,10 +1,11 @@
 import java.nio.ByteBuffer;
+import java.util.List;
 
 public class Relation {
 
     private String nomRelation;
     private int nbColonnes;
-     // Ajouter comme attribut CallInfo.
+    private List<ColInfo> colonne;
     public Relation(String nomRelation, int nbColonnes) {
         this.nomRelation = nomRelation;
         this.nbColonnes = nbColonnes;
