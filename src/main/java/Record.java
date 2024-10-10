@@ -5,7 +5,7 @@ public class Record {
 
     List<Object> tuple;
 
-    public Record(List<Object> valeurs) {
+    public Record(ArrayList<Object> valeurs) {
         this.tuple = valeurs;
     }
 
