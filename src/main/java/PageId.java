@@ -16,6 +16,9 @@ public class PageId {
     }
 
 
+    public boolean egale(PageId other){
+        return other.FileIdx == this.FileIdx && other.PageIdx == this.PageIdx;
+    }
 
     // Get
     public int getFileIdx() {

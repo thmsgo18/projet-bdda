@@ -26,12 +26,14 @@ public class BufferManager {
         for(int i = 0; i<bufferPool.length; i++){
             // Recherche dans le bufferPool de la présence de la page
 
-            if (pageId.equals(( bufferMap.get(i).get(0)) )) { // Page trouvée dans le tableau de buffer
-                System.out.println("La page ID : "+bufferMap.get(i).get(0)+" est deja présent dans le buffer "+i);
-                pinCount=  (Integer) bufferMap.get(i).get(2);
-                bufferMap.get(i).set(2, pinCount+1); // Incrémentation du pin count
-                diskManager.ReadPage(pageId,bufferPool[i]); // Strockage de la page dans le buffer
-                return bufferPool[i]; // retourne le buffer
+            if (bufferMap.get(i).get(0)!=null) { // Page trouvée dans le tableau de buffer
+                if(pageId.egale((PageId) bufferMap.get(i).get(0))){
+                    System.out.println("La page ID : "+bufferMap.get(i).get(0)+" est deja présent dans le buffer "+i);
+                    pinCount=  (Integer) bufferMap.get(i).get(2);
+                    bufferMap.get(i).set(2, pinCount+1); // Incrémentation du pin count
+                    diskManager.ReadPage(pageId,bufferPool[i]); // Strockage de la page dans le buffer
+                    return bufferPool[i]; // retourne le buffer
+                }
             }
 
             if(bufferMap.get(i).get(0)==(null)){ // Si aucun buffer stocker à la position i
@@ -45,27 +47,21 @@ public class BufferManager {
 
         if (frameDispo.isEmpty()) { // Si plus de frame libre
 
-            System.out.println("TEST : Il n' y a pas de frames disponibles");
             if(!framePC0.isEmpty()){ // Vérification de la présence d'au moins un buffer avec un pin count =O
-                System.out.println("TEST : Il y a des frames possedant des pin_count à 0");
 
                 int indiceBuffer= indicePolicy(framePC0); // Indice de la page à remplacer selon la politique
                 if ( bufferMap.get(indiceBuffer ).get(1).equals(true) ){ // Vérification du buffer pour voir s'il a été modifer (dirty à 1)
-                    System.out.println("TEST : Dirty = true, la page a été modifié");
                     // dirty = 1
-                    System.out.println("Page ID : "+(PageId) bufferMap.get(indiceBuffer).get(0));
                     diskManager.WritePage((PageId) bufferMap.get(indiceBuffer).get(0),bufferPool[indiceBuffer]); // on inscrit les changements que le précédent buffer a fait sur le disque
                     bufferMap.get(indiceBuffer ).set(1,false); // on met le dirty à faux
                 }else{ // dirty = 0
-                    System.out.println("TEST: Dirty= false");
+
                 }
                 bufferMap.get( indiceBuffer ).set(2,1); // Mise du pin count à 1
                 bufferMap.get(indiceBuffer ).set(0,pageId); // Rajout de la pageId correspondante dans la map.
                 diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // Strockage de la page dans le buffer
                 return bufferPool[indiceBuffer]; // Retourne le buffer
-            }else{
-
-                System.out.println("TEST : Il n'y a aucune frames disponibles, mais en plus aucunes frames avec un pin count =0");
+            }else{// Plus de frame dispo dans le buffer et aucune frame avec un pin count=0
                 return null;
             }
         } else{ // frameDispo n'est pas vide
