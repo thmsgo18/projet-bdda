@@ -23,37 +23,40 @@ public class DiskManager {
         String cheminFichier = dbConfig.getDbpath()+"/F"+pageCourante.getFileIdx()+".bin"; // Initialisation du chemin du fichier
         File fichier = new File(cheminFichier); // Création d'un object fichier
 
-        if (repertoire.exists()){ // Verification de l'existance du repertoire
-            System.out.println("Le repertoire existe");
 
             if(pagesDesaloc.isEmpty()){ // Vérification de si la liste des pages desalloués est vide
                 System.out.println("La liste des pages alloués est vide ");
-                
-                if(fichier.exists()) { // Vérification
-                    System.out.println("Le fichier " + pageCourante.getFileIdx() + " existe");
-                    System.out.println("La longueur du fichier" + pageCourante.getFileIdx() + " est  : " + fichier.length());
+                if (repertoire.exists()){ // Verification de l'existance du repertoire
+                    System.out.println("Le repertoire existe");
 
-                    if (currentSizeTotalPages+ dbConfig.getPagesize() <= dbConfig.getFilesize()) { // vérifie qu'il y a de la place dans un fichier pour crer une page
-                        pageCourante = new PageId(pageCourante.getFileIdx(), pageCourante.getPageIdx() + 1);
-                        SaveState();
-                        return pageCourante; // Retour la page allouée
-                    } else {
-                        // partie à modifier pour prendre en compte qu'on ne boucle plus
-                        pageCourante = new PageId(pageCourante.getFileIdx()+1, 0); // c'est la pagecouante qu'on va renvoyer mais elle ne sera donc plus la page courante apres la sortie de la focntion
-                        newFile(pageCourante.getFileIdx()); // création du nouveau fichier
-                        pageAlloue = pageCourante;
+                    if(fichier.exists()) { // Vérification
+                        System.out.println("Le fichier " + pageCourante.getFileIdx() + " existe");
+                        System.out.println("La longueur du fichier" + pageCourante.getFileIdx() + " est  : " + fichier.length());
+
+                        if (currentSizeTotalPages+ dbConfig.getPagesize() <= dbConfig.getFilesize()) { // vérifie qu'il y a de la place dans un fichier pour crer une page
+                            pageCourante = new PageId(pageCourante.getFileIdx(), pageCourante.getPageIdx() + 1);
+                            SaveState();
+                            return pageCourante; // Retour la page allouée
+                        } else {
+                            // partie à modifier pour prendre en compte qu'on ne boucle plus
+                            pageCourante = new PageId(pageCourante.getFileIdx()+1, 0); // c'est la pagecouante qu'on va renvoyer mais elle ne sera donc plus la page courante apres la sortie de la focntion
+                            newFile(pageCourante.getFileIdx()); // création du nouveau fichier
+                            pageAlloue = pageCourante;
+                            SaveState();
+                            return pageAlloue; // Retourne la page 0 du nouveau fichier
+                        }
+                    }else{
+                        // le cas pour initialiser la premier fichier 0,  car le fichier existera toujours après.
+                        newFile(0); // création du nouveau premier fichier
+                        pageCourante = new PageId(0, 0);
+                        pageAlloue =pageCourante;
                         SaveState();
                         return pageAlloue; // Retourne la page 0 du nouveau fichier
                     }
+                }else{
+                    System.out.println("Le repertoire n'existe pas");
                 }
-                else{
-                    // le cas pour initialiser la premier fichier 0,  car le fichier existera toujours après.
-                    newFile(0); // création du nouveau premier fichier
-                    pageCourante = new PageId(0, 0);
-                    pageAlloue =pageCourante;
-                    SaveState();
-                    return pageAlloue; // Retourne la page 0 du nouveau fichier
-                }
+
             }
             else{
                 System.out.println(" La liste des pages désalloués est non-vide"); // Pas besoin de créer une page, il existe deja une page de disponible
@@ -61,9 +64,7 @@ public class DiskManager {
                 SaveState();
                 return pageAlloue;
             }
-        }else{
-            System.out.println("Le repertoire n'existe pas");
-        }
+
         return null;
     }
 
