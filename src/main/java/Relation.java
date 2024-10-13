@@ -6,6 +6,7 @@ public class Relation {
     private String nomRelation;
     private int nbColonnes;
     private List<ColInfo> colonnes;
+
     public Relation(String nomRelation, int nbColonnes) {
         this.nomRelation = nomRelation;
         this.nbColonnes = nbColonnes;
@@ -38,8 +39,6 @@ public class Relation {
                buff.putInt(currentPosition);
                offsetDirectory += 4; // on se place 4 octets plus loin pour l'offset (correspond à un int)
                buff.position(currentPosition); // on se remet à la position courante pour ecrire les elements
-
-
             }
             else if (element instanceof Character){
                 buff.put((byte) 1);
@@ -71,17 +70,11 @@ public class Relation {
                 buff.putInt(currentPosition);
                 offsetDirectory += 4; // on se place 4 octets plus loin pour l'offset (correspond à un int)
                 buff.position(currentPosition); // on se remet à la position courante pour ecrire les elements
-
             }
-
-
-
         }
-        currentPosition = buff.position();
+        int reponse= buff.position()-pos;
         buff.flip();
-        return buff.capacity()-currentPosition;
-
-
+        return reponse;
 
     }
 

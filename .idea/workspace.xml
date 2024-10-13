@@ -4,14 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a60d0fad-2b93-4327-ad08-558289db1783" name="Changes" comment="projet v1">
+    <list default="true" id="a60d0fad-2b93-4327-ad08-558289db1783" name="Changes" comment="Implémentation de la méthode readFromBuffer, modifcation de la méthode writeRecordToBuffer+ plus d'autres trucs">
+      <change afterPath="$PROJECT_DIR$/DataBase/dm.save.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/TestChelouAli.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataBase/BinData/F0.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/DataBase/BinData/F0_binary.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataBase/BinData/F2.bin" beforeDir="false" afterPath="$PROJECT_DIR$/DataBase/BinData/F2.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBase/BinData/F2.bin" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/DataBase/BinData/F2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DiskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DiskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBase/dm.save.json" beforeDir="false" afterPath="$PROJECT_DIR$/DataBase/dm.save.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/DiskManagerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DiskManagerTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Relation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Relation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/RelationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RelationTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,9 +42,12 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/thmsgo18/projet-bdda.git&quot;,
-    &quot;accountId&quot;: &quot;e748f877-990a-4e3f-b438-c1fb1e15d5f9&quot;
+    &quot;accountId&quot;: &quot;0c5056b4-67fe-44bc-a27e-8785401c035d&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -51,8 +59,11 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.BufferManagerTests.executor&quot;: &quot;Run&quot;,
     &quot;Application.DiskManagerTests.executor&quot;: &quot;Run&quot;,
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.RelationTest.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TestChelouAli.executor&quot;: &quot;Run&quot;,
     &quot;Application.UtilMath.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
@@ -64,14 +75,21 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;/Users/thomas/Documents/Université/L3/S1/BDDA/Projet/projet-bdda/src/main/java/org/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.DiskManagerTests">
+  <component name="RunManager" selected="Application.RelationTest">
+    <configuration name="BufferManagerTests" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="BufferManagerTests" />
+      <module name="projet-bdda" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="DiskManagerTests" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="DiskManagerTests" />
       <module name="projet-bdda" />
@@ -86,8 +104,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UtilMath" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="UtilMath" />
+    <configuration name="RelationTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="RelationTest" />
+      <module name="projet-bdda" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestChelouAli" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="TestChelouAli" />
       <module name="projet-bdda" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -95,9 +120,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.RelationTest" />
+        <item itemvalue="Application.TestChelouAli" />
         <item itemvalue="Application.DiskManagerTests" />
+        <item itemvalue="Application.BufferManagerTests" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="Application.UtilMath" />
       </list>
     </recent_temporary>
   </component>
@@ -120,9 +147,24 @@
       <workItem from="1727092471595" duration="25000" />
       <workItem from="1727092513506" duration="115000" />
       <workItem from="1727092630999" duration="1701000" />
-      <workItem from="1727096595768" duration="406000" />
-      <workItem from="1727540295883" duration="13746000" />
-      <workItem from="1727602418482" duration="11866000" />
+      <workItem from="1727096595768" duration="617000" />
+      <workItem from="1727097218246" duration="578000" />
+      <workItem from="1727097802134" duration="258000" />
+      <workItem from="1727098063373" duration="2585000" />
+      <workItem from="1727358946170" duration="36832000" />
+      <workItem from="1727548150745" duration="3333000" />
+      <workItem from="1727590930206" duration="19260000" />
+      <workItem from="1727617599531" duration="2785000" />
+      <workItem from="1727635567937" duration="10217000" />
+      <workItem from="1727794368110" duration="24201000" />
+      <workItem from="1727954281987" duration="3465000" />
+      <workItem from="1727964374080" duration="1137000" />
+      <workItem from="1728225464014" duration="13517000" />
+      <workItem from="1728280913676" duration="14009000" />
+      <workItem from="1728314817076" duration="3575000" />
+      <workItem from="1728557478260" duration="17345000" />
+      <workItem from="1728744987481" duration="21465000" />
+      <workItem from="1728853216869" duration="270000" />
     </task>
     <task id="LOCAL-00001" summary="projet v1">
       <option name="closed" value="true" />
@@ -132,7 +174,199 @@
       <option name="project" value="LOCAL" />
       <updated>1727095674176</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="changement du workspace.xml">
+      <option name="closed" value="true" />
+      <created>1727097081354</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1727097081354</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Affichage Hello Word">
+      <option name="closed" value="true" />
+      <created>1727098021759</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1727098021759</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Affichage ali">
+      <option name="closed" value="true" />
+      <created>1727098299576</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1727098299576</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Affichage Malik">
+      <option name="closed" value="true" />
+      <created>1727098857237</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1727098857237</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Affichage Hala Madrid">
+      <option name="closed" value="true" />
+      <created>1727099205441</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1727099205441</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Implémentation de la class DiskManager">
+      <option name="closed" value="true" />
+      <created>1727360073143</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1727360073143</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Placement de la bonne valeur de dbPath dans le fichier json">
+      <option name="closed" value="true" />
+      <created>1727369859822</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1727369859822</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Ajoue d'une première version de AllouePage, en se servant d'un fichier txt pour les tests.&#10;Modification du main pour tester et de file-config.json">
+      <option name="closed" value="true" />
+      <created>1727538141147</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1727538141147</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Implémentation de la méthode DeallocPage">
+      <option name="closed" value="true" />
+      <created>1727546850805</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1727546850805</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Implémentation d'une v1 de readPage, writePage, deallocPage et de leurs tests. + un fichier bin sympa">
+      <option name="closed" value="true" />
+      <created>1727601595884</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1727601595884</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Commit d'une bonne v2 de AllocPage, d'une nouvelle version d'un main pour le tester + Modification de la taille max d'un fichier dans file-config.json pour le test">
+      <option name="closed" value="true" />
+      <created>1727605572315</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1727605572315</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Implémentation de load state et de saveState, et de mini test + Changement de de taille de page et de fichier dans file-config.json pour un test + Modification de la méthode toString de PageID pour permettre au saveState et LoadState de fonctionner.">
+      <option name="closed" value="true" />
+      <created>1727803127043</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1727803127043</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Fix AllocPage + petites modification de certaines méthodes + fix de pas mal de bugs. &#10;Les gars faites attention à dm.save.json, dans vos execution. C'est ça qui est chargé à l'initialisation du DiskManager et sauvegarder tout au long de son utilisation.">
+      <option name="closed" value="true" />
+      <created>1727886015658</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1727886015658</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Commit fantome">
+      <option name="closed" value="true" />
+      <created>1727954804274</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1727954804274</updated>
+    </task>
+    <task id="LOCAL-00016" summary="1er version de GetPage dans BufferManager, + quelques tests + modifcation et ajouts certains petites fonctions et parametres.">
+      <option name="closed" value="true" />
+      <created>1728238181198</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1728238181199</updated>
+    </task>
+    <task id="LOCAL-00017" summary="V1 du TD2. Des tests restent à faire.">
+      <option name="closed" value="true" />
+      <created>1728306023675</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1728306023675</updated>
+    </task>
+    <task id="LOCAL-00018" summary="V2 du TD2.&#10;&quot;Clear&quot; maintenant tous les ByteBuffers dans le tableau bufferPool dans la methode FlushBuffers.&#10;+ Autres modifs mineures&#10; Des tests restent à faire.">
+      <option name="closed" value="true" />
+      <created>1728316688129</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1728316688129</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Ajout de 2 classes en vite fait">
+      <option name="closed" value="true" />
+      <created>1728566817198</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1728566817198</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Ajout ColInfo et 2 varaibles d'instance">
+      <option name="closed" value="true" />
+      <created>1728567650271</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1728567650271</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Modif ColInfo">
+      <option name="closed" value="true" />
+      <created>1728567828895</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1728567828895</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Commit">
+      <option name="closed" value="true" />
+      <created>1728572217097</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1728572217097</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Commit du v1 de writeRecordToOBuffer +&#10;Modifs de la classe Record">
+      <option name="closed" value="true" />
+      <created>1728580425122</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1728580425122</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Optimisation de AllouePage">
+      <option name="closed" value="true" />
+      <created>1728751892956</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1728751892956</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Implémentation de la méthode readFromBuffer, modifcation de la méthode writeRecordToBuffer+ plus d'autres trucs">
+      <option name="closed" value="true" />
+      <created>1728814056702</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1728814056702</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -163,7 +397,31 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="projet v1" />
-    <option name="LAST_COMMIT_MESSAGE" value="projet v1" />
+    <MESSAGE value="changement du workspace.xml" />
+    <MESSAGE value="Affichage Hello Word" />
+    <MESSAGE value="Affichage ali" />
+    <MESSAGE value="Affichage Malik" />
+    <MESSAGE value="Affichage Hala Madrid" />
+    <MESSAGE value="Implémentation de la class DiskManager" />
+    <MESSAGE value="Placement de la bonne valeur de dbPath dans le fichier json" />
+    <MESSAGE value="Ajoue d'une première version de AllouePage, en se servant d'un fichier txt pour les tests.&#10;Modification du main pour tester et de file-config.json" />
+    <MESSAGE value="Implémentation de la méthode DeallocPage" />
+    <MESSAGE value="Implémentation d'une v1 de readPage, writePage, deallocPage et de leurs tests. + un fichier bin sympa" />
+    <MESSAGE value="Commit d'une bonne v2 de AllocPage, d'une nouvelle version d'un main pour le tester + Modification de la taille max d'un fichier dans file-config.json pour le test" />
+    <MESSAGE value="Implémentation de load state et de saveState, et de mini test + Changement de de taille de page et de fichier dans file-config.json pour un test + Modification de la méthode toString de PageID pour permettre au saveState et LoadState de fonctionner." />
+    <MESSAGE value="Fix AllocPage + petites modification de certaines méthodes + fix de pas mal de bugs. &#10;Les gars faites attention à dm.save.json, dans vos execution. C'est ça qui est chargé à l'initialisation du DiskManager et sauvegarder tout au long de son utilisation." />
+    <MESSAGE value="Commit fantome" />
+    <MESSAGE value="1er version de GetPage dans BufferManager, + quelques tests + modifcation et ajouts certains petites fonctions et parametres." />
+    <MESSAGE value="V1 du TD2. Des tests restent à faire." />
+    <MESSAGE value="V2 du TD2.&#10;&quot;Clear&quot; maintenant tous les ByteBuffers dans le tableau bufferPool dans la methode FlushBuffers.&#10;+ Autres modifs mineures&#10; Des tests restent à faire." />
+    <MESSAGE value="Ajout de 2 classes en vite fait" />
+    <MESSAGE value="Ajout ColInfo et 2 varaibles d'instance" />
+    <MESSAGE value="Modif ColInfo" />
+    <MESSAGE value="Commit" />
+    <MESSAGE value="Commit du v1 de writeRecordToOBuffer +&#10;Modifs de la classe Record" />
+    <MESSAGE value="Optimisation de AllouePage" />
+    <MESSAGE value="Implémentation de la méthode readFromBuffer, modifcation de la méthode writeRecordToBuffer+ plus d'autres trucs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implémentation de la méthode readFromBuffer, modifcation de la méthode writeRecordToBuffer+ plus d'autres trucs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -172,11 +430,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/org/example/Main.java</url>
           <line>13</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/DiskManagerTests.java</url>
-          <line>13</line>
-          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

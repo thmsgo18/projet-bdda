@@ -5,7 +5,7 @@ public class RelationTest {
 
     public static void main(String[] args) {
         RelationTest test = new RelationTest();
-        //test.writeRecordToBufferTest();
+        test.writeRecordToBufferTest();
         test.readRecordFromBufferTest();
     }
 
@@ -36,7 +36,7 @@ public class RelationTest {
         System.out.println();
         bb.flip();
 
-        System.out.println("Il reste "+reponseEcriture+" octets disponible dans le buffer");
+        System.out.println(reponseEcriture+" octets ont été écris dans le buffer");
     }
 
 

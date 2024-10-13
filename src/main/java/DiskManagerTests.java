@@ -20,18 +20,18 @@ public class DiskManagerTests {
         // je vous conseille pour le test de supprimer vos précédents fichier.bin
         // et de bien vérifier que la pageCourante est [0,0] dans dm.save.json pour une bonne initialisation
 
-        PageId p2 = new PageId(0,0);
-        dM.DeallocPage(p2);
+
+
        PageId p=dM.AllocPage();
 
         //DiskManagerTests.TestLoadState(dM);
         ByteBuffer buff=ByteBuffer.allocate((int)dM.getDbConfig().getPagesize());
 
         for(int i=0;i<buff.capacity();i++){
-           buff.put((byte)'A');
+           buff.put((byte)'H');
         }
-        dM.WritePage(p2,buff);
-        affichagePage(dM,p2);
+        dM.WritePage(p,buff);
+        affichagePage(dM,p);
        // Noter que vous pouvez tester de desalloué une page apres avoir alloués quelques pages (!!! ON NE DESALOUE PAS UNE PAGE QUI N'A JAMAIS ÉTÉ ALLOUÉ !!!)
 
     }
