@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Record {
 
-    List<Object> tuple;
+    private List<Object> tuple;
 
     public Record(ArrayList<Object> valeurs) {
         this.tuple = valeurs;
@@ -13,12 +13,19 @@ public class Record {
         tuple = new ArrayList<Object>();
     }
 
-    public Object getValeur(int i) {
+    public Object getValeurTuple(int i) {
         return tuple.get(i);
     }
 
-    public void setValeur(int i, Object valeur) {
+    public void setValeurTuple(int i, Object valeur) {
         tuple.set(i, valeur);
+    }
+    public List<Object> getTuple(){
+        return tuple;
+    }
+
+    public void ajouteValeurTuple(Object valeur) {
+        tuple.add(valeur);
     }
 
     public String toString(){
