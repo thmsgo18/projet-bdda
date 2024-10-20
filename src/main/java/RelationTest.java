@@ -1,12 +1,60 @@
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RelationTest {
 
     public static void main(String[] args) {
+
+        ColInfo cI1 = new ColInfo("Nom", "VARCHAR", 60);
+        ColInfo cI2 = new ColInfo("Prenom", "CHAR", 40);
+        ColInfo cI3 = new ColInfo("Age", "INT", 4);
+
+
+        List<ColInfo> listeColonnesInfo= new ArrayList<>();
+        listeColonnesInfo.add(cI1);
+        listeColonnesInfo.add(cI2);
+        listeColonnesInfo.add(cI3);
+
+        Relation relation = new Relation("Etudiant", 3,listeColonnesInfo);
+
+
+        Record r1 = new Record();
+        ArrayList<Object> a1 = new ArrayList<>();
+        a1.add("Traore");
+        a1.add("Ali");
+        a1.add(20);
+
+        r1.setTuple(a1);
+
+
+
+        ByteBuffer bb = ByteBuffer.allocate(4000);
+        System.out.println("*************ECRITURE*************");
+
+        int n1= relation.writeRecordToBuffer(r1,bb,10);
+        System.out.println(n1+" octets ont été réserver à l'écriture dans le buffer");
+        for(int i=0;i<bb.limit();i++) {
+            System.out.print(bb.get()+" ");
+        }
+        System.out.println();
+        bb.flip();
+        System.out.println("*************LECTURE*************");
+
+
+
+        Record r2 = new Record();
+        int n2= relation.readFromBuffer(r2,bb,10);
+        System.out.println(n2+" octets ont été vraiment lu dans le buffer");
+
+
+
+        /*
         RelationTest test = new RelationTest();
         test.writeRecordToBufferTest();
         test.readRecordFromBufferTest();
+        */
+
     }
 
 
@@ -75,4 +123,6 @@ public class RelationTest {
         // Avec les bitsType, on est à 61
         // Sans, on est à 61-7= 54
     }
+
+
 }

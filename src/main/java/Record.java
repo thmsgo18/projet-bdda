@@ -24,6 +24,12 @@ public class Record {
         return tuple;
     }
 
+    public void setTuple(List<Object> tuple) {
+        this.tuple = tuple;
+    }
+
+
+
     public void ajouteValeurTuple(Object valeur) {
         tuple.add(valeur);
     }
