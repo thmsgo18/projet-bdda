@@ -106,31 +106,38 @@ public class Relation {
         int octetLus =0;
         int octetMaxALire = getNbColonnes()*tailleColonneMax;
         int i=0;
+        int anciennePosition;
+
+
         buff.position(pos);
         while ((i<nbColonnes)&& ( buff.hasRemaining() ) && ( octetLus<octetMaxALire ) ){ // On boucle tant que le buffer a encore des elements
             type =colonnes.get(i).getTypeColonne();
-            System.out.println("TYPE : "+type+"test : ");
-            if( (type.equals("CHAR") ) || ( type.equals("VARCHAR") ) || ( type.equals("char") ) || ( type.equals("varchar") ) ){
+            anciennePosition= buff.position();
+            if( (type.equals("CHAR") ) ||  ( type.equals("char") )  ){
                 StringBuilder sb= new StringBuilder();
                 int tailleColonne= colonnes.get(i).getTailleColonne();
-                for(int c=0;c<tailleColonne/2;c++){ // on divise par 2 parce qu'un char vaut 2 octes
+                for(int c=0;c<tailleColonne/2;c++){ // on divise par 2 parce qu'un char vaut 2 octets
                     char caractere= buff.getChar();
                     if((caractere!='\0') ) {
                         sb.append(caractere);
                         System.out.println("VERIF : boucle formation de la chaine de caractère = " + sb.toString());}
                 }
+                buff.position(anciennePosition+tailleColonneMax);
+                octetLus+=tailleColonneMax;
                 System.out.println(sb.length()+" taille sb");
+                System.out.println("Après "+sb.toString()+", on est à l'octet "+buff.position());
+
 
                 record.ajouteValeurTuple(sb.toString()); // on ajoute le String complet
             }
             else if( type.equals("INT") || type.equals("INTEGER") ){
                 record.ajouteValeurTuple(buff.getInt());
-                buff.position(buff.position()+tailleColonneMax-4);
             }
             else if( type.equals("REAL") ){
                 record.ajouteValeurTuple(buff.getFloat());
-                buff.position(buff.position()+tailleColonneMax-4);
+                buff.position(anciennePosition+tailleColonneMax);
             }
+            buff.position(anciennePosition+tailleColonneMax);
             i++;
             System.out.println(buff.position()+"   "+ pos);
             octetLus=buff.position()-pos;
