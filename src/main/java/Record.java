@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Record {
 
-    private List<Object> tuple;
+    private List<Object> tuple; // Liste des valeurs du tuple
 
     public Record(ArrayList<Object> valeurs) {
         this.tuple = valeurs;
@@ -27,7 +27,6 @@ public class Record {
     public void setTuple(List<Object> tuple) {
         this.tuple = tuple;
     }
-
 
 
     public void ajouteValeurTuple(Object valeur) {

@@ -3,10 +3,10 @@ import java.util.List;
 
 public class Relation {
 
-    private String nomRelation;
-    private int nbColonnes;
-    private List<ColInfo> colonnes;
-    private int tailleColonneMax;
+    private String nomRelation; // Nom de la relation
+    private int nbColonnes; // Nombre de colonnes
+    private List<ColInfo> colonnes; // Liste des collones et de leurs infos
+    private int tailleColonneMax; // taille
     private boolean varchar;
 
     public Relation(String nomRelation, int nbColonnes) {
@@ -17,7 +17,7 @@ public class Relation {
         this.nomRelation = nomRelation;
         this.nbColonnes = nbColonnes;
         this.colonnes = colonnes;
-        tailleColonneMax = tailleColonneMax();
+        this.tailleColonneMax = tailleColonneMax();
         this.varchar=possedeUnVarchar();
     }
 
