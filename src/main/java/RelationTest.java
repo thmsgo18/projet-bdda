@@ -5,9 +5,8 @@ import java.util.List;
 public class RelationTest {
 
     public static void main(String[] args) {
-
-        ColInfo cI1 = new ColInfo("Nom", "VARCHAR", 60);
-        ColInfo cI2 = new ColInfo("Prenom", "CHAR", 40);
+        ColInfo cI1 = new ColInfo("Nom", "VARCHAR", 12);
+        ColInfo cI2 = new ColInfo("Prenom", "CHAR", 6);
         ColInfo cI3 = new ColInfo("Age", "INT", 4);
 
 
@@ -28,11 +27,10 @@ public class RelationTest {
         r1.setTuple(a1);
 
 
-
         ByteBuffer bb = ByteBuffer.allocate(4000);
         System.out.println("*************ECRITURE*************");
 
-        int n1= relation.writeRecordToBuffer(r1,bb,10);
+        int n1= relation.writeRecordToBuffer(r1,bb,0);
         System.out.println(n1+" octets ont été réserver à l'écriture dans le buffer");
         for(int i=0;i<bb.limit();i++) {
             System.out.print(bb.get()+" ");
@@ -44,20 +42,12 @@ public class RelationTest {
 
 
         Record r2 = new Record();
-        int n2= relation.readFromBuffer(r2,bb,10);
+        int n2= relation.readFromBuffer(r2,bb,0);
         System.out.println(n2+" octets ont été vraiment lu dans le buffer");
-
-
-
-        /*
-        RelationTest test = new RelationTest();
-        test.writeRecordToBufferTest();
-        test.readRecordFromBufferTest();
-        */
 
     }
 
-
+    // Plus à jour, à ne pas réutiliser
     public void writeRecordToBufferTest() {
 
         System.out.println("\n******************** TEST WRITE RECORD TO BUFFER ************************\n");
@@ -87,7 +77,7 @@ public class RelationTest {
         System.out.println(reponseEcriture+" octets ont été écris dans le buffer");
     }
 
-
+    // Plus à jour, à ne pas réutiliser
     public void readRecordFromBufferTest() {
         System.out.println("\n******************** TEST READ RECORD TO BUFFER ************************\n");
         System.out.println("Considerons que nous voulons lire le buffer qui a pour buffer, le buffer écris arbitrairement dans le test Write ");

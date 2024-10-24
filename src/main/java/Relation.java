@@ -52,7 +52,7 @@ public class Relation {
                 System.out.println("VERIF : l'élément est un char ");
                 buff.putChar((Character)element);
             }
-            buff.position(save+tailleColonneMax);
+            //buff.position(save+tailleColonneMax);
         }
         int reponse= buff.position()-pos;
         buff.flip();
@@ -122,8 +122,6 @@ public class Relation {
                         sb.append(caractere);
                         System.out.println("VERIF : boucle formation de la chaine de caractère = " + sb.toString());}
                 }
-                buff.position(anciennePosition+tailleColonneMax);
-                octetLus+=tailleColonneMax;
                 System.out.println(sb.length()+" taille sb");
                 System.out.println("Après "+sb.toString()+", on est à l'octet "+buff.position());
 
@@ -137,10 +135,11 @@ public class Relation {
                 record.ajouteValeurTuple(buff.getFloat());
                 buff.position(anciennePosition+tailleColonneMax);
             }
-            buff.position(anciennePosition+tailleColonneMax);
+            octetLus+=buff.position()-anciennePosition;
+
+//            buff.position(anciennePosition+tailleColonneMax);
             i++;
             System.out.println(buff.position()+"   "+ pos);
-            octetLus=buff.position()-pos;
             System.out.println(" tuple :"+record);
         }
         buff.flip();
