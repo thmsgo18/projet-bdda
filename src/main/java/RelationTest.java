@@ -8,14 +8,20 @@ public class RelationTest {
         ColInfo cI1 = new ColInfo("Nom", "VARCHAR", 12);
         ColInfo cI2 = new ColInfo("Prenom", "CHAR", 6);
         ColInfo cI3 = new ColInfo("Age", "INT", 4);
-
+        DBConfig config;
+        config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DiskManager dm = new DiskManager(config);
+        BufferManager bm = new BufferManager(config,dm);
+        PageId headerPageId = new PageId(1, 2);
+        DiskManager diskManager = new DiskManager(config);
+        BufferManager bufferManager = new BufferManager(config,diskManager);
 
         List<ColInfo> listeColonnesInfo= new ArrayList<>();
         listeColonnesInfo.add(cI1);
         listeColonnesInfo.add(cI2);
         listeColonnesInfo.add(cI3);
 
-        Relation relation = new Relation("Etudiant", 3,listeColonnesInfo);
+        Relation relation = new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo);
 
 
         Record r1 = new Record();
@@ -55,7 +61,14 @@ public class RelationTest {
         System.out.println("Cela nous permettra de tester l'ecriture des 4 types de données : int / float / char / string");
         System.out.println("Les \"VERIF\" que vous voyez ci dessous sont affiché directement via la fonction, il s'agit simplement d'affichage à but explicative, on pourra les supprimer par la suite.");
         System.out.println();
-        Relation relation = new Relation("TestRelation",5);
+        DBConfig config;
+        config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DiskManager dm = new DiskManager(config);
+        BufferManager bm = new BufferManager(config,dm);
+        PageId headerPageId = new PageId(1, 2);
+        DiskManager diskManager = new DiskManager(config);
+        BufferManager bufferManager = new BufferManager(config,diskManager);
+        Relation relation = new Relation("TestRelation",5,headerPageId, diskManager, bufferManager);
         ByteBuffer bb = ByteBuffer.allocate(4000);
         ArrayList<Object> t1 = new ArrayList<>();
         t1.add(20.353f);    // un float
@@ -81,7 +94,14 @@ public class RelationTest {
     public void readRecordFromBufferTest() {
         System.out.println("\n******************** TEST READ RECORD TO BUFFER ************************\n");
         System.out.println("Considerons que nous voulons lire le buffer qui a pour buffer, le buffer écris arbitrairement dans le test Write ");
-        Relation relation = new Relation("TestRelation",5);
+        DBConfig config;
+        config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DiskManager dm = new DiskManager(config);
+        BufferManager bm = new BufferManager(config,dm);
+        PageId headerPageId = new PageId(1, 2);
+        DiskManager diskManager = new DiskManager(config);
+        BufferManager bufferManager = new BufferManager(config,diskManager);
+        Relation relation = new Relation("TestRelation",5, headerPageId, diskManager, bufferManager);
         ByteBuffer bb = ByteBuffer.allocate(4000);
         ArrayList<Object> t1 = new ArrayList<>();
         t1.add(20.353f);    // un float

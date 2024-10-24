@@ -1,4 +1,5 @@
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Relation {
@@ -8,12 +9,18 @@ public class Relation {
     private List<ColInfo> colonnes;
     private int tailleColonneMax;
     private boolean varchar;
+    private PageId headerPageId; // identifiant de Header Page de la relation
+    private DiskManager diskManager;
+    private BufferManager bufferManager;
 
-    public Relation(String nomRelation, int nbColonnes) {
+    public Relation(String nomRelation, int nbColonnes, PageId headerPageId, DiskManager diskManager, BufferManager bufferManager) {
         this.nomRelation = nomRelation;
         this.nbColonnes = nbColonnes;
+        this.headerPageId = headerPageId;
+        this.diskManager = diskManager;
+        this.bufferManager = bufferManager;
     }
-    public Relation(String nomRelation, int nbColonnes,List<ColInfo> colonnes) {
+    public Relation(String nomRelation, int nbColonnes, PageId headerPageId, DiskManager diskManager, BufferManager bufferManager,List<ColInfo> colonnes) {
         this.nomRelation = nomRelation;
         this.nbColonnes = nbColonnes;
         this.colonnes = colonnes;
@@ -99,8 +106,6 @@ public class Relation {
         return reponse;
     }
 
-
-
     private int readBufferFixe(Record record, ByteBuffer buff, int pos){
         String type;
         int octetLus =0;
@@ -146,8 +151,6 @@ public class Relation {
 
         return octetLus;
     }
-
-
 
     private int readBufferVariable(Record record, ByteBuffer buff, int pos) {
         String type;
@@ -197,6 +200,25 @@ public class Relation {
         return octetLus;
     }
 
+    private void addDataPage(){
+
+    }
+
+    private PageId getFreeDataPageId(int sizeRecord){
+        return new PageId(0,0);
+    }
+
+    private Record writeRecordToDataPage(Record record, PageId pageId){
+        return new Record(new ArrayList<>());
+    }
+
+    private ArrayList<Record> getRecordsInDataPage(PageId pageId){
+        return new ArrayList<>();
+    }
+
+    private ArrayList<PageId> getDataPages(){
+        return new ArrayList<>();
+    }
 
     public List<ColInfo> getColonnes() {
         return colonnes;
