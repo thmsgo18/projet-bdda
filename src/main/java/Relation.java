@@ -7,7 +7,6 @@ public class Relation {
     private String nomRelation;
     private int nbColonnes;
     private List<ColInfo> colonnes;
-    private int tailleColonneMax;
     private boolean varchar;
     private PageId headerPageId; // identifiant de Header Page de la relation
     private DiskManager diskManager;
@@ -24,7 +23,6 @@ public class Relation {
         this.nomRelation = nomRelation;
         this.nbColonnes = nbColonnes;
         this.colonnes = colonnes;
-        tailleColonneMax = tailleColonneMax();
         this.varchar=possedeUnVarchar();
     }
 
@@ -59,7 +57,6 @@ public class Relation {
                 System.out.println("VERIF : l'élément est un char ");
                 buff.putChar((Character)element);
             }
-            //buff.position(save+tailleColonneMax);
         }
         int reponse= buff.position()-pos;
         buff.flip();
@@ -140,7 +137,6 @@ public class Relation {
             }
             octetLus+=buff.position()-anciennePosition;
 
-//            buff.position(anciennePosition+tailleColonneMax);
             i++;
             System.out.println(buff.position()+"   "+ pos);
             System.out.println(" tuple :"+record);
@@ -228,15 +224,6 @@ public class Relation {
         return nbColonnes;
     }
 
-    private int tailleColonneMax(){
-        int max=0;
-        for(ColInfo colonne : colonnes){
-            if (max<colonne.getTailleColonne()){
-                max=colonne.getTailleColonne();
-            }
-        }
-        return max;
-    }
 
     private boolean possedeUnVarchar(){
         boolean var=false;
