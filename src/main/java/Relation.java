@@ -109,13 +109,12 @@ public class Relation {
     private int readBufferFixe(Record record, ByteBuffer buff, int pos){
         String type;
         int octetLus =0;
-        int octetMaxALire = getNbColonnes()*tailleColonneMax;
         int i=0;
         int anciennePosition;
 
 
         buff.position(pos);
-        while ((i<nbColonnes)&& ( buff.hasRemaining() ) && ( octetLus<octetMaxALire ) ){ // On boucle tant que le buffer a encore des elements
+        while ((i<nbColonnes) && ( buff.hasRemaining() )  ){ // On boucle tant que le buffer a encore des elements
             type =colonnes.get(i).getTypeColonne();
             anciennePosition= buff.position();
             if( (type.equals("CHAR") ) ||  ( type.equals("char") )  ){
@@ -138,7 +137,6 @@ public class Relation {
             }
             else if( type.equals("REAL") ){
                 record.ajouteValeurTuple(buff.getFloat());
-                buff.position(anciennePosition+tailleColonneMax);
             }
             octetLus+=buff.position()-anciennePosition;
 
@@ -155,12 +153,11 @@ public class Relation {
     private int readBufferVariable(Record record, ByteBuffer buff, int pos) {
         String type;
         int octetLus = 0;
-        int octetMaxALire = getNbColonnes() * tailleColonneMax;
         int i = 0;
         buff.position(pos);
         int offsetPos = buff.position();
         int currentPos;
-        while ((i<nbColonnes)&& ( buff.hasRemaining() ) && ( octetLus<octetMaxALire ) ){ // On boucle tant que le buffer a encore des elements
+        while ((i<nbColonnes)&& ( buff.hasRemaining() ) ){ // On boucle tant que le buffer a encore des elements
             currentPos = buff.getInt(offsetPos);
 
             buff.position(currentPos);
@@ -172,7 +169,6 @@ public class Relation {
 
             if( (type.equals("CHAR") ) || ( type.equals("VARCHAR") ) || ( type.equals("char") ) || ( type.equals("varchar") ) ){
                 StringBuilder sb= new StringBuilder();
-                int tailleColonne= colonnes.get(i).getTailleColonne();
                 int fin= buff.getInt(offsetPos+4);
                 buff.position(currentPos);
                 while(buff.position()<fin){
