@@ -27,8 +27,8 @@ public class DiskManagerTests {
         //DiskManagerTests.TestLoadState(dM);
         ByteBuffer buff=ByteBuffer.allocate((int)dM.getDbConfig().getPagesize());
 
-        for(int i=0;i<buff.capacity();i++){
-           buff.put((byte)'H');
+        for(int i=0;i<3;i++){
+           buff.putChar('A');
         }
         dM.WritePage(p,buff);
         affichagePage(dM,p);
@@ -139,7 +139,7 @@ public class DiskManagerTests {
         System.out.println("Affichage pagesDesalloués : "+ dm.getPagesDesaloc().toString());
         System.out.println("**** Load State ****");
         dm.LoadState();
-        System.out.printf("Chargement des données effectués avec succès");
+        System.out.println("Chargement des données effectués avec succès");
         System.out.println("Affichage pagesDesalloués : "+ dm.getPagesDesaloc().toString());
 
     }

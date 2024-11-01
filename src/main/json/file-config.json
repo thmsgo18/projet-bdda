@@ -1,7 +1,7 @@
 {
   "dbpath" : "Database/BinData",
-  "pagesize" : 4,
-  "filesize" : 12,
+  "pagesize" : 128,
+  "filesize" : 512,
   "bm_buffercount" : 4,
   "bm_policy" : "LRU",
   "_comment" : "Ceci est un commentaire, j'ai modifié pageSize et filesize pour correspondre à l'exemple de fichier 0,(ps : ça va créer automatiquement un nouveau fichier)"

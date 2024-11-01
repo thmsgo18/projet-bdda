@@ -20,4 +20,7 @@ public class RecordId {
     public void setPageId(PageId pageId) {
         this.pageId = pageId;
     }
+    public String toString() {
+        return "[ PageId :{ "+ pageId + "} , Slot :{" + slotIdx+"} ]";
+    }
 }
