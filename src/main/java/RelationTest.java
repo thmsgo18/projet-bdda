@@ -247,7 +247,6 @@ public class RelationTest {
         // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
         ByteBuffer buff = ByteBuffer.allocate((int) diskManager.getDbConfig().getPagesize());
         buff.putInt(0);  // Nombres de pages dans le headerPage
-        buff.putInt(8); // Position de l'octet pour écrire la première case de page
         buff.flip();
 
         PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible

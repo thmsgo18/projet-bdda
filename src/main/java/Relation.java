@@ -20,6 +20,7 @@ public class Relation {
         this.headerPageId = headerPageId;
         this.diskManager = diskManager;
         this.bufferManager = bufferManager;
+        this.varchar= possedeUnVarchar();
     }
     public Relation(String nomRelation, int nbColonnes, PageId headerPageId, DiskManager diskManager, BufferManager bufferManager,List<ColInfo> colonnes) {
         this.nomRelation = nomRelation;
@@ -189,15 +190,18 @@ public class Relation {
     }
 
     public void addDataPage(){
+
         System.out.println("**************  AJout d'une page de données   *********************");
 
         int taillePage =(int) diskManager.getDbConfig().getPagesize();
         ByteBuffer buff1  = ByteBuffer.allocate(taillePage);  // va servir à lire le contenu du headerPage pour plus tard rajouter les elements d'une case d'une nouvelle page de donnée, et ensuite réecrire la headerpage avec les changements
         diskManager.ReadPage(headerPageId,buff1); // Lecture de la header page
+        int indice_dernierOctetLecture = buff1.getInt(0)*12+4; // on se place au 4ème octet pour lire le dernier octet lu. pour l'initialisation ça devra etre 8 pour être juste apres les 4 octets reservés par le nombre de page dans la header page et les 4 octets reservéeds pour le dernier indice
+
 
         // Vérification que la header page a assez de place pour ajouter une nouvelle page (plus tard si j'ai la foi, faudra chainer la header page à une autre)
 
-        if ((buff1.getInt(4)+ 12)>taillePage){ //  l'emplacement de l'octet où l'on peut écrire une case de page + 12 (la taille que fais les 8 octets d'une pageId + 4 octets pour le bombre d'octets disponible dans la page de donnée)
+        if ( ( indice_dernierOctetLecture + 12 ) >taillePage ){ //  l'emplacement de l'octet où l'on peut écrire une case de page + 12 (la taille que fais les 8 octets d'une pageId + 4 octets pour le bombre d'octets disponible dans la page de donnée)
             System.out.println("ERREUR : Il n'y a plus assez de place dans la header page pour accueilir une nouvelle page de donnée");
 
         }else{
@@ -207,7 +211,6 @@ public class Relation {
             PageId nouvellePageDonnee  = diskManager.AllocPage(); // allocation de la nouvelle page de donnée
             System.out.println("TEST : On a alloué la page de données à l'emplacement"+nouvellePageDonnee);
 
-            int indice_dernierOctetLecture = buff1.getInt(4); // on se place au 4ème octet pour lire le dernier octet lu. pour l'initialisation ça devra etre 8 pour être juste apres les 4 octets reservés par le nombre de page dans la header page et les 4 octets reservéeds pour le dernier indice
 
             buff1.position(indice_dernierOctetLecture); // On se met à la position du dernier octet avec une valeur
             buff1.putInt(nouvellePageDonnee.getFileIdx()); // on mets le numero de fichier
@@ -217,7 +220,6 @@ public class Relation {
             buff1.putInt(octetDisponibles);
             int nombrePagesDonnees= buff1.getInt(0);
             buff1.putInt(0,nombrePagesDonnees+1);
-            buff1.putInt(4, buff1.position()); // on mets à jout l'indice du dernier octet vraiment lu
             diskManager.WritePage(headerPageId,buff1); // on remplace la headerpage par la header page mis à jour
 
             // PARTIE INITIALISATION DE LA NOUVELLE PAGE DE DONNÉES
@@ -243,7 +245,7 @@ public class Relation {
     public PageId getFreeDataPageId(int sizeRecord){
         PageId pageDisponible=null;
         boolean pageTrouve =false;
-        int currentPosition =16;
+        int currentPosition =12;
         int octetRestantPage; // variable qui prend le nombre d'octets totaux d'une page de données de la header page, (il faudra y soustraire les octets que prendront la position du record et la taille du recordpour déterminer si un record peut être insérer
         int octetNecessaireInsertion = sizeRecord+8; // Il faut tenir compte de la taille du record mais en plus 4 octets pour la position du record + 4 octet pour la taille du record
         ByteBuffer buff = ByteBuffer.allocate( (int) diskManager.getDbConfig().getPagesize() );
@@ -305,12 +307,12 @@ public class Relation {
         ByteBuffer buffHeader = ByteBuffer.allocate( (int) diskManager.getDbConfig().getPagesize() );
         diskManager.ReadPage(headerPageId,buffHeader);
         int i=0,n=buffHeader.getInt(0);
-        buffHeader.position(8); // On se positionne au premier octet qui décrit l’espace disponible de la première page de donnée
+        buffHeader.position(4); // On se positionne au premier octet qui décrit le fichier  de la première page de donnée
         while((i<n) && (!pageTrouve)){
             numeroFichier = buffHeader.getInt();    // numéro de fichier
             numeroPage = buffHeader.getInt();       // numéro de Page
             if ((pageId.getFileIdx()== numeroFichier) && (pageId.getPageIdx()== numeroPage)){
-                pageTrouve=true;
+                pageTrouve=true; // va provoquer la fin de la boucle
                 int octetRestantDispo = buffHeader.getInt();
                 buffHeader.position(buffHeader.position()-4);
                 buffHeader.putInt( octetRestantDispo- tailleRecord -8);
@@ -361,7 +363,7 @@ public class Relation {
         ByteBuffer buffHeader = ByteBuffer.allocate( (int) diskManager.getDbConfig().getPagesize() );
         diskManager.ReadPage(headerPageId, buffHeader);
         int nbDataPage = buffHeader.getInt();
-        buffHeader.position(buffHeader.position()+4);
+        buffHeader.position(4); // Je pourrais rien mettre à la place de 4 mais c'est pur que ce soit plus facile à debugg
         for(int i=0;i<nbDataPage;i++) {
             int fid = buffHeader.getInt();
             int pid = buffHeader.getInt();
