@@ -23,6 +23,9 @@ public class DiskManager {
         String cheminFichier = dbConfig.getDbpath()+"/F"+pageCourante.getFileIdx()+".bin"; // Initialisation du chemin du fichier
         File fichier = new File(cheminFichier); // Création d'un object fichier
 
+        ByteBuffer buffTemp = ByteBuffer.allocate( (int) dbConfig.getPagesize());  //
+        byte [] bb = new byte[(int)dbConfig.getPagesize()]; //
+
 
             if(pagesDesaloc.isEmpty()){ // Vérification de si la liste des pages desalloués est vide
                 System.out.println("La liste des pages alloués est vide ");
@@ -35,13 +38,20 @@ public class DiskManager {
 
                         if (currentSizeTotalPages+ dbConfig.getPagesize() <= dbConfig.getFilesize()) { // vérifie qu'il y a de la place dans un fichier pour crer une page
                             pageCourante = new PageId(pageCourante.getFileIdx(), pageCourante.getPageIdx() + 1);
+                            pageAlloue = pageCourante;
+                            buffTemp.put(bb);buffTemp.flip();
+                            WritePage(pageAlloue,buffTemp);
                             SaveState();
-                            return pageCourante; // Retour la page allouée
+                            return pageAlloue; // Retour la page allouée
                         } else {
                             // partie à modifier pour prendre en compte qu'on ne boucle plus
                             pageCourante = new PageId(pageCourante.getFileIdx()+1, 0); // c'est la pagecouante qu'on va renvoyer mais elle ne sera donc plus la page courante apres la sortie de la focntion
                             newFile(pageCourante.getFileIdx()); // création du nouveau fichier
                             pageAlloue = pageCourante;
+                            //Modification ajout d'octes null dans la page
+
+                            buffTemp.put(bb);buffTemp.flip();
+                            WritePage(pageAlloue,buffTemp);
                             SaveState();
                             return pageAlloue; // Retourne la page 0 du nouveau fichier
                         }
@@ -50,6 +60,8 @@ public class DiskManager {
                         newFile(0); // création du nouveau premier fichier
                         pageCourante = new PageId(0, 0);
                         pageAlloue =pageCourante;
+                        buffTemp.put(bb);buffTemp.flip();
+                        WritePage(pageAlloue,buffTemp);
                         SaveState();
                         return pageAlloue; // Retourne la page 0 du nouveau fichier
                     }
@@ -77,6 +89,8 @@ public class DiskManager {
                 RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
                 raf.seek(position); // Positionnement sur le premier octet de la page voulu
                 byte[] tabBytes = new byte[(int) dbConfig.getPagesize()]; // Création d'un tableau de byte pour les octets de la page
+                System.out.println("READ PAGE : pointeur raf fichier : "+raf.getFilePointer()+" longueur tabBytes : "+tabBytes.length);
+                System.out.println("READ PAGE : buffPosition "+buff.position());
                 raf.readFully(tabBytes); // Ajoute de tous les octets de la page dans le tableau de bytes
                 buff.put(tabBytes); // Rempli le buffer avec les valeurs du tableau de bytes
                 buff.flip(); // Revient à la position de depart du bytebuffer
@@ -85,7 +99,6 @@ public class DiskManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }else{
             System.out.println("Vous tentez de lireun fichier qui n'existe pas");
         }

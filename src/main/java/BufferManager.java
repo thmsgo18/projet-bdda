@@ -1,5 +1,6 @@
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class BufferManager {
                     System.out.println("La page ID : "+bufferMap.get(i).get(0)+" est deja présent dans le buffer "+i);
                     pinCount=  (Integer) bufferMap.get(i).get(2);
                     bufferMap.get(i).set(2, pinCount+1); // Incrémentation du pin count
+                    System.out.println("BufferManager buffer info :"+bufferMap.get(i)+ " "+bufferPool[i]);
                     diskManager.ReadPage(pageId,bufferPool[i]); // Strockage de la page dans le buffer
                     return bufferPool[i]; // retourne le buffer
                 }
@@ -55,19 +57,25 @@ public class BufferManager {
                     diskManager.WritePage((PageId) bufferMap.get(indiceBuffer).get(0),bufferPool[indiceBuffer]); // on inscrit les changements que le précédent buffer a fait sur le disque
                     bufferMap.get(indiceBuffer ).set(1,false); // on met le dirty à faux
                 }else{ // dirty = 0
-
                 }
                 bufferMap.get( indiceBuffer ).set(2,1); // Mise du pin count à 1
                 bufferMap.get(indiceBuffer ).set(0,pageId); // Rajout de la pageId correspondante dans la map.
                 diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // Strockage de la page dans le buffer
                 return bufferPool[indiceBuffer]; // Retourne le buffer
             }else{// Plus de frame dispo dans le buffer et aucune frame avec un pin count=0
+                System.out.println("ERREUR (futur exception) : Aucune pages n'est disponible");
+
                 return null;
             }
         } else{ // frameDispo n'est pas vide
-            int indiceBuffer = indicePolicy(framePC0); // Choix de l'indice du buffer à remplacer en fonction de la politique de remplacement
+            int indiceBuffer = indicePolicy(frameDispo); // Choix de l'indice du buffer à remplacer en fonction de la politique de remplacement
+            System.out.println("On est dans le cas où il y a des frames Dispo ( frameDispo empty ), framePC0 : "+ Arrays.toString(framePC0.toArray()) + " indiceBuffer : "+indiceBuffer);
+
+
             bufferMap.get( indiceBuffer ).set(2,1); // Mise du pin count à 1
             bufferMap.get(indiceBuffer ).set(0,pageId); // On ajout le pageId correspondante dans la map.
+            System.out.println("indiceBuffer : "+indiceBuffer+"  bufferMap.get (indiceBuffer)+ : " +bufferMap.get(indiceBuffer )+"buffPosition(indiceBuffer) : "+bufferPool[indiceBuffer].position());
+            System.out.println("buffer a retourner pour le getPage() : "+bufferPool[indiceBuffer]);
             diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // Strockage de la page dans le buffer
             return bufferPool[indiceBuffer]; // Retourne le buffer
 
@@ -77,10 +85,13 @@ public class BufferManager {
 
     public void FreePage(PageId pageId, boolean valDirty) { // valDirty => page modifié
         for(int i=0; i<bufferMap.size(); i++){
-            if (bufferMap.get(i).get(0).equals(pageId)) { // Trouve le buffer contenant la pageId
+            System.out.println("**************  "+bufferMap.get(i).get(0));
+            if (pageId.equals(bufferMap.get(i).get(0))) { // Trouve le buffer contenant la pageId
                 int pinCount =  (Integer) bufferMap.get(i).get(2);
                 bufferMap.get(i).set(1,valDirty);
                 bufferMap.get(i).set(2,pinCount-1);  // Décrémentation de pin count
+                bufferPool[i].position(0); // il faut remettre au premier octet
+                bufferPool[i].limit(bufferPool[i].capacity()); // Remets la limite à jour
             }
         }
     }
@@ -141,14 +152,14 @@ public class BufferManager {
         this.policy = policy;
     }
 
-    private int indicePolicy(List<Integer> framePC0){
+    private int indicePolicy(List<Integer> frames){
         // Pour LRU: on prends la première frame qui a un pin count =0
         if (getPolicy().equals("LRU")) {
-            return framePC0.get(0);
+            return frames.get(0);
         }
         else{
         // Pour MRU, on prends la dernière frame qui a un pin count =0
-            return framePC0.get(framePC0.size()-1);
+            return frames.get(frames.size()-1);
         }
         // plus tard si le code est bon, on rajoutera surement d'autres politiques pour prendre le bonus
     }

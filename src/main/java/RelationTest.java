@@ -1,3 +1,4 @@
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -9,16 +10,13 @@ import java.util.List;
 public class RelationTest {
 
     public static void main(String[] args) {
-        ColInfo cI1 = new ColInfo("Nom", "VARCHAR", 12);
+        ColInfo cI1 = new ColInfo("Nom", "CHAR", 12);
         ColInfo cI2 = new ColInfo("Prenom", "CHAR", 6);
         ColInfo cI3 = new ColInfo("Age", "INT", 4);
         DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
         DiskManager diskManager = new DiskManager(config);
         BufferManager bufferManager = new BufferManager(config,diskManager);
-        PageId headerPageId = ajouteHeaderPage(diskManager);/* test.ajouteHeaderPage(diskManager);
-                                                 !!!!!!!!!!!!!!!!!!! ajout d'une nouvelle header page, faire attention cette action est sauvegardé apres la fin du programme
-                                                                       dans le cas où l'on souhaite travailler sur la meme header page apres avoir deja appelé cette fonction, il faudra mettre directement la page correspondante, et non plus faire appel à la méthode car ça ne renverra pas les meme indice de page, car la page courante a changé
-                                                                    */
+        PageId headerPageId =ajouteHeaderPage(diskManager);
         List<ColInfo> listeColonnesInfo= new ArrayList<>();
         listeColonnesInfo.add(cI1);
         listeColonnesInfo.add(cI2);
@@ -26,13 +24,19 @@ public class RelationTest {
 
         Relation relation = new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo);
 
+            // Test, insérant des records, et des data pages (va insérer 20 records et 20 data pages , dans file config jjson j'ai mis une grande taille de page (4096) donc pour écrire les recrds on aura pas besoin de toutes ces pages créer mais seulement d'une)
+        InsertRecordTest(relation);
+
+            // fonction permettant de supprimer tous les fichiers (faites attention)
+        //SuprimeTousFichier(diskManager);
+
+
         //WriteRecordDataPageTest(relation);
 
         //GetRecordsInDataPageTest(relation);
 
         //GetDataPagesTest(relation);
 
-        InsertRecordTest(relation);
         //ByteBuffer bb = ByteBuffer.allocate((int) diskManager.getDbConfig().getPagesize());
         //diskManager.ReadPage(headerPageId,bb);
         //System.out.println("header page apres modif : "+Arrays.toString(bb.array()));
@@ -74,14 +78,24 @@ public class RelationTest {
 
     public static void InsertRecordTest(Relation relation){
         int i =0,nb=22;
-        while (i<3) {
-            relation.addDataPage();
+        while (i<20) {
+            System.out.println("Boucle InsertRecordTest : "+i);
+            try {
+                relation.addDataPage();
+            }catch(EOFException e){
+                e.printStackTrace();
+                System.out.println("ERRRRRRREEEEEEEEEUUUUUUUUUUUUUUUR");
+                System.out.println("Boucle InsertRecordTest erreur : "+i);
+            }
             ArrayList<Object> a2 = new ArrayList<>(Arrays.asList("Traore", "Ali", nb++));
             Record record = new Record(a2);
             relation.InsertRecord(record);
             System.out.println("GetAllRecord : " + relation.GetAllRecords());
             i++;
+            System.out.println("Boucle Fin InsertRecordTest : "+i);
+
         }
+        System.out.println("Je me suis barré du InsertRecordTest");
 
     }
 
@@ -130,10 +144,14 @@ public class RelationTest {
         PageId pageDispo;
         // On ajoute 2 pages de données au cas où.
 
-        relation.addDataPage();
-        relation.addDataPage();
-        relation.addDataPage();
-        relation.addDataPage();
+        try {
+            relation.addDataPage();
+            relation.addDataPage();
+            relation.addDataPage();
+            relation.addDataPage();
+        }catch(EOFException e){
+            e.printStackTrace();
+        }
         // On va la chercher ici
         pageDispo = relation.getFreeDataPageId(38); // On cherche un octet pouvant accueilir {Traore Ali 20}
         System.out.println("Page Dispo : "+pageDispo);
@@ -206,7 +224,6 @@ public class RelationTest {
 
     // Plus à jour, à ne pas réutiliser
     public void writeRecordToBufferTest() {
-
         System.out.println("\n******************** TEST WRITE RECORD TO BUFFER ************************\n");
         System.out.println("Pour l'exemple nous prendrons un record ayant tuple (20.353,10,'X',\"ALi\",\"Valentin\",\"Thomas\",\"Malik\") ");
         System.out.println("Cela nous permettra de tester l'ecriture des 4 types de données : int / float / char / string");
@@ -325,6 +342,35 @@ public class RelationTest {
         // Sans, on est à 61-7= 54
     }
 
+    public static void SuprimeTousFichier(DiskManager diskManager) {
+        // Spécifiez le chemin du répertoire contenant les fichiers à supprimer
+        String cheminFichier = diskManager.getDbConfig().getDbpath();// Initialisation du chemin du fichier
+        File directory = new File(cheminFichier);
+
+        // Vérifiez si le répertoire existe et s'il s'agit bien d'un dossier
+        if (directory.exists() && directory.isDirectory()) {
+            // Liste tous les fichiers dans le répertoire
+            File[] files = directory.listFiles();
+
+            // Vérifie que la liste de fichiers n'est pas vide
+            if (files != null) {
+                for (File file : files) {
+                    // Supprime chaque fichier
+                    if (file.isFile()) { // Vérifie que c'est bien un fichier, pas un sous-dossier
+                        if (file.delete()) {
+                            System.out.println("Fichier supprimé : " + file.getName());
+                        } else {
+                            System.out.println("Échec de suppression : " + file.getName());
+                        }
+                    }
+                }
+            } else {
+                System.out.println("Le répertoire est vide ou une erreur est survenue.");
+            }
+        } else {
+            System.out.println("Le répertoire spécifié n'existe pas ou n'est pas un dossier.");
+        }
+    }
 
 
 
