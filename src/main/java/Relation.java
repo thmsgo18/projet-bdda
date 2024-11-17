@@ -224,7 +224,7 @@ public class Relation {
             buffHeader.putInt(0,nombrePagesDonnees+1);
 
             System.out.println("RELATION : addDataPage : buff info : "+buffHeader);
-            System.out.println("RELATION : addDataPage : buff contenu : "+Arrays.toString(buffHeader.array()));
+            //System.out.println("RELATION : addDataPage : buff contenu : "+Arrays.toString(buffHeader.array()));
             bufferManager.FreePage(headerPageId,true); // on libére la page mais elle a été modifié
 
 
@@ -248,7 +248,7 @@ public class Relation {
 
         ByteBuffer buffHeader = bufferManager.GetPage(headerPageId);
         System.out.println("RELATION : getFreeDataPageId : buff info : "+buffHeader);
-        System.out.println("RELATION : getFreeDataPageId : buff contenu : "+Arrays.toString(buffHeader.array()));
+        //System.out.println("RELATION : getFreeDataPageId : buff contenu : "+Arrays.toString(buffHeader.array()));
         int i=0, n = buffHeader.getInt(0); // on récupère le nombre pages de données contenue dans le headerPage
 
         buffHeader.position(currentPosition); // On se positionne au premier octet qui décrit l’espace disponible de la première page de donnée
@@ -308,7 +308,7 @@ public class Relation {
         buffData.putInt(nombreSlot+1);  // on augmente de 1 le nombre de cases
         buffData.putInt(positionEcrireRecord+tailleRecord);  // on se décale de la taille du record par rapport à la position
         buffData.flip();
-        System.out.println("Page de données "+Arrays.toString(buffData.array()));
+        //System.out.println("Page de données "+Arrays.toString(buffData.array()));
         bufferManager.FreePage(pageId,true);
 
         // Il faut aussi modifier le nombre d'octet dispoible dans la case de page de données correspondate dans la headerPage
@@ -334,7 +334,7 @@ public class Relation {
             }
 
         }
-        System.out.println("Header Page"+Arrays.toString(buffHeader.array()));
+        //System.out.println("Header Page"+Arrays.toString(buffHeader.array()));
         bufferManager.FreePage(headerPageId,true);
         System.out.println("\n**************  FIN Ecriture d'un record dans la page de donnée   *********************");
 

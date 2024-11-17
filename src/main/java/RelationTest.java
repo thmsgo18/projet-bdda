@@ -220,12 +220,7 @@ public class RelationTest {
                 RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
                 raf.seek(position);  // Positionnement sur le premier octet de la page voulu
 
-                System.out.println(Arrays.toString(buff.array()));
-                System.out.println("RELATION TEST : AJOUTE HEADER PAGE :JUSTE AVANT buff.array() :"+buff);
-                raf.write(buff.array()); // Écriture du bytebuffer, en passant par un tableau, dans le fichier grace au raf
-                System.out.println("RELATION TEST : AJOUTE HEADER PAGE : APRES buff.array() et avant buff.flip :"+buff);
-
-                System.out.println("RELATION TEST : AJOUTE HEADER PAGE : APRES  buff.flip() :"+buff);
+                //System.out.println(Arrays.toString(buff.array()));
 
                 raf.seek(position);
                 System.out.println(raf.readInt());
@@ -236,7 +231,6 @@ public class RelationTest {
             }finally{
                 bufferManager.FreePage(headerPage,false);
             }
-
         }else{
             System.out.println("Vous tentez de lireun fichier qui n'existe pas");
         }

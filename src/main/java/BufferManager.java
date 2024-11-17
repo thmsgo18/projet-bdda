@@ -33,7 +33,7 @@ public class BufferManager {
                     pinCount=  (Integer) bufferMap.get(i).get(2);
                     bufferMap.get(i).set(2, pinCount+1); // Incrémentation du pin count
                     System.out.println("BUFFFER MANAGER :GET PAGE : buffer info :"+bufferMap.get(i)+ " "+bufferPool[i]);
-                    System.out.println("BUFFER MANAGER : GET PAGE : buffer contenu (donnée changer normalement) : "+Arrays.toString(bufferPool[i].array()));
+                    //System.out.println("BUFFER MANAGER : GET PAGE : buffer contenu (donnée changer normalement) : "+Arrays.toString(bufferPool[i].array()));
                     return bufferPool[i]; // retourne le buffer
                 }
             }
@@ -60,7 +60,7 @@ public class BufferManager {
                     diskManager.WritePage((PageId) bufferMap.get(indiceBuffer).get(0),bufferPool[indiceBuffer]); // on inscrit les changements que le précédent buffer a fait sur le disque
                     bufferMap.get(indiceBuffer ).set(1,false); // on met le dirty à faux
                     System.out.println("BUFFER MANAGER : GET PAGE : page modifier : "+bufferMap.get(indiceBuffer ).get(1));
-                    System.out.println("BUFFER MANAGER : GET PAGE : page modifier contenu (ça doit être les vrais valeurs ) : "+Arrays.toString(bufferPool[indiceBuffer].array()));
+                    //System.out.println("BUFFER MANAGER : GET PAGE : page modifier contenu (ça doit être les vrais valeurs ) : "+Arrays.toString(bufferPool[indiceBuffer].array()));
 
                 }else{ // dirty = false
                 }
