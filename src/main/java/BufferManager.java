@@ -182,8 +182,11 @@ public class BufferManager {
 
     public int getIndiceBufferMap(PageId pageId){ // retourne l'indice du buffer contenant la page indiqué en argumant
        for(int i =0; i<bufferMap.size(); i++){
-           if (pageId.egale((PageId) bufferMap.get(i).get(0))) {
-               return i;
+           System.out.println("i = "+i+" "+bufferMap.get(i));
+           if (bufferMap.get(i).get(0)!=null) {
+               if (pageId.egale((PageId) bufferMap.get(i).get(0))) {
+                   return i;
+               }
            }
        }
        return -1;

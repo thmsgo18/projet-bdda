@@ -271,8 +271,6 @@ public class Relation {
             }
         }
 
-
-
         // Vérifiaction du dirty de la header Page
         boolean dirtyHeaderPage= bufferManager.getDirtyPage(headerPageId);
 
