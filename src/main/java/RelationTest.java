@@ -16,7 +16,7 @@ public class RelationTest {
         DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
         DiskManager diskManager = new DiskManager(config);
         BufferManager bufferManager = new BufferManager(config,diskManager);
-        PageId headerPageId =ajouteHeaderPage(diskManager);
+        PageId headerPageId =ajouteHeaderPage(diskManager,bufferManager);
         List<ColInfo> listeColonnesInfo= new ArrayList<>();
         listeColonnesInfo.add(cI1);
         listeColonnesInfo.add(cI2);
@@ -24,11 +24,14 @@ public class RelationTest {
 
         Relation relation = new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo);
 
-            // Test, insérant des records, et des data pages (va insérer 20 records et 20 data pages , dans file config jjson j'ai mis une grande taille de page (4096) donc pour écrire les recrds on aura pas besoin de toutes ces pages créer mais seulement d'une)
+        /// Test, insérant des records, et des data pages (va insérer 20 records et 20 data pages , dans file config json j'ai mis une grande taille de page (4096) donc pour écrire les recrds on aura pas besoin de toutes ces pages créer mais seulement d'une)
+        /// Le test va aussi affiché les 20 tuples inséré dans le terminal à travers la méthode GetAllRecords
         InsertRecordTest(relation);
+        bufferManager.FlushBuffers(); /// "nettoie" les buffers, et mets à jour tous les fichiers bin doit toujours être fait à la fin
 
-            // fonction permettant de supprimer tous les fichiers (faites attention)
-        //SuprimeTousFichier(diskManager);
+
+        /// ATTENTION !!! fonction permettant de supprimer tous les fichiers bin (F0bin,F1bin,etc..) (à utiliser avec vigilance)
+            //Outil.SuprimeTousFichier(diskManager);
 
 
         //WriteRecordDataPageTest(relation);
@@ -37,46 +40,15 @@ public class RelationTest {
 
         //GetDataPagesTest(relation);
 
-        //ByteBuffer bb = ByteBuffer.allocate((int) diskManager.getDbConfig().getPagesize());
-        //diskManager.ReadPage(headerPageId,bb);
-        //System.out.println("header page apres modif : "+Arrays.toString(bb.array()));
-        /*
-        Record r1 = new Record();
-        ArrayList<Object> a1 = new ArrayList<>();
-        a1.add("Traore");
-        a1.add("Ali");
-        a1.add(20);
-
-        r1.setTuple(a1);
-
-
-        ByteBuffer bb = ByteBuffer.allocate(4000);
-
-
-        System.out.println("*************ECRITURE*************");
-
-        int n1= relation.writeRecordToBuffer(r1,bb,0);
-        System.out.println(n1+" octets ont été réserver à l'écriture dans le buffer");
-        for(int i=0;i<bb.limit();i++) {
-            System.out.print(bb.get()+" ");
-        }
-        System.out.println();
-        bb.flip();
-        System.out.println("*************LECTURE*************");
-
-
-
-        Record r2 = new Record();
-        int n2= relation.readFromBuffer(r2,bb,0);
-        System.out.println(n2+" octets ont été vraiment lu dans le buffer");
-        */
 
 
 
     }
 
 
-    public static void InsertRecordTest(Relation relation){
+    public static void InsertRecordTest(Relation relation) {
+        System.out.println("\n**************  DEBUT INSERT RECORD TEST *********************");
+
         int i =0,nb=22;
         while (i<20) {
             System.out.println("Boucle InsertRecordTest : "+i);
@@ -95,7 +67,8 @@ public class RelationTest {
             System.out.println("Boucle Fin InsertRecordTest : "+i);
 
         }
-        System.out.println("Je me suis barré du InsertRecordTest");
+        System.out.println("\n**************  FIN INSERT RECORD TEST *********************");
+
 
     }
 
@@ -185,37 +158,6 @@ public class RelationTest {
     }
 
 
-    public static PageId headerPageBidon(DiskManager diskManager){
-        System.out.println("**************  Implémentation de fausses valeurs dans un header page bidon  *********************");
-
-        PageId headerPage = ajouteHeaderPage(diskManager);
-        System.out.println(headerPage);
-        ByteBuffer buff = ByteBuffer.allocate((int) diskManager.getDbConfig().getPagesize());
-        diskManager.ReadPage(headerPage,buff);
-        System.out.println("header page avant modif : "+Arrays.toString(buff.array()));
-        buff.putInt(0,3);
-        int i=0;
-        int valeur =20;
-        int positionPlaceDisponible=16;
-        int fileV=0,pageV=0;
-        while(i<3){
-            buff.position(positionPlaceDisponible);
-            buff.putInt(valeur);
-            buff.position(buff.position()-12);
-            buff.putInt(fileV);
-            buff.putInt(pageV);
-            positionPlaceDisponible+=12;
-            pageV++;
-            valeur+=20;
-            i++;
-        }
-
-        buff.flip();
-        diskManager.WritePage(headerPage,buff);
-        System.out.println("header page apres modif : "+Arrays.toString(buff.array()));
-
-        return headerPage;
-    }
 
 
     public static void ajouteDataPageTest(DiskManager diskManager){
@@ -259,14 +201,13 @@ public class RelationTest {
     }
 
 
-    public static PageId ajouteHeaderPage(DiskManager diskManager) {
+    public static PageId ajouteHeaderPage(DiskManager diskManager,BufferManager bufferManager) {
         System.out.println("**************  Initialisation d'une headerPage   *********************");
         // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
-        ByteBuffer buff = ByteBuffer.allocate((int) diskManager.getDbConfig().getPagesize());
-        buff.putInt(0);  // Nombres de pages dans le headerPage
-        buff.flip();
-
         PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible
+
+        ByteBuffer buff =bufferManager.GetPage(headerPage);
+
         System.out.println("La header page est placé en "+headerPage);
 
         int position= (int) ((int) headerPage.getPageIdx()*diskManager.getDbConfig().getPagesize());
@@ -280,14 +221,20 @@ public class RelationTest {
                 raf.seek(position);  // Positionnement sur le premier octet de la page voulu
 
                 System.out.println(Arrays.toString(buff.array()));
-                buff.flip();
+                System.out.println("RELATION TEST : AJOUTE HEADER PAGE :JUSTE AVANT buff.array() :"+buff);
                 raf.write(buff.array()); // Écriture du bytebuffer, en passant par un tableau, dans le fichier grace au raf
+                System.out.println("RELATION TEST : AJOUTE HEADER PAGE : APRES buff.array() et avant buff.flip :"+buff);
+
+                System.out.println("RELATION TEST : AJOUTE HEADER PAGE : APRES  buff.flip() :"+buff);
+
                 raf.seek(position);
                 System.out.println(raf.readInt());
                 System.out.println(raf.readInt());
                 raf.close();
             }catch(IOException e){
                 e.printStackTrace();
+            }finally{
+                bufferManager.FreePage(headerPage,false);
             }
 
         }else{
@@ -340,36 +287,6 @@ public class RelationTest {
         System.out.println(reponseLecture+" octets ont été lu du buffer"); // À préciser qu'on y inclus les bitTypes (Rappel : un bitType par element)
         // Avec les bitsType, on est à 61
         // Sans, on est à 61-7= 54
-    }
-
-    public static void SuprimeTousFichier(DiskManager diskManager) {
-        // Spécifiez le chemin du répertoire contenant les fichiers à supprimer
-        String cheminFichier = diskManager.getDbConfig().getDbpath();// Initialisation du chemin du fichier
-        File directory = new File(cheminFichier);
-
-        // Vérifiez si le répertoire existe et s'il s'agit bien d'un dossier
-        if (directory.exists() && directory.isDirectory()) {
-            // Liste tous les fichiers dans le répertoire
-            File[] files = directory.listFiles();
-
-            // Vérifie que la liste de fichiers n'est pas vide
-            if (files != null) {
-                for (File file : files) {
-                    // Supprime chaque fichier
-                    if (file.isFile()) { // Vérifie que c'est bien un fichier, pas un sous-dossier
-                        if (file.delete()) {
-                            System.out.println("Fichier supprimé : " + file.getName());
-                        } else {
-                            System.out.println("Échec de suppression : " + file.getName());
-                        }
-                    }
-                }
-            } else {
-                System.out.println("Le répertoire est vide ou une erreur est survenue.");
-            }
-        } else {
-            System.out.println("Le répertoire spécifié n'existe pas ou n'est pas un dossier.");
-        }
     }
 
 

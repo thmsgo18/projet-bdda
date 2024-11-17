@@ -11,34 +11,39 @@ public class DiskManagerTests {
         DBConfig config;
         config = DBConfig.LoadDBConfig("src/main/json/file-config.json"); // Création d'un objet DBconfig avec la config d'un fichier json
         DiskManager dM = new DiskManager(config); // Création d'un DiskManager
-       /* Normalement a chaque fois que vous allez executez ce programme, une page sera alloué, si vous n'avez pas de fichier 0
-          ça va vous en créer un en allouant la 1er page.
-          Le programme va écrire la lettre Z pour remplir la page (vous pouvez changer la la lettre si vous voulez
-          À chaque execution vous pouvez voir dans dm.save.json que pageCourante change, elle correspond à la derniere pageID alloué
-        */
-
-        // je vous conseille pour le test de supprimer vos précédents fichier.bin
-        // et de bien vérifier que la pageCourante est [0,0] dans dm.save.json pour une bonne initialisation
 
 
 
-       PageId p=dM.AllocPage();
+       // Tests pour ajouter 1000 pages de données et les remplir de caractères
+        TestAllocPage(dM,1000);
+        //dM.DeallocPage(new PageId(0,1));
 
-        //DiskManagerTests.TestLoadState(dM);
-        ByteBuffer buff=ByteBuffer.allocate((int)dM.getDbConfig().getPagesize());
 
-        for(int i=0;i<3;i++){
-           buff.putChar('A');
-        }
-        dM.WritePage(p,buff);
-        affichagePage(dM,p);
+        // ATTENTION !!! fonction permettant de supprimer tous les fichiers (à utiliser seulement pour les tests générant trop de fichier,
+        //Outil.SuprimeTousFichier(diskManager);
+
+
+
        // Noter que vous pouvez tester de desalloué une page apres avoir alloués quelques pages (!!! ON NE DESALOUE PAS UNE PAGE QUI N'A JAMAIS ÉTÉ ALLOUÉ !!!)
 
     }
 
-    public static void TestAllocPage(DiskManager dm){
-        System.out.println("************* Test de AllocPage *************");
-        dm.AllocPage();
+    public static void TestAllocPage(DiskManager dM,int n){
+        System.out.println("************* DEBUT Test de AllocPage *************");
+
+        System.out.println("On va pour ce test alloué 1000 pages de données, où l'on va écrire pour remplir de caractère T chaque page");
+
+        ByteBuffer buff=ByteBuffer.allocate((int)dM.getDbConfig().getPagesize());
+        for(int i=0;i<dM.getDbConfig().getPagesize()/2;i++){
+            buff.putChar('Y');
+        }
+
+        for(int i =0;i<n;i++){
+            dM.WritePage(dM.AllocPage(),buff);
+            buff.flip();
+        }
+        System.out.println("************* FIN Test de AllocPage *************");
+
     }
 
     public static void TestDeallocPage(DiskManager dm){

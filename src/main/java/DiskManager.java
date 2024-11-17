@@ -28,13 +28,13 @@ public class DiskManager {
 
 
             if(pagesDesaloc.isEmpty()){ // Vérification de si la liste des pages desalloués est vide
-                System.out.println("La liste des pages alloués est vide ");
+                System.out.println("DISK MANAGER : ALLOC PAGE : La liste des pages alloués est vide ");
                 if (repertoire.exists()){ // Verification de l'existance du repertoire
-                    System.out.println("Le repertoire existe");
+                    System.out.println("DISK MANAGER : ALLOC PAGE : Le repertoire existe");
 
                     if(fichier.exists()) { // Vérification
-                        System.out.println("Le fichier " + pageCourante.getFileIdx() + " existe");
-                        System.out.println("La longueur du fichier" + pageCourante.getFileIdx() + " est  : " + fichier.length());
+                        System.out.println("DISK MANAGER : ALLOC PAGE : Le fichier " + pageCourante.getFileIdx() + " existe");
+                        System.out.println("DISK MANAGER : ALLOC PAGE : La longueur du fichier" + pageCourante.getFileIdx() + " est  : " + fichier.length());
 
                         if (currentSizeTotalPages+ dbConfig.getPagesize() <= dbConfig.getFilesize()) { // vérifie qu'il y a de la place dans un fichier pour crer une page
                             pageCourante = new PageId(pageCourante.getFileIdx(), pageCourante.getPageIdx() + 1);
@@ -66,12 +66,12 @@ public class DiskManager {
                         return pageAlloue; // Retourne la page 0 du nouveau fichier
                     }
                 }else{
-                    System.out.println("Le repertoire n'existe pas");
+                    System.out.println("DISK MANAGER : ALLOC PAGE : Le repertoire n'existe pas");
                 }
 
             }
             else{
-                System.out.println(" La liste des pages désalloués est non-vide"); // Pas besoin de créer une page, il existe deja une page de disponible
+                System.out.println("DISK MANAGER : ALLOC PAGE : La liste des pages désalloués est non-vide"); // Pas besoin de créer une page, il existe deja une page de disponible
                 pageAlloue =pagesDesaloc.remove(0); // Prends un élément des pages libres pour le retourner
                 SaveState();
                 return pageAlloue;
@@ -89,8 +89,8 @@ public class DiskManager {
                 RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
                 raf.seek(position); // Positionnement sur le premier octet de la page voulu
                 byte[] tabBytes = new byte[(int) dbConfig.getPagesize()]; // Création d'un tableau de byte pour les octets de la page
-                System.out.println("READ PAGE : pointeur raf fichier : "+raf.getFilePointer()+" longueur tabBytes : "+tabBytes.length);
-                System.out.println("READ PAGE : buffPosition "+buff.position());
+                System.out.println("DISK MANAGER : READ PAGE : pointeur raf fichier : "+raf.getFilePointer()+" longueur tabBytes : "+tabBytes.length);
+                System.out.println("DISK MANAGER : READ PAGE : buffPosition "+buff.position());
                 raf.readFully(tabBytes); // Ajoute de tous les octets de la page dans le tableau de bytes
                 buff.put(tabBytes); // Rempli le buffer avec les valeurs du tableau de bytes
                 buff.flip(); // Revient à la position de depart du bytebuffer
@@ -100,7 +100,7 @@ public class DiskManager {
                 e.printStackTrace();
             }
         }else{
-            System.out.println("Vous tentez de lireun fichier qui n'existe pas");
+            System.out.println("DISK MANAGER : READ PAGE : Vous tentez de lire un fichier qui n'existe pas");
         }
     }
 
@@ -123,12 +123,18 @@ public class DiskManager {
         String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à désalouer
         File fichier = new File(cheminFichier); // Création d'un object fichier
         long position = dbConfig.getPagesize()*pageId.getPageIdx(); // Calcule de la position en octet de debut de la page
+        ByteBuffer buffTemp = ByteBuffer.allocate( (int) dbConfig.getPagesize());  //
+        byte [] bb = new byte[(int)dbConfig.getPagesize()]; //
+
         if(!pagesDesaloc.contains(pageId)){  // vérifie si la page n'est pas deja désalouée
+            buffTemp.put(bb);buffTemp.flip();
+            WritePage(pageId,buffTemp);
+
             pagesDesaloc.add(pageId);
-            System.out.println("La pageID : "+pageId.toString()+" a été correctement désalloué");
+            System.out.println("DISK MANAGER : DEALLOCPAGE : La pageID : "+pageId.toString()+" a été correctement désalloué");
             SaveState();
         }else{
-            System.out.println("La pageID : "+pageId.toString()+" est deja desalloué");
+            System.out.println("DISK MANAGER : DEALLOCPAGE : La pageID : "+pageId.toString()+" est deja desalloué");
         }
     }
 
@@ -159,7 +165,7 @@ public class DiskManager {
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
             }catch (IOException e) {
-            System.out.println("Le fichier n'a pas pu être sauvegarder");
+            System.out.println("DISK MANAGER : SAVE STATE : Le fichier n'a pas pu être sauvegarder");
             e.printStackTrace();
 
         }
@@ -203,9 +209,9 @@ public class DiskManager {
         File nouveauFichier = new File(dbConfig.getDbpath()+"/F"+numeroFichier+".bin"); // Chemin du fichier à désalouer
             try {
                 if (nouveauFichier.createNewFile()) { // Création du fichier
-                    System.out.println("Création du fichier : " + nouveauFichier.getName());
+                    System.out.println("DISK MANAGER : NEW FILE : Création du fichier : " + nouveauFichier.getName());
                 } else {
-                    System.out.println("La création du fichier n'as pas fonctionné, existe t'il deja ?"); // Error
+                    System.out.println("DISK MANAGER : NEW FILE : La création du fichier n'as pas fonctionné, existe t'il deja ?"); // Error
                 }
             }catch(IOException e){
                 e.printStackTrace();

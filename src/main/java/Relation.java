@@ -191,7 +191,7 @@ public class Relation {
 
     public void addDataPage() throws EOFException {
 
-        System.out.println("**************  AJout d'une page de données   *********************");
+        System.out.println("\n**************  Debut AJout d'une page de données   *********************");
 
         int taillePage =(int) diskManager.getDbConfig().getPagesize();
         ByteBuffer buffHeader = bufferManager.GetPage(headerPageId);
@@ -202,14 +202,16 @@ public class Relation {
 
         if ( ( indice_dernierOctetLecture + 12 ) >taillePage ){ //  l'emplacement de l'octet où l'on peut écrire une case de page + 12 (la taille que fais les 8 octets d'une pageId + 4 octets pour le bombre d'octets disponible dans la page de donnée)
             System.out.println("ERREUR : Il n'y a plus assez de place dans la header page pour accueilir une nouvelle page de donnée");
-            bufferManager.FreePage(headerPageId,false);
+            boolean dirtyPage = bufferManager.getDirtyPage(headerPageId);
+
+            bufferManager.FreePage(headerPageId,dirtyPage);
 
         }else{
 
             // PARTIE MISE À JOUR DE LA HEADER PAGE
 
             PageId nouvellePageDonnee  = diskManager.AllocPage(); // allocation de la nouvelle page de donnée
-            System.out.println("TEST : On a alloué la page de données à l'emplacement"+nouvellePageDonnee);
+            System.out.println("TEST addDataPage: On a alloué la page de données à l'emplacement "+nouvellePageDonnee);
 
 
             buffHeader.position(indice_dernierOctetLecture); // On se met à la position du dernier octet avec une valeur
@@ -220,18 +222,24 @@ public class Relation {
             buffHeader.putInt(octetDisponibles);
             int nombrePagesDonnees= buffHeader.getInt(0);
             buffHeader.putInt(0,nombrePagesDonnees+1);
-            diskManager.WritePage(headerPageId,buffHeader); // on remplace la headerpage par la header page mis à jour
+
+            System.out.println("RELATION : addDataPage : buff info : "+buffHeader);
+            System.out.println("RELATION : addDataPage : buff contenu : "+Arrays.toString(buffHeader.array()));
             bufferManager.FreePage(headerPageId,true); // on libére la page mais elle a été modifié
 
 
-
         }
+
+
+        System.out.println("**************  Fin AJout d'une page de données   *********************");
 
 
 
     }
 
     public PageId getFreeDataPageId(int sizeRecord){
+        System.out.println("\n**************  Debut get free data pageId   *********************");
+
         PageId pageDisponible=null;
         boolean pageTrouve =false;
         int currentPosition =12;
@@ -239,6 +247,8 @@ public class Relation {
         int octetNecessaireInsertion = sizeRecord+8; // Il faut tenir compte de la taille du record mais en plus 4 octets pour la position du record + 4 octet pour la taille du record
 
         ByteBuffer buffHeader = bufferManager.GetPage(headerPageId);
+        System.out.println("RELATION : getFreeDataPageId : buff info : "+buffHeader);
+        System.out.println("RELATION : getFreeDataPageId : buff contenu : "+Arrays.toString(buffHeader.array()));
         int i=0, n = buffHeader.getInt(0); // on récupère le nombre pages de données contenue dans le headerPage
 
         buffHeader.position(currentPosition); // On se positionne au premier octet qui décrit l’espace disponible de la première page de donnée
@@ -259,8 +269,18 @@ public class Relation {
                 buffHeader.position(currentPosition);
             }
         }
-        bufferManager.FreePage(headerPageId,false);
-        System.out.println("getFreeDataPageId  : Page trouvé : "+pageDisponible);
+
+
+
+        // Vérifiaction du dirty de la header Page
+        boolean dirtyHeaderPage= bufferManager.getDirtyPage(headerPageId);
+
+
+        bufferManager.FreePage(headerPageId,dirtyHeaderPage);
+        System.out.println("RELATION : getFreeDataPageId  : Page trouvé : "+pageDisponible);
+
+        System.out.println("\n**************  Debut get free data pageId   *********************");
+
         return pageDisponible; // on retourne la page trouvé ou null si aucune n'a été trouvé
     }
 
@@ -289,7 +309,6 @@ public class Relation {
         buffData.putInt(positionEcrireRecord+tailleRecord);  // on se décale de la taille du record par rapport à la position
         buffData.flip();
         System.out.println("Page de données "+Arrays.toString(buffData.array()));
-        diskManager.WritePage(pageId,buffData); // On réecrit la page avec le contenu mise à jour
         bufferManager.FreePage(pageId,true);
 
         // Il faut aussi modifier le nombre d'octet dispoible dans la case de page de données correspondate dans la headerPage
@@ -310,12 +329,12 @@ public class Relation {
                System.out.println("Octet Restant desormais: " +(octetRestantDispo - tailleRecord -8));
             }
             i++;
-            buffHeader.position(buffHeader.position()+4);
+            if(buffHeader.position()+4 < buffHeader.capacity()){
+                buffHeader.position(buffHeader.position()+4);
+            }
 
         }
-        buffHeader.flip();
         System.out.println("Header Page"+Arrays.toString(buffHeader.array()));
-        diskManager.WritePage(headerPageId,buffHeader);
         bufferManager.FreePage(headerPageId,true);
         System.out.println("\n**************  FIN Ecriture d'un record dans la page de donnée   *********************");
 
@@ -326,8 +345,8 @@ public class Relation {
         int nombreSlot; // le nombre de slot ,utile pour la boucle
         Record record ;
         ArrayList<Record> listeRecord = new ArrayList<>();
-        ByteBuffer buffData = ByteBuffer.allocate( (int) diskManager.getDbConfig().getPagesize());
-        diskManager.ReadPage(pageId,buffData);
+
+        ByteBuffer buffData = bufferManager.GetPage(pageId);
         buffData.position( (int) diskManager.getDbConfig().getPagesize() -8);
         nombreSlot = buffData.getInt();
         int currentPosition = buffData.position()-12; // la position de la première case indiquant la position du premier record à prendre
@@ -347,13 +366,18 @@ public class Relation {
             i++;
         }
 
+        boolean dirtyDataPage = bufferManager.getDirtyPage(pageId);
+
+
+
+        bufferManager.FreePage(pageId,dirtyDataPage);
+
         return listeRecord;
     }
 
     public List<PageId> getDataPages(){
         List<PageId> dataPages = new ArrayList<>();
-        ByteBuffer buffHeader = ByteBuffer.allocate( (int) diskManager.getDbConfig().getPagesize() );
-        diskManager.ReadPage(headerPageId, buffHeader);
+        ByteBuffer buffHeader = bufferManager.GetPage(headerPageId);
         int nbDataPage = buffHeader.getInt();
         buffHeader.position(4); // Je pourrais rien mettre à la place de 4 mais c'est pur que ce soit plus facile à debugg
         for(int i=0;i<nbDataPage;i++) {
@@ -363,6 +387,9 @@ public class Relation {
             dataPages.add(pageId);
             buffHeader.position(buffHeader.position()+4);
         }
+
+        boolean dirtyPage = bufferManager.getDirtyPage(headerPageId);
+        bufferManager.FreePage(headerPageId,dirtyPage);
         return dataPages;
     }
 
@@ -381,19 +408,22 @@ public class Relation {
             rid =writeRecordToDataPage(record,pageDispo);
             System.out.println("Insertion du record réussi !!  "+rid);
         }else{
-            System.out.println(" !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible !!!!");
+            System.out.println(" !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert Record) !!!!");
         }
         return rid; // retour du rid
     }
 
 
     public List<Record> GetAllRecords(){
+        System.out.println("\n**************  DEBUT Get All Records   *********************");
+
         List<Record> records = new ArrayList<>();
         List<PageId> listePageDonnees = getDataPages(); // ON obtient l'ensemble des pages de données de la relation contenu dans la header page
-
+        System.out.println("RELATION : Get All Records : liste des pages disponibles : "+getDataPages());
         for (PageId pageDonnee: listePageDonnees) { // On parcourt l'ensemble des pages afin de remplir la liste de records liés à chacune des pages de données
             records.addAll(getRecordsInDataPage(pageDonnee));
         }
+        System.out.println("\n**************  Fin Get All Records   *********************");
         return records;
     }
 

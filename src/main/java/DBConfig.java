@@ -37,7 +37,7 @@ public class DBConfig{
             long filesizeMax = js.getLong("filesize");
             int bm_buffercount = js.getInt("bm_buffercount");
             String bm_policy = js.getString("bm_policy");
-            return new DBConfig(js.getString("dbpath"),pagesizeMax,filesizeMax, bm_buffercount,bm_policy);//recupere la valeur de la clé dbpath et retourne une nouvelle instance de DBConfig.
+            return new DBConfig(path,pagesizeMax,filesizeMax, bm_buffercount,bm_policy);//recupere la valeur de la clé dbpath et retourne une nouvelle instance de DBConfig.
 
 
         }catch(IOException io){ //Si fichier marche pas donc retourner nul
