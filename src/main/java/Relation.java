@@ -48,21 +48,21 @@ public class Relation {
         buff.position(pos);
         for( Object element : r.getTuple()){
             save = buff.position();
-            if ( element instanceof String){
-                System.out.println("VERIF : L'element "+element+" est une chaine de caractère ");
+            if (element instanceof String){
+                //System.out.println("VERIF : L'element "+element+" est une chaine de caractère ");
                 for( char c : element.toString().toCharArray() ) {
-                    buff.putChar(c);
+                buff.putChar(c);
                 }
             }else if( element instanceof Integer){
-                System.out.println("VERIF : L'element "+element+" est un int ");
+                //System.out.println("VERIF : L'element "+element+" est un int ");
                 buff.putInt((Integer)element);
             }
             else if( element instanceof Float){
                 buff.putFloat((Float)element);
-                System.out.println("VERIF : L'element "+element+" est un float ");
+                //System.out.println("VERIF : L'element "+element+" est un float ");
 
             }else if (element instanceof Character){
-                System.out.println("VERIF : l'élément est un char ");
+                //System.out.println("VERIF : l'élément est un char ");
                 buff.putChar((Character)element);
             }
         }
@@ -124,7 +124,8 @@ public class Relation {
                     char caractere= buff.getChar();
                     if((caractere!='\0') ) {
                         sb.append(caractere);
-                        System.out.println("VERIF : boucle formation de la chaine de caractère = " + sb.toString());}
+                        //System.out.println("VERIF : boucle formation de la chaine de caractère = " + sb.toString());
+                    }
                 }
 
                 record.ajouteValeurTuple(sb.toString()); // on ajoute le String complet

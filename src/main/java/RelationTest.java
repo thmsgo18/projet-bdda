@@ -51,7 +51,7 @@ public class RelationTest {
 
         int i =0,nb=22;
         while (i<20) {
-            System.out.println("Boucle InsertRecordTest : "+i);
+            //System.out.println("Boucle InsertRecordTest : "+i);
             try {
                 relation.addDataPage();
             }catch(EOFException e){
@@ -62,11 +62,11 @@ public class RelationTest {
             ArrayList<Object> a2 = new ArrayList<>(Arrays.asList("Traore", "Ali", nb++));
             Record record = new Record(a2);
             relation.InsertRecord(record);
-            System.out.println("GetAllRecord : " + relation.GetAllRecords());
             i++;
-            System.out.println("Boucle Fin InsertRecordTest : "+i);
+            //System.out.println("Boucle Fin InsertRecordTest : "+i);
 
         }
+        System.out.println("GetAllRecord : " + relation.GetAllRecords());
         System.out.println("\n**************  FIN INSERT RECORD TEST *********************");
 
 

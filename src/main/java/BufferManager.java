@@ -29,10 +29,10 @@ public class BufferManager {
 
             if (bufferMap.get(i).get(0)!=null) { // Page trouvée dans le tableau de buffer
                 if(pageId.egale((PageId) bufferMap.get(i).get(0))){
-                    System.out.println("BUFFER MANAGER : GET PAGE : La page ID : "+bufferMap.get(i).get(0)+" est deja présent dans le buffer "+i);
+                    //System.out.println("BUFFER MANAGER : GET PAGE : La page ID : "+bufferMap.get(i).get(0)+" est deja présent dans le buffer "+i);
                     pinCount=  (Integer) bufferMap.get(i).get(2);
                     bufferMap.get(i).set(2, pinCount+1); // Incrémentation du pin count
-                    System.out.println("BUFFFER MANAGER :GET PAGE : buffer info :"+bufferMap.get(i)+ " "+bufferPool[i]);
+                    //System.out.println("BUFFFER MANAGER :GET PAGE : buffer info :"+bufferMap.get(i)+ " "+bufferPool[i]);
                     //System.out.println("BUFFER MANAGER : GET PAGE : buffer contenu (donnée changer normalement) : "+Arrays.toString(bufferPool[i].array()));
                     return bufferPool[i]; // retourne le buffer
                 }
@@ -52,14 +52,14 @@ public class BufferManager {
             if(!framePC0.isEmpty()){ // Vérification de la présence d'au moins un buffer avec un pin count =O
                 System.out.println("$$$$$$$$$$$$$$$$$ PCO a des éléments $$$$$$$$$$$$$$$$$$$$$");
                 int indiceBuffer= indicePolicy(framePC0); // Indice de la page à remplacer selon la politique
-                System.out.println("$$$$$$$$$$$$$$$$$ indice element PCO a enlever "+indiceBuffer+" $$$$$$$$$$$$$$$$$$$$$" +bufferMap.get(indiceBuffer)+"$$$$"+"le buffer en question"+ Arrays.toString(bufferPool[indiceBuffer].array()));
+                //System.out.println("$$$$$$$$$$$$$$$$$ indice element PCO a enlever "+indiceBuffer+" $$$$$$$$$$$$$$$$$$$$$" +bufferMap.get(indiceBuffer)+"$$$$"+"le buffer en question"+ Arrays.toString(bufferPool[indiceBuffer].array()));
 
                 if ( bufferMap.get(indiceBuffer ).get(1).equals(true) ){ // Vérification du buffer pour voir s'il a été modifer (dirty à 1)
                     // dirty = true
 
                     diskManager.WritePage((PageId) bufferMap.get(indiceBuffer).get(0),bufferPool[indiceBuffer]); // on inscrit les changements que le précédent buffer a fait sur le disque
                     bufferMap.get(indiceBuffer ).set(1,false); // on met le dirty à faux
-                    System.out.println("BUFFER MANAGER : GET PAGE : page modifier : "+bufferMap.get(indiceBuffer ).get(1));
+                    //System.out.println("BUFFER MANAGER : GET PAGE : page modifier : "+bufferMap.get(indiceBuffer ).get(1));
                     //System.out.println("BUFFER MANAGER : GET PAGE : page modifier contenu (ça doit être les vrais valeurs ) : "+Arrays.toString(bufferPool[indiceBuffer].array()));
 
                 }else{ // dirty = false
@@ -69,13 +69,13 @@ public class BufferManager {
                 diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // Strockage de la page dans le buffer
                 return bufferPool[indiceBuffer]; // Retourne le buffer
             }else{// Plus de frame dispo dans le buffer et aucune frame avec un pin count=0
-                System.out.println("ERREUR (futur exception) : BUFFER MANAGER : GET PAGE : Aucune pages n'est disponible (plus de frames disponibles ni aucunes frames avec un pin count = 0");
+                //System.out.println("ERREUR (futur exception) : BUFFER MANAGER : GET PAGE : Aucune pages n'est disponible (plus de frames disponibles ni aucunes frames avec un pin count = 0");
 
                 return null;
             }
         } else{ // frameDispo n'est pas vide
             int indiceBuffer = indicePolicy(frameDispo); // Choix de l'indice du buffer à remplacer en fonction de la politique de remplacement
-            System.out.println("BUFFER MANAGER : GET PAGE : On est dans le cas où il y a des frames Dispo ( frameDispo empty ), frameDispo : "+ Arrays.toString(frameDispo.toArray()) + " indiceBuffer : "+indiceBuffer);
+            //System.out.println("BUFFER MANAGER : GET PAGE : On est dans le cas où il y a des frames Dispo ( frameDispo empty ), frameDispo : "+ Arrays.toString(frameDispo.toArray()) + " indiceBuffer : "+indiceBuffer);
 
 
             bufferMap.get( indiceBuffer ).set(2,1); // Mise du pin count à 1
@@ -92,10 +92,10 @@ public class BufferManager {
     public void FreePage(PageId pageId, boolean valDirty) { // valDirty => page modifié
 
         for(int i=0; i<bufferMap.size(); i++){
-            System.out.println("**************  "+bufferMap.get(i).get(0));
+           //System.out.println("**************  "+bufferMap.get(i).get(0));
             if (bufferMap.get(i).get(0)!=null) {
                 if (pageId.egale((PageId) bufferMap.get(i).get(0))) { // Trouve le buffer contenant la pageId
-                    System.out.println("BUFFER MANAGER : FREE PAGE : la pageID "+pageId+" a été trouvé pour être libérer");
+                    //System.out.println("BUFFER MANAGER : FREE PAGE : la pageID "+pageId+" a été trouvé pour être libérer");
                     int pinCount =  (Integer) bufferMap.get(i).get(2);
                     bufferMap.get(i).set(1,valDirty);
                     bufferMap.get(i).set(2,pinCount-1);  // Décrémentation de pin count
@@ -194,12 +194,12 @@ public class BufferManager {
         int indicePage =getIndiceBufferMap(pageId);
         boolean rep =(boolean) bufferMap.get(indicePage).get(1) ;
 
-        if(rep){
+        /*if(rep){
             System.out.println("RELATION : BUffER MANAGER : GET DIRTY PAGE : le dirty de la header page était anciennement true, donc il restera true");
         }else{
             System.out.println("RELATION : GET FREE DATA PAGE ID : GET DIRTY PAGE : le dirty de la header page était anciennement false, il est donc pas nécessaire de le mettre à true, il restera à false");
 
-        }
+        }*/
         return rep;
     }
 
