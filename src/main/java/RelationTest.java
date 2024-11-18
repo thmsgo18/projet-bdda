@@ -63,10 +63,11 @@ public class RelationTest {
             Record record = new Record(a2);
             relation.InsertRecord(record);
             i++;
-            //System.out.println("Boucle Fin InsertRecordTest : "+i);
+            System.out.println("Boucle Fin InsertRecordTest : "+i);
+            System.out.println("GetAllRecord : " + relation.GetAllRecords());
+
 
         }
-        System.out.println("GetAllRecord : " + relation.GetAllRecords());
         System.out.println("\n**************  FIN INSERT RECORD TEST *********************");
 
 
