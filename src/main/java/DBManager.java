@@ -86,10 +86,14 @@ public class DBManager {
                 bfw.write("        \""+key+"\":{"); // ouverture accolade nom de base donnée
                 bfw.newLine();
                 for(Relation r : this.databases.get(key).getTables()){
-                    bfw.write("                 \"Nom relation\":{" + r.getNomRelation());
-                    bfw.write("                     \"Header page\": " + r.getHeaderPageId().toString());
-                    bfw.write("                     \"Nombre colonnes\": " + r.getNbColonnes());
-                    bfw.write("                     \"Colonnes\": " + r.getColonnes().toString());
+                    bfw.write("                 \"" + r.getNomRelation()+"\":");
+                    bfw.newLine();
+                    bfw.write("                     \"Header page\": " + r.getHeaderPageId().toString()+",");
+                    bfw.newLine();
+                    bfw.write("                     \"Nombre colonnes\": " + r.getNbColonnes()+",");
+                    bfw.newLine();
+                    bfw.write("                     \"Colonnes\": " + r.getColonnes().toString()+",");
+                    bfw.newLine();
                     bfw.write("                 }"); // fermeture accolade Nom relation
                     bfw.newLine();
                 }
@@ -97,6 +101,7 @@ public class DBManager {
                 bfw.newLine(); // revient à la ligne
             }
             bfw.write("     }"); // fermeture accolade Base de données
+            bfw.newLine();
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
         }catch (IOException e) {
