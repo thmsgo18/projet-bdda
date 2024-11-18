@@ -34,19 +34,32 @@ public class DBManager {
     }
 
     public void RemoveDatabase (String nomBdd){
+        for(String key : this.databases.keySet()){
+            if(nomBdd.equals(key)){
+                this.databases.remove(key);
+            }
+        }
 
     }
 
     public void RemoveTablesFromCurrentDatabase (){
+        this.databases.remove(this.courantDatabase);
 
     }
 
     public void RemoveDatabases (){
+        this.databases = null;
 
     }
 
     public void ListDatabases (){
-
+        for(String key : this.databases.keySet()){
+            System.out.println("Nom de la base de données : "+key);
+            System.out.println("Voici la liste des données de la base de données : ");
+            for(Relation r: this.databases.get(key).getTables()){
+                System.out.println(r.toString());
+            }
+        }
     }
 
     public void ListTablesInCurrentDatabase (){
