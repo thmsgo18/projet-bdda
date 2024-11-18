@@ -10,17 +10,14 @@ import java.util.Scanner;
 public class DBManagerTest {
 
     public static void main(String [] args){
-        DBConfig config;
-        config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DiskManager diskManager = new DiskManager(config);
         DBManager dbmanag = new DBManager(config);
         dbmanag.CreateDatabase("Thomas");
-        dbmanag.SetCurrentDatabase("Ali");
         dbmanag.SetCurrentDatabase("Thomas");
         ColInfo cI1 = new ColInfo("Nom", "CHAR", 12);
         ColInfo cI2 = new ColInfo("Prenom", "CHAR", 6);
         ColInfo cI3 = new ColInfo("Age", "INT", 4);
-        DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
-        DiskManager diskManager = new DiskManager(config);
         BufferManager bufferManager = new BufferManager(config,diskManager);
         PageId headerPageId =ajouteHeaderPage(diskManager,bufferManager);
         List<ColInfo> listeColonnesInfo= new ArrayList<>();
@@ -28,6 +25,7 @@ public class DBManagerTest {
         listeColonnesInfo.add(cI2);
         listeColonnesInfo.add(cI3);
         dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo));
+        dbmanag.SaveState();
     }
 
 

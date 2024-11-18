@@ -22,7 +22,7 @@ public class DBManager {
         if (this.databases.containsKey(nomBdd)){
             this.courantDatabase = nomBdd;
         }else{
-            System.out.println("ERREUR : DBMANAGER : SET CURRENT DATABASE : Le nom de la DataBase n'est pas contenue dans la liste des Databases");
+            System.out.println("ERREUR : DBMANAGER : SET_CURRENT_DATABASE : Le nom de la DataBase n'est pas contenue dans la liste des Databases");
         }
     }
 
@@ -40,7 +40,7 @@ public class DBManager {
             tablesDb.remove(this.databases.get(this.courantDatabase).getTable(nomTable));
             this.databases.get(this.courantDatabase).setTables(tablesDb);
         }else{
-            System.out.println("ERREUR : DBMANAGER :  La table n'existe pas dans la Database courante");
+            System.out.println("ERREUR : DBMANAGER : REMOVE_TABLE_FROM_CURRENT_DATABASE La table n'existe pas dans la Database courante");
         }
     }
 
