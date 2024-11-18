@@ -164,7 +164,7 @@ public class DiskManager {
             bfw.newLine(); // revient à la ligne
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
-            }catch (IOException e) {
+        }catch (IOException e) {
             System.out.println("DISK MANAGER : SAVE STATE : Le fichier n'a pas pu être sauvegarder");
             e.printStackTrace();
 

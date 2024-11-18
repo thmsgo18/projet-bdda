@@ -438,6 +438,9 @@ public class Relation {
         return nbColonnes;
     }
 
+    public PageId getHeaderPageId() {
+        return headerPageId;
+    }
     private boolean possedeUnVarchar(){
         boolean var=false;
         for( ColInfo Col :colonnes ){

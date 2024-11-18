@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,7 +73,35 @@ public class DBManager {
     }
 
     public void SaveState(){
-
+        String chemin = dbConfig.getDbpath()+"/../databases.save.json";
+        try{
+            FileWriter fw = new FileWriter(chemin);
+            BufferedWriter bfw = new BufferedWriter(fw);
+            bfw.write("{"); // ouverture de la première accolade
+            bfw.newLine(); // revient à la ligne
+            bfw.write("    \"Bases de données\":{"); // ouverture accolade Bases de données
+            bfw.newLine(); // revient à la ligne
+            for(String key : this.databases.keySet()){
+                bfw.write("        \""+key+"\":{"); // ouverture accolade nom de base donnée
+                bfw.newLine();
+                for(Relation r : this.databases.get(key).getTables()){
+                    bfw.write("                 \"Nom relation\":{" + r.getNomRelation());
+                    bfw.write("                     \"Header page\": " + r.getHeaderPageId().toString());
+                    bfw.write("                     \"Nombre colonnes\": " + r.getNbColonnes());
+                    bfw.write("                     \"Colonnes\": " + r.getColonnes().toString());
+                    bfw.write("                 }"); // fermeture accolade Nom relation
+                    bfw.newLine();
+                }
+                bfw.write("             }"); // fermeture accolade nom base de donnée
+                bfw.newLine(); // revient à la ligne
+            }
+            bfw.write("     }"); // fermeture accolade Base de données
+            bfw.write("}"); // fermeture de de la première accolade
+            bfw.close();
+        }catch (IOException e) {
+            System.out.println("DBManager : SAVE STATE : Le fichier n'a pas pu être sauvegarder");
+            e.printStackTrace();
+        }
     }
 
 

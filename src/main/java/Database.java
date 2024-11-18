@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
@@ -6,6 +7,7 @@ public class Database {
 
     public Database(String databaseNom) {
         this.databaseNom = databaseNom;
+        this.tables = new ArrayList<Relation>();
     }
     public Database(String databaseNom, List<Relation> tables) {
         this.databaseNom = databaseNom;
