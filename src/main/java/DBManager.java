@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.List;
 
 public class DBManager {
     private DBConfig dbConfig;
@@ -30,7 +31,13 @@ public class DBManager {
     }
 
     public void RemoveTableFromCurrentDatabase (String nomTable){
-        this.databases.get(this.courantDatabase).getTables().remove(nomTable);
+        List<Relation> tablesDb = this.databases.get(this.courantDatabase).getTables();
+        if(this.databases.get(this.courantDatabase).getTable(nomTable) != null){
+            tablesDb.remove(this.databases.get(this.courantDatabase).getTable(nomTable));
+            this.databases.get(this.courantDatabase).setTables(tablesDb);
+        }else{
+            System.out.println("La table n'existe pas dans la Database courante");
+        }
     }
 
     public void RemoveDatabase (String nomBdd){
@@ -39,12 +46,10 @@ public class DBManager {
                 this.databases.remove(key);
             }
         }
-
     }
 
     public void RemoveTablesFromCurrentDatabase (){
-        this.databases.remove(this.courantDatabase);
-
+        this.databases.get(this.courantDatabase).setTables(null);
     }
 
     public void RemoveDatabases (){
@@ -55,15 +60,13 @@ public class DBManager {
     public void ListDatabases (){
         for(String key : this.databases.keySet()){
             System.out.println("Nom de la base de données : "+key);
-            System.out.println("Voici la liste des données de la base de données : ");
-            for(Relation r: this.databases.get(key).getTables()){
-                System.out.println(r.toString());
-            }
         }
     }
 
     public void ListTablesInCurrentDatabase (){
-
+        for(Relation r: this.databases.get(this.courantDatabase).getTables()){
+            System.out.println(r.toString());
+        }
     }
 
     public void SaveState(){

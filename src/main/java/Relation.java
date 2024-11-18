@@ -448,4 +448,14 @@ public class Relation {
         }
         return var;
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nom de la relation: "+this.getNomRelation()+"\n");
+        for(int i=0; i<this.getNbColonnes(); i++){
+            sb.append("     Nom colonne" +colonnes.get(i).getNomColonne()+"\n");
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
 }

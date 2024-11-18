@@ -19,9 +19,11 @@ public class Database {
     public List<Relation> getTables() {
         return tables;
     }
+
     public void setTables(List<Relation> tables) {
         this.tables = tables;
     }
+
     public Relation getTable(String tableName) {
         for (Relation table : tables) {
             if(tableName.equals(table.getNomRelation())){
