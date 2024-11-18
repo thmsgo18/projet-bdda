@@ -21,4 +21,8 @@ public class ColInfo {
         return tailleColonne;
     }
 
+    public String toString() {
+        return "Nom colonne: " + this.nomColonne + ", Type colonne: " + this.typeColonne + ", Taille: " + this.tailleColonne;
+    }
+
 }
