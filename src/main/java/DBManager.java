@@ -82,25 +82,63 @@ public class DBManager {
             bfw.newLine(); // revient à la ligne
             bfw.write("    \"Bases de données\":{"); // ouverture accolade Bases de données
             bfw.newLine(); // revient à la ligne
+            int j=0;
             for(String key : this.databases.keySet()){
-                bfw.write("        \""+key+"\":{"); // ouverture accolade nom de base donnée
+                bfw.write("        \""+j+"\":{"); // ouverture accolade de la base donnée
+                j++;
+                bfw.newLine();
+                bfw.write("             \"Nom BD\": \""+key+"\",");
+                bfw.newLine();
+                bfw.write("             \"info BD\":{");// ouverture accolade info de la base donnée
+                bfw.newLine();
+                bfw.write("                \"Relations\":{");
+                int k=0;
                 bfw.newLine();
                 for(Relation r : this.databases.get(key).getTables()){
-                    bfw.write("                 \"" + r.getNomRelation()+"\":");
+                    bfw.write("                     \""+k+"\":{");
+                    k++;
                     bfw.newLine();
-                    bfw.write("                     \"Header page\": " + r.getHeaderPageId().toString()+",");
+                    bfw.write("                         \"Nom relation\": \"" + r.getNomRelation()+"\",");
                     bfw.newLine();
-                    bfw.write("                     \"Nombre colonnes\": " + r.getNbColonnes()+",");
+                    bfw.write("                         \"Header page\": " + r.getHeaderPageId().toString()+",");
                     bfw.newLine();
-                    bfw.write("                     \"Colonnes\": " + r.getColonnes().toString()+",");
+                    bfw.write("                         \"Nombre colonnes\": " + r.getNbColonnes()+",");
                     bfw.newLine();
-                    bfw.write("                 }"); // fermeture accolade Nom relation
+                    bfw.write("                         \"Colonnes\":{");
+                    bfw.newLine();
+                    for(int i=0; i<r.getNbColonnes();i++){
+                        bfw.write("                             \""+i+"\":{");
+                        bfw.newLine();
+                        bfw.write("                             \"Nom Colonne\": \""+r.getColonnes().get(i).getNomColonne()+"\",");
+                        bfw.newLine();
+                        bfw.write("                             \"Type Colonne\": \""+r.getColonnes().get(i).getTypeColonne()+"\",");
+                        bfw.newLine();
+                        bfw.write("                             \"Taille Colonne\": \""+r.getColonnes().get(i).getTailleColonne()+"\"");
+                        bfw.newLine();
+                        if(i<r.getNbColonnes()-1){ // Fermeture accolade n° Colonne
+                            bfw.write("                             },");
+                        }else{
+                            bfw.write("                             }");
+                        }
+                        bfw.newLine();
+                    }
+                    bfw.write("                         }");// fermeture accolade Colonnes
+                    bfw.newLine();
+                    if(k<=this.databases.get(key).getTables().size()-1){ // fermeture accolade n° Relation
+                        bfw.write("                     },");
+                    }else{
+                        bfw.write("                     }");
+                    }
                     bfw.newLine();
                 }
-                bfw.write("             }"); // fermeture accolade nom base de donnée
+                bfw.write("                }");
+                bfw.newLine();
+                bfw.write("             }"); // fermeture accolade Info BD
                 bfw.newLine(); // revient à la ligne
             }
-            bfw.write("     }"); // fermeture accolade Base de données
+            bfw.write("        }"); // fermeture accolade n° Base de données
+            bfw.newLine();
+            bfw.write("    }"); // fermeture accolade Base de données
             bfw.newLine();
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();

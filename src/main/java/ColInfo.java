@@ -22,7 +22,7 @@ public class ColInfo {
     }
 
     public String toString() {
-        return "Nom colonne: " + this.nomColonne + ", Type colonne: " + this.typeColonne + ", Taille: " + this.tailleColonne;
+        return "Nom colonne : " + this.nomColonne + ", Type colonne: " + this.typeColonne + ", Taille: " + this.tailleColonne;
     }
 
 }

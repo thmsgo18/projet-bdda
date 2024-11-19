@@ -3,9 +3,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class DBManagerTest {
 
@@ -13,18 +11,26 @@ public class DBManagerTest {
         DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
         DiskManager diskManager = new DiskManager(config);
         DBManager dbmanag = new DBManager(config);
-        dbmanag.CreateDatabase("Thomas");
-        dbmanag.SetCurrentDatabase("Thomas");
+        dbmanag.CreateDatabase("Université");
+        dbmanag.SetCurrentDatabase("Université");
         ColInfo cI1 = new ColInfo("Nom", "CHAR", 12);
         ColInfo cI2 = new ColInfo("Prenom", "CHAR", 6);
         ColInfo cI3 = new ColInfo("Age", "INT", 4);
+        ColInfo cI4 = new ColInfo("Secteur", "CHAR", 12);
+        ColInfo cI5 = new ColInfo("Lettre", "CHAR", 6);
+        ColInfo cI6 = new ColInfo("Nbr Places", "INT", 4);
         BufferManager bufferManager = new BufferManager(config,diskManager);
         PageId headerPageId =ajouteHeaderPage(diskManager,bufferManager);
         List<ColInfo> listeColonnesInfo= new ArrayList<>();
         listeColonnesInfo.add(cI1);
         listeColonnesInfo.add(cI2);
         listeColonnesInfo.add(cI3);
+        List<ColInfo> listeColonnesInfo2= new ArrayList<>();
+        listeColonnesInfo2.add(cI4);
+        listeColonnesInfo2.add(cI5);
+        listeColonnesInfo2.add(cI6);
         dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo));
+        dbmanag.AddTableToCurrentDatabase(new Relation("Salle", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo2));
         dbmanag.SaveState();
     }
 

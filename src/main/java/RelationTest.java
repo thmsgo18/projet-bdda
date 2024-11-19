@@ -31,7 +31,7 @@ public class RelationTest {
 
 
         /// ATTENTION !!! fonction permettant de supprimer tous les fichiers bin (F0bin,F1bin,etc..) (à utiliser avec vigilance)
-            //Outil.SuprimeTousFichier(diskManager);
+            Outil.SuprimeTousFichier(diskManager);
 
 
         //WriteRecordDataPageTest(relation);
