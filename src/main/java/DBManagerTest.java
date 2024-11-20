@@ -10,28 +10,63 @@ public class DBManagerTest {
     public static void main(String [] args){
         DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
         DiskManager diskManager = new DiskManager(config);
-        DBManager dbmanag = new DBManager(config);
-        dbmanag.CreateDatabase("Université");
-        dbmanag.SetCurrentDatabase("Université");
-        ColInfo cI1 = new ColInfo("Nom", "CHAR", 12);
-        ColInfo cI2 = new ColInfo("Prenom", "CHAR", 6);
-        ColInfo cI3 = new ColInfo("Age", "INT", 4);
+        BufferManager bufferManager = new BufferManager(config,diskManager);
+        DBManager dbmanag = new DBManager(config, diskManager, bufferManager);
+
+        dbmanag.CreateDatabase("Université"); // Création de la base de donnée Université
+        dbmanag.SetCurrentDatabase("Université"); // Université est mise en Currente DataBase
+        PageId headerPageId =ajouteHeaderPage(diskManager,bufferManager); // Création d'un headerPageId
+
+        ColInfo cI1 = new ColInfo("Nom", "CHAR", 18); // Colonne 0
+        ColInfo cI2 = new ColInfo("Prenom", "CHAR", 12); // Colonne 1
+        ColInfo cI3 = new ColInfo("Age", "INT", 4); // Colonne 2
+
+        List<ColInfo> listeColonnesInfo= new ArrayList<>(); // Création liste de colonnes
+        listeColonnesInfo.add(cI1); // Ajout de la colonne 0 à la liste de colonnes
+        listeColonnesInfo.add(cI2); // Ajout de la colonne 1 à la liste de colonnes
+        listeColonnesInfo.add(cI3); // Ajout de la colonne 2 à la liste de colonnes
+
+        // Même chose pour une deuxième liste de colonnes
         ColInfo cI4 = new ColInfo("Secteur", "CHAR", 12);
         ColInfo cI5 = new ColInfo("Lettre", "CHAR", 6);
         ColInfo cI6 = new ColInfo("Nbr Places", "INT", 4);
-        BufferManager bufferManager = new BufferManager(config,diskManager);
-        PageId headerPageId =ajouteHeaderPage(diskManager,bufferManager);
-        List<ColInfo> listeColonnesInfo= new ArrayList<>();
-        listeColonnesInfo.add(cI1);
-        listeColonnesInfo.add(cI2);
-        listeColonnesInfo.add(cI3);
+
         List<ColInfo> listeColonnesInfo2= new ArrayList<>();
         listeColonnesInfo2.add(cI4);
         listeColonnesInfo2.add(cI5);
         listeColonnesInfo2.add(cI6);
-        dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo));
-        dbmanag.AddTableToCurrentDatabase(new Relation("Salle", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo2));
-        dbmanag.SaveState();
+
+        dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo)); // Création & Ajout d'une table Etudiant
+        dbmanag.AddTableToCurrentDatabase(new Relation("Salle", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo2)); // Création & Ajout d'une table Salle
+        dbmanag.SaveState(); // Sauvegarde de toutes DB dans un fichier JSON
+        dbmanag.RemoveDatabases(); // Suppression de toutes les DB
+        dbmanag.LoadState(); // Récupération de la DB à partir du fichier JSON
+        dbmanag.SetCurrentDatabase("Université"); // Université est mise en Currente DataBase
+        dbmanag.ListTablesInCurrentDatabase();
+        dbmanag.RemoveTableFromCurrentDatabase("Salle"); // Suppression de la table Salle
+        dbmanag.ListTablesInCurrentDatabase();
+
+        dbmanag.CreateDatabase("Université à supprimer");
+        dbmanag.SetCurrentDatabase("Université à supprimer"); // Université à supprimer est mise en Currente DataBase
+        dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo)); // Création & Ajout d'une table Etudiant
+        dbmanag.AddTableToCurrentDatabase(new Relation("Salle", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo2)); // Création & Ajout d'une table Salle
+        dbmanag.RemoveDatabase("Université à supprimer");
+
+
+        // Test qui ne marche pas encore
+        // Ajout d'un Record
+        /*
+        ArrayList<Object> val = new ArrayList<>();
+        val.add("Gourmelen");
+        val.add("Thomas");
+        val.add(21);
+        Record record = new Record(val);
+        dbmanag.SetCurrentDatabase("Université");
+        Relation relation = dbmanag.GetTableFromCurrentDatabase("Etudiant");
+        relation.InsertRecord(record);
+        System.out.println(relation.GetAllRecords());
+        System.out.println(dbmanag.GetTableFromCurrentDatabase("Etudiant").GetAllRecords());
+        */
     }
 
 
