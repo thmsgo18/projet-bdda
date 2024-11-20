@@ -38,6 +38,8 @@ public class DBManagerTest {
 
         dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo)); // Création & Ajout d'une table Etudiant
         dbmanag.AddTableToCurrentDatabase(new Relation("Salle", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo2)); // Création & Ajout d'une table Salle
+        System.out.println(dbmanag.GetTableFromCurrentDatabase("Etudiant"));
+        System.out.println(dbmanag.GetTableFromCurrentDatabase("Salle"));
         dbmanag.SaveState(); // Sauvegarde de toutes DB dans un fichier JSON
         dbmanag.RemoveDatabases(); // Suppression de toutes les DB
         dbmanag.LoadState(); // Récupération de la DB à partir du fichier JSON
@@ -50,6 +52,7 @@ public class DBManagerTest {
         dbmanag.SetCurrentDatabase("Université à supprimer"); // Université à supprimer est mise en Currente DataBase
         dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo)); // Création & Ajout d'une table Etudiant
         dbmanag.AddTableToCurrentDatabase(new Relation("Salle", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo2)); // Création & Ajout d'une table Salle
+        dbmanag.RemoveTablesFromCurrentDatabase();
         dbmanag.RemoveDatabase("Université à supprimer");
 
 

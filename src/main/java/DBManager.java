@@ -54,6 +54,9 @@ public class DBManager {
         for(String key : this.databases.keySet()){
             if(nomBdd.equals(key)){
                 this.databases.remove(key);
+                if (this.courantDatabase.equals(key)){
+                    this.courantDatabase = null;
+                }
             }
         }
     }
@@ -64,7 +67,7 @@ public class DBManager {
 
     public void RemoveDatabases (){
         this.databases.clear();
-
+        this.courantDatabase = null;
     }
 
     public void ListDatabases (){
