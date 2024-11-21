@@ -2,6 +2,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.FileReader;
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -177,7 +178,8 @@ public class DBManager {
                 List<Relation> tables = new ArrayList<Relation>(); // Création de la liste des tables de la DB
                 for(int r=0; r<js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getInt("Nbr Relations");r++){ // Parcours de toute les relations de la DB
                     String nomRelation = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getString("Nom relation"); // Nom de la relation
-                    PageId headerPage = new PageId(js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(0),js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(1)); // Header Page de la relation
+                    // Vu que l'on a supprimer la DB on doit recréer une HeaderPage donc je pense que l'on n'a pas besoin de l'ancienne HeaderPage
+                    //PageId headerPage = new PageId(js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(0),js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(1)); // Header Page de la relation
                     int nbrColonnes = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getInt("Nombre colonnes"); //Nombre de colonnes de la relation
                     List<ColInfo> listeColonnesInfo= new ArrayList<>(); // Création de la liste des ColInfo des colonnes de la relation
                     for(int c=0; c<nbrColonnes;c++){ // Parcours de toute les colonnes
@@ -187,7 +189,7 @@ public class DBManager {
                         ColInfo cI = new ColInfo(nomColonne, typeColonne, tailleColonne); // Création de la ColInfo de la colonne
                         listeColonnesInfo.add(cI); // Ajout, de la ColInfo cI, à la liste des ColInfo des colonnes de la relation
                     }
-                    Relation relation = new Relation(nomRelation, nbrColonnes, headerPage, this.diskManager, this.bufferManager,listeColonnesInfo); // Création de la relation
+                    Relation relation = new Relation(nomRelation, nbrColonnes, ajouteHeaderPage(this.diskManager, this.bufferManager), this.diskManager, this.bufferManager,listeColonnesInfo); // Création de la relation
                     this.AddTableToCurrentDatabase(relation); // Ajout de la relation à la DB
                 }
             }
@@ -195,6 +197,44 @@ public class DBManager {
         }catch(IOException io){
             io.printStackTrace();
         }
+    }
+
+    public static PageId ajouteHeaderPage(DiskManager diskManager,BufferManager bufferManager) {
+        System.out.println("**************  Initialisation d'une headerPage   *********************");
+        // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
+        PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible
+
+        ByteBuffer buff =bufferManager.GetPage(headerPage);
+
+        System.out.println("La header page est placé en "+headerPage);
+
+        int position= (int) ((int) headerPage.getPageIdx()*diskManager.getDbConfig().getPagesize());
+
+
+        String cheminFichier = diskManager.getDbConfig().getDbpath()+"/F"+headerPage.getFileIdx()+".bin"; // Chemin du fichier à lire
+        File fichier = new File(cheminFichier);
+        if(fichier.exists()) {
+            try {
+                RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
+                raf.seek(position);  // Positionnement sur le premier octet de la page voulu
+
+                //System.out.println(Arrays.toString(buff.array()));
+
+                raf.seek(position);
+                System.out.println(raf.readInt());
+                System.out.println(raf.readInt());
+                raf.close();
+            }catch(IOException e){
+                e.printStackTrace();
+            }finally{
+                bufferManager.FreePage(headerPage,false);
+            }
+        }else{
+            System.out.println("Vous tentez de lireun fichier qui n'existe pas");
+        }
+
+        return headerPage;
+
     }
 
 

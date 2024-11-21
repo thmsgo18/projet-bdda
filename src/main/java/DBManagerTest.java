@@ -56,9 +56,6 @@ public class DBManagerTest {
         dbmanag.RemoveDatabase("Université à supprimer");
 
 
-        // Test qui ne marche pas encore
-        // Ajout d'un Record
-        /*
         ArrayList<Object> val = new ArrayList<>();
         val.add("Gourmelen");
         val.add("Thomas");
@@ -66,10 +63,15 @@ public class DBManagerTest {
         Record record = new Record(val);
         dbmanag.SetCurrentDatabase("Université");
         Relation relation = dbmanag.GetTableFromCurrentDatabase("Etudiant");
+        try{
+            relation.addDataPage();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         relation.InsertRecord(record);
         System.out.println(relation.GetAllRecords());
         System.out.println(dbmanag.GetTableFromCurrentDatabase("Etudiant").GetAllRecords());
-        */
+
     }
 
 
