@@ -143,9 +143,9 @@ public class DBManager {
                 bfw.newLine();
                 bfw.write("             }"); // fermeture accolade Info BD
                 bfw.newLine(); // revient à la ligne
+                bfw.write("        },"); // fermeture accolade n° Base de données
+                bfw.newLine();
             }
-            bfw.write("        },"); // fermeture accolade n° Base de données
-            bfw.newLine();
             bfw.write("        \"Nbr BD\": "+(j));
             bfw.newLine();
             bfw.write("    }"); // fermeture accolade Base de données
@@ -179,8 +179,7 @@ public class DBManager {
                 List<Relation> tables = new ArrayList<Relation>(); // Création de la liste des tables de la DB
                 for(int r=0; r<js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getInt("Nbr Relations");r++){ // Parcours de toute les relations de la DB
                     String nomRelation = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getString("Nom relation"); // Nom de la relation
-                    // Vu que l'on a supprimer la DB on doit recréer une HeaderPage donc je pense que l'on n'a pas besoin de l'ancienne HeaderPage
-                    //PageId headerPage = new PageId(js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(0),js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(1)); // Header Page de la relation
+                    PageId headerPage = new PageId(js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(0),js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(1)); // Header Page de la relation
                     int nbrColonnes = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getInt("Nombre colonnes"); //Nombre de colonnes de la relation
                     List<ColInfo> listeColonnesInfo= new ArrayList<>(); // Création de la liste des ColInfo des colonnes de la relation
                     for(int c=0; c<nbrColonnes;c++){ // Parcours de toute les colonnes
@@ -190,7 +189,7 @@ public class DBManager {
                         ColInfo cI = new ColInfo(nomColonne, typeColonne, tailleColonne); // Création de la ColInfo de la colonne
                         listeColonnesInfo.add(cI); // Ajout, de la ColInfo cI, à la liste des ColInfo des colonnes de la relation
                     }
-                    Relation relation = new Relation(nomRelation, nbrColonnes, ajouteHeaderPage(this.diskManager, this.bufferManager), this.diskManager, this.bufferManager,listeColonnesInfo); // Création de la relation
+                    Relation relation = new Relation(nomRelation, nbrColonnes, headerPage, this.diskManager, this.bufferManager,listeColonnesInfo); // Création de la relation
                     this.AddTableToCurrentDatabase(relation); // Ajout de la relation à la DB
                 }
             }

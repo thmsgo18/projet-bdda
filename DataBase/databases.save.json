@@ -6,7 +6,7 @@
                 "Relations":{
                      "0":{
                          "Nom relation": "Etudiant",
-                         "Header page": [20,1],
+                         "Header page": [21,0],
                          "Nombre colonnes": 3,
                          "Colonnes":{
                              "0":{
@@ -28,7 +28,7 @@
                      },
                      "1":{
                          "Nom relation": "Salle",
-                         "Header page": [20,1],
+                         "Header page": [21,0],
                          "Nombre colonnes": 3,
                          "Colonnes":{
                              "0":{
