@@ -29,4 +29,4 @@ echo "Compilation réussie."
 
 # Exécution
 echo "Exécution de l'application principale..."
-java -cp "$OUTPUT_DIR:$JSON_JAR" RelationTest
+java -cp "$OUTPUT_DIR:$JSON_JAR" SGBD

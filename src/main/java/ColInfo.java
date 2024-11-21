@@ -25,4 +25,10 @@ public class ColInfo {
         return "Nom colonne : " + this.nomColonne + ", Type colonne: " + this.typeColonne + ", Taille: " + this.tailleColonne;
     }
 
+    public void affiche_ColInfo(){
+        System.out.println("Nom colonne : " + nomColonne);
+        System.out.println("Type : " + typeColonne);
+        System.out.println("taille Colonne : " + tailleColonne);
+    }
+
 }

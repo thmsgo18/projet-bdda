@@ -22,6 +22,7 @@ public class DBManager {
     }
 
     public void CreateDatabase(String nomBdd){
+
         this.databases.put(nomBdd, new Database(nomBdd));
     }
 
@@ -235,6 +236,14 @@ public class DBManager {
 
         return headerPage;
 
+    }
+
+    public HashMap<String, Database> getDatabases() {
+        return databases;
+    }
+
+    public Database getCurentDatabase(){
+        return databases.get(courantDatabase);
     }
 
 

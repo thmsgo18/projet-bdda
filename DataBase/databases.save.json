@@ -1,57 +1,50 @@
 {
     "Bases de données":{
         "0":{
-             "Nom BD": "Université",
+             "Nom BD": "Db1",
              "info BD":{
                 "Relations":{
                      "0":{
-                         "Nom relation": "Etudiant",
-                         "Header page": [21,0],
-                         "Nombre colonnes": 3,
+                         "Nom relation": "Tab1",
+                         "Header page": [0,0],
+                         "Nombre colonnes": 2,
                          "Colonnes":{
                              "0":{
-                                 "Nom Colonne": "Nom",
-                                 "Type Colonne": "CHAR",
-                                 "Taille Colonne": 18
+                                 "Nom Colonne": "C1",
+                                 "Type Colonne": "REAL",
+                                 "Taille Colonne": 4
                              },
                              "1":{
-                                 "Nom Colonne": "Prenom",
-                                 "Type Colonne": "CHAR",
-                                 "Taille Colonne": 12
-                             },
-                             "2":{
-                                 "Nom Colonne": "Age",
+                                 "Nom Colonne": "C2",
                                  "Type Colonne": "INT",
                                  "Taille Colonne": 4
                              }
                          }
                      },
-                     "1":{
-                         "Nom relation": "Salle",
-                         "Header page": [21,0],
-                         "Nombre colonnes": 3,
-                         "Colonnes":{
-                             "0":{
-                                 "Nom Colonne": "Secteur",
-                                 "Type Colonne": "CHAR",
-                                 "Taille Colonne": 12
-                             },
-                             "1":{
-                                 "Nom Colonne": "Lettre",
-                                 "Type Colonne": "CHAR",
-                                 "Taille Colonne": 6
-                             },
-                             "2":{
-                                 "Nom Colonne": "Nbr Places",
-                                 "Type Colonne": "INT",
-                                 "Taille Colonne": 4
-                             }
-                         }
-                     },
-                     "Nbr Relations": 2
+                     "Nbr Relations": 1
                 }
              }
         },
-        "Nbr BD": 1
+        "1":{
+             "Nom BD": "Db2",
+             "info BD":{
+                "Relations":{
+                     "0":{
+                         "Nom relation": "Tab2",
+                         "Header page": [1,1],
+                         "Nombre colonnes": 1,
+                         "Colonnes":{
+                             "0":{
+                                 "Nom Colonne": "Toto",
+                                 "Type Colonne": "CHAR",
+                                 "Taille Colonne": 240
+                             }
+                         }
+                     },
+                     "Nbr Relations": 1
+                }
+             }
+        },
+        "Nbr BD": 2
     }
 }
