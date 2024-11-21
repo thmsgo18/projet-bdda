@@ -1,0 +1,57 @@
+{
+    "Bases de données":{
+        "0":{
+             "Nom BD": "Université",
+             "info BD":{
+                "Relations":{
+                     "0":{
+                         "Nom relation": "Etudiant",
+                         "Header page": [20,1],
+                         "Nombre colonnes": 3,
+                         "Colonnes":{
+                             "0":{
+                                 "Nom Colonne": "Nom",
+                                 "Type Colonne": "CHAR",
+                                 "Taille Colonne": 18
+                             },
+                             "1":{
+                                 "Nom Colonne": "Prenom",
+                                 "Type Colonne": "CHAR",
+                                 "Taille Colonne": 12
+                             },
+                             "2":{
+                                 "Nom Colonne": "Age",
+                                 "Type Colonne": "INT",
+                                 "Taille Colonne": 4
+                             }
+                         }
+                     },
+                     "1":{
+                         "Nom relation": "Salle",
+                         "Header page": [20,1],
+                         "Nombre colonnes": 3,
+                         "Colonnes":{
+                             "0":{
+                                 "Nom Colonne": "Secteur",
+                                 "Type Colonne": "CHAR",
+                                 "Taille Colonne": 12
+                             },
+                             "1":{
+                                 "Nom Colonne": "Lettre",
+                                 "Type Colonne": "CHAR",
+                                 "Taille Colonne": 6
+                             },
+                             "2":{
+                                 "Nom Colonne": "Nbr Places",
+                                 "Type Colonne": "INT",
+                                 "Taille Colonne": 4
+                             }
+                         }
+                     },
+                     "Nbr Relations": 2
+                }
+             }
+        },
+        "Nbr BD": 1
+    }
+}
