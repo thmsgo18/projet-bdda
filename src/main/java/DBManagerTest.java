@@ -56,6 +56,7 @@ public class DBManagerTest {
         dbmanag.RemoveDatabase("Université à supprimer");
 
 
+        
         ArrayList<Object> val = new ArrayList<>();
         val.add("Gourmelen");
         val.add("Thomas");

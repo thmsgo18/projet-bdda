@@ -170,6 +170,7 @@ public class DBManager {
             }
             bfr.close();//Fermeture de la lecture du fichier
 
+
             JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
             for(int bd=0; bd< js.getJSONObject("Bases de données").getInt("Nbr BD"); bd++){ // Parcours de toutes les bases de données
                 String nomBD = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getString("Nom BD"); // Nom de la base de donnée
