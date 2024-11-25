@@ -41,18 +41,41 @@ public class Sgbd {
             texteCommande = sc.nextLine();
             if (texteCommande.contains("CREATE DATABASE")) {
 
-                System.out.println("La commande choisi est " + texteCommande);
-                ProcessCreateDatabaseCommand(texteCommande);
+                String t = texteCommande.replace("CREATE DATABASE", "");
+                if(t.length() > 0) {
+
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessCreateDatabaseCommand(texteCommande);
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la database");
+                }
 
             } else if (texteCommande.contains("CREATE TABLE")) {
+                String t = texteCommande.replace("CREATE TABLE", "");
 
-                System.out.println("La commande choisi est " + texteCommande);
-                ProcessCreateTableCommand(texteCommande);
+                if(t.length() > 0) {
+
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessCreateTableCommand(texteCommande);
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la table");
+                }
+
+
 
             } else if (texteCommande.contains("SET DATABASE")) {
+                String t = texteCommande.replace("SET DATABASE", "");
+                if(t.length() > 0) {
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessSetDatabaseCommand(texteCommande);
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la database");
+                }
 
-                System.out.println("La commande choisi est " + texteCommande);
-                ProcessSetDatabaseCommand(texteCommande);
+
 
             } else if (texteCommande.contains("LIST TABLES")) {
 
@@ -68,16 +91,35 @@ public class Sgbd {
                 ProcessDropTablesCommand(texteCommande);
 
             } else if (texteCommande.startsWith("DROP TABLE")) {
-                System.out.println("La commande choisi est " + texteCommande);
-                ProcessDropTableCommand(texteCommande);
+
+                String t = texteCommande.replace("DROP TABLE", "");
+                if(t.length() > 0) {
+
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessDropTableCommand(texteCommande);
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la table");
+                }
+
 
             }  else if (texteCommande.startsWith("DROP DATABASES")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 ProcessDropDatabasesCommand(texteCommande);
 
             } else if (texteCommande.startsWith("DROP DATABASE")) {
-                System.out.println("La commande choisi est " + texteCommande);
-                ProcessDropDatabaseCommand(texteCommande);
+
+                String t = texteCommande.replace("DROP DATABASE", "");
+                if(t.length() > 0) {
+
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessDropDatabaseCommand(texteCommande);
+
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la database");
+                }
+
 
             } else if (texteCommande.contains("QUIT")) {
                 System.out.println("La commande choisi est " + texteCommande);
@@ -99,7 +141,7 @@ public class Sgbd {
         System.out.println("Le nom de la database : "+nomDB+" La taille est : "+nomDB.length());
         dbManager.CreateDatabase(nomDB);
         for(String key : dbManager.getDatabases().keySet()){
-            System.out.println("Le nom de la database1111 : "+key+" La taille est : "+key.length());
+            System.out.println("Le nom de la database : "+key+" La taille est : "+key.length());
         }
     }
 
