@@ -30,7 +30,7 @@ public class Sgbd {
         sgbd.run();
     }
 
-    public void run() throws EOFException {
+    public void run() throws EOFException {  //Méthode pour utiliser le SGDB
         System.out.println("***********************Bienvenue dans la SGBD***********************");
         String texteCommande = "";
         boolean quit = false;
@@ -38,51 +38,48 @@ public class Sgbd {
         while(!quit) {
             System.out.println("Entrez votre commande !");
             Scanner sc = new Scanner(System.in);
-            texteCommande = sc.nextLine();
-            if (texteCommande.contains("CREATE DATABASE")) {
+            texteCommande = sc.nextLine(); //Entrez une commande SQL tout en majuscule
+            if (texteCommande.startsWith("CREATE DATABASE")) {
 
-                String t = texteCommande.replace("CREATE DATABASE", "");
-                if(t.length() > 0) {
+                if(texteCommande.replace("CREATE DATABASE", "").length() > 0) { //vérifier si il y a le nom de la BDD apres la commande CREATE DATABASE
 
                     System.out.println("La commande choisi est " + texteCommande);
-                    ProcessCreateDatabaseCommand(texteCommande);
+                    ProcessCreateDatabaseCommand(texteCommande); //Methode permettant de parser la commande
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la database");// retaper la commande en respectant les la syntaxe
+                }
+
+            } else if (texteCommande.startsWith("CREATE TABLE")) {
+
+                if(texteCommande.replace("CREATE TABLE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande CREATE TABLE
+
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessCreateTableCommand(texteCommande);//Methode permettant de parser la commande (meme chose pour tout commande)
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la table");// retaper la commande en respectant les la syntaxe(meme chose pour tout les commandes contenant un nom ou valeur)
+                }
+
+
+
+            } else if (texteCommande.startsWith("SET DATABASE")) {
+                if(texteCommande.replace("SET DATABASE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande CREATE TABLE
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessSetDatabaseCommand(texteCommande); //Methode permettant de parser la commande
                 }
                 else{
                     System.out.println("Vous n'avez pas taper le nom de la database");
                 }
 
-            } else if (texteCommande.contains("CREATE TABLE")) {
-                String t = texteCommande.replace("CREATE TABLE", "");
-
-                if(t.length() > 0) {
-
-                    System.out.println("La commande choisi est " + texteCommande);
-                    ProcessCreateTableCommand(texteCommande);
-                }
-                else{
-                    System.out.println("Vous n'avez pas taper le nom de la table");
-                }
 
 
-
-            } else if (texteCommande.contains("SET DATABASE")) {
-                String t = texteCommande.replace("SET DATABASE", "");
-                if(t.length() > 0) {
-                    System.out.println("La commande choisi est " + texteCommande);
-                    ProcessSetDatabaseCommand(texteCommande);
-                }
-                else{
-                    System.out.println("Vous n'avez pas taper le nom de la database");
-                }
-
-
-
-            } else if (texteCommande.contains("LIST TABLES")) {
+            } else if (texteCommande.startsWith("LIST TABLES")) {
 
                 System.out.println("La commande choisi est " + texteCommande);
                 ProcessListTablesCommand(texteCommande);
 
-            }else if (texteCommande.contains("LIST DATABASES")) {
+            }else if (texteCommande.startsWith("LIST DATABASES")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 ProcessListDatabasesCommand(texteCommande);
 
@@ -92,8 +89,7 @@ public class Sgbd {
 
             } else if (texteCommande.startsWith("DROP TABLE")) {
 
-                String t = texteCommande.replace("DROP TABLE", "");
-                if(t.length() > 0) {
+                if(texteCommande.replace("DROP TABLE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande DROP TABLE
 
                     System.out.println("La commande choisi est " + texteCommande);
                     ProcessDropTableCommand(texteCommande);
@@ -109,8 +105,7 @@ public class Sgbd {
 
             } else if (texteCommande.startsWith("DROP DATABASE")) {
 
-                String t = texteCommande.replace("DROP DATABASE", "");
-                if(t.length() > 0) {
+                if(texteCommande.replace("DROP DATABASE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande DROP DATABASE
 
                     System.out.println("La commande choisi est " + texteCommande);
                     ProcessDropDatabaseCommand(texteCommande);
@@ -121,10 +116,20 @@ public class Sgbd {
                 }
 
 
-            } else if (texteCommande.contains("QUIT")) {
+            }else if(texteCommande.startsWith("INSERT INTO")) {
+                if(texteCommande.replace("INSERT INTO", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande INSERT INTO
+                    System.out.println("La commande choisi est " + texteCommande);
+                    ProcessInsertIntoCommand(texteCommande);
+                }
+                else{
+                    System.out.println("Vous n'avez pas taper le nom de la table");
+                }
+
+            }
+            else if (texteCommande.contains("QUIT")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 quit = true;
-                ProcessQuitCommand(texteCommande);
+                ProcessQuitCommand(texteCommande);//on va quitter le SGBD
             } else {
                 System.out.println("Vous avez taper la mauvaise commande");
 
@@ -135,21 +140,21 @@ public class Sgbd {
 
 
     }
-    public void ProcessCreateDatabaseCommand(String texteCommande){
-        String[] tok = texteCommande.trim().split("CREATE DATABASE ");
-        String nomDB = tok[1];
+    public void ProcessCreateDatabaseCommand(String texteCommande){ // Methode permettant de crée une BDD
+        String[] tok = texteCommande.trim().split("CREATE DATABASE ");//on recupère que le nom de la BDD
+        String nomDB = tok[1];// tok[0] == ""
         System.out.println("Le nom de la database : "+nomDB+" La taille est : "+nomDB.length());
-        dbManager.CreateDatabase(nomDB);
+        dbManager.CreateDatabase(nomDB);//methode pour instancier la BDD dans le SGBD
         for(String key : dbManager.getDatabases().keySet()){
             System.out.println("Le nom de la database : "+key+" La taille est : "+key.length());
         }
     }
 
     public void ProcessSetDatabaseCommand(String texteCommande){
-        String[] tok = texteCommande.trim().split("SET DATABASE ");
+        String[] tok = texteCommande.trim().split("SET DATABASE ");//on recupère que le nom de la BDD
         String nomDB = tok[1];
         System.out.println("Le nom de la database : "+nomDB+" La taille est : "+nomDB.length());
-        dbManager.SetCurrentDatabase(nomDB);
+        dbManager.SetCurrentDatabase(nomDB);//methode pour mettre la BDD courant
         for(String key : dbManager.getDatabases().keySet()){
             System.out.println("Le nom de la database1111 : "+key+" La taille est : "+key.length());
         }
@@ -162,28 +167,28 @@ public class Sgbd {
         System.out.println("La commande avant :"+texteCommande);
 
         for(char c : caracAsupp.toCharArray()){
-            texteCommande = texteCommande.replace(String.valueOf(c)," ");
+            texteCommande = texteCommande.replace(String.valueOf(c)," "); //On supprime les caractère (:,) pour faciliter le parsing
         }
 
-        texteCommande = texteCommande.replace("CREATE TABLE ","");
+        texteCommande = texteCommande.replace("CREATE TABLE ","");//on remplace CREATE TABLE par ""
 
         System.out.println("La commande après :"+texteCommande);
-        StringTokenizer stz = new StringTokenizer(texteCommande, " ");
+        StringTokenizer stz = new StringTokenizer(texteCommande, " "); //on tokenize, tout la chaine de caractere qui seront délimiter par des " ".
         List<ColInfo> infoColonne = new ArrayList<ColInfo>();
-        String nomTab = stz.nextToken();
+        String nomTab = stz.nextToken();//premier tok toujours le nom
 
         while(stz.hasMoreTokens()){
 
-            String nom = stz.nextToken();
+            String nom = stz.nextToken();//nom de la colonne
             System.out.println("Le nom : "+nom);
-            String type = stz.nextToken();
+            String type = stz.nextToken();//type de la colonne
             System.out.println("Le type : "+type);
 
             if(type.equals("REAL")||type.equals("INT")){
-                infoColonne.add(new ColInfo(nom,type,4));
+                infoColonne.add(new ColInfo(nom,type,4));//cas pour INT ou REAL
             }
             else if(type.equals("VARCHAR")||type.equals("CHAR")){
-                int tailleCol = 2*Integer.parseInt(stz.nextToken());
+                int tailleCol = 2*Integer.parseInt(stz.nextToken());//cas pour CHAR ou VARCHAR
                 System.out.println("Le taille : "+tailleCol);
                 infoColonne.add(new ColInfo(nom,type,tailleCol));
             }
@@ -194,7 +199,7 @@ public class Sgbd {
         /*for(ColInfo c : infoColonne){
             c.affiche_ColInfo();
         }*/
-        PageId headerPage = ajouteHeaderPage(this.diskManager,this.bufferManager);
+        PageId headerPage = ajouteHeaderPage(this.diskManager,this.bufferManager);// attribution d'un headerPage
         r = new Relation(nomTab,infoColonne.size(),headerPage,this.diskManager,this.bufferManager,infoColonne);
         r.addDataPage();
         this.dbManager.AddTableToCurrentDatabase(r);
@@ -211,7 +216,7 @@ public class Sgbd {
     }
 
     public void ProcessDropTableCommand(String texteCommande){
-        String[]tok = texteCommande.trim().split("DROP TABLE ");
+        String[]tok = texteCommande.trim().split("DROP TABLE ");//recuperatuin du nom de la table
         String nomtable = tok[1];
 
         for(Relation r : this.dbManager.getCurentDatabase().getTables()){
@@ -230,14 +235,14 @@ public class Sgbd {
     public void ProcessDropTablesCommand(String texteCommande){
         for(Relation r : this.dbManager.getCurentDatabase().getTables()){
             for(PageId datapage : r.getDataPages()){
-                this.diskManager.DeallocPage(datapage);
+                this.diskManager.DeallocPage(datapage);//desalloué tout les page affecté à cette Page
             }
-            this.diskManager.DeallocPage(r.getHeaderPageId());
+            this.diskManager.DeallocPage(r.getHeaderPageId());//desalloué la headerPage
         }
         this.dbManager.RemoveTablesFromCurrentDatabase();
     }
 
-    public void ProcessDropDatabaseCommand(String texteCommande){
+    public void ProcessDropDatabaseCommand(String texteCommande){//meme chose que la methode precedente mais on desalloue toute la database courant
         String[]tok = texteCommande.trim().split("DROP DATABASE ");
         String nombdd = tok[1];
         System.out.println("Le nom de la bdd est : "+nombdd);
@@ -253,7 +258,7 @@ public class Sgbd {
 
 
     }
-    public void ProcessDropDatabasesCommand(String texteCommande){
+    public void ProcessDropDatabasesCommand(String texteCommande){//meme chose que la methode precedente mais on desalloue toute les databases
         for(String key : this.dbManager.getDatabases().keySet()){
             for(Relation r : dbManager.getDatabases().get(key).getTables()){
                 for(PageId datapage : r.getDataPages()){
@@ -267,8 +272,82 @@ public class Sgbd {
 
     }
 
-    public void ProcessQuitCommand(String texteCommande){
-        System.out.println("NULLLLLl");
+    public void ProcessInsertIntoCommand(String texteCommande){//methode pour inserer les valeur dans un relation
+        String caracAsupp = "(,)";
+        for(char c : caracAsupp.toCharArray()){
+            texteCommande = texteCommande.replace(String.valueOf(c)," ");
+        }
+        texteCommande = texteCommande.replace("INSERT INTO","");
+        texteCommande = texteCommande.replace("VALUES","");
+        StringTokenizer stz = new StringTokenizer(texteCommande, " ");
+        String nom = stz.nextToken();
+        System.out.println("Nom :"+nom);
+        ArrayList<Object> values = new ArrayList<>();
+        Record record = new Record();
+        for(Relation r : this.dbManager.getCurentDatabase().getTables()){
+            if(r.getNomRelation().equals(nom)){
+                for(ColInfo c : r.getColonnes()){
+                    if(c.getTypeColonne().equals("CHAR")){
+                        String carac = stz.nextToken();
+                        carac = carac.replace("\"","");
+                        values.add(carac);
+
+                    }
+                    else if(c.getTypeColonne().equals("VARCHAR")){
+                        String carac = stz.nextToken();
+                        carac = carac.replace("\"","");
+                        values.add(carac);
+
+                    }
+                    else if(c.getTypeColonne().equals("INT") ||c.getTypeColonne().equals("INTEGER") ){
+                        Integer number = Integer.parseInt(stz.nextToken());
+                        values.add(number);
+                    }
+                    else if(c.getTypeColonne().equals("REAL") ){
+                        float passage =  (float ) Double.parseDouble(stz.nextToken());
+                        values.add(passage);
+                    }
+                    else{
+                        System.out.println("Ce type n'existe pas vous allez retourner dans le menu");
+                        return;
+                    }
+
+                }
+                record.setTuple(values);
+                r.InsertRecord(record);
+                r.GetAllRecords();
+
+            }
+        }
+
+        /*while(stz.hasMoreTokens()){
+            String element = stz.nextToken();
+            if(element.contains("123456789")){
+                int num = Integer.parseInt(element);
+                values.add(num);
+            } else if (element.contains(".")) {
+                double num = Double.parseDouble(element);
+                values.add(num);
+            }
+            else{
+                values.add(element);
+            }
+        }
+
+        Record record = new Record(values);
+        for(Relation r : this.dbManager.getCurentDatabase().getTables()){
+            if(r.getNomRelation().equals(nom)){
+                r.InsertRecord(record);
+                r.GetAllRecords();
+            }
+        }*/
+
+
+
+    }
+
+    public void ProcessQuitCommand(String texteCommande){//methode qui permet d'enregistrer le SGBD
+        System.out.println("Vous avez choisit la commande QUIT !");
         dbManager.SaveState();
         bufferManager.FlushBuffers();
     }
