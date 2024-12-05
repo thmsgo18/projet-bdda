@@ -4,6 +4,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DBManagerTest {
 
@@ -27,9 +28,9 @@ public class DBManagerTest {
         listeColonnesInfo.add(cI3); // Ajout de la colonne 2 à la liste de colonnes
 
         // Même chose pour une deuxième liste de colonnes
-        ColInfo cI4 = new ColInfo("Secteur", "CHAR", 12);
-        ColInfo cI5 = new ColInfo("Lettre", "CHAR", 6);
-        ColInfo cI6 = new ColInfo("Nbr Places", "INT", 4);
+        ColInfo cI4 = new ColInfo("Secteur", "CHAR", 6);
+        ColInfo cI5 = new ColInfo("Lettre", "CHAR", 14);
+        ColInfo cI6 = new ColInfo("Nbr Places", "REAL", 1);
 
         List<ColInfo> listeColonnesInfo2= new ArrayList<>();
         listeColonnesInfo2.add(cI4);
@@ -45,33 +46,38 @@ public class DBManagerTest {
         dbmanag.LoadState(); // Récupération de la DB à partir du fichier JSON
         dbmanag.SetCurrentDatabase("Université"); // Université est mise en Currente DataBase
         dbmanag.ListTablesInCurrentDatabase();
-        dbmanag.RemoveTableFromCurrentDatabase("Salle"); // Suppression de la table Salle
         dbmanag.ListTablesInCurrentDatabase();
 
         dbmanag.CreateDatabase("Université à supprimer");
         dbmanag.SetCurrentDatabase("Université à supprimer"); // Université à supprimer est mise en Currente DataBase
         dbmanag.AddTableToCurrentDatabase(new Relation("Etudiant", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo)); // Création & Ajout d'une table Etudiant
         dbmanag.AddTableToCurrentDatabase(new Relation("Salle", 3,headerPageId, diskManager, bufferManager, listeColonnesInfo2)); // Création & Ajout d'une table Salle
-        dbmanag.RemoveTablesFromCurrentDatabase();
-        dbmanag.RemoveDatabase("Université à supprimer");
 
 
-        
-        ArrayList<Object> val = new ArrayList<>();
-        val.add("Gourmelen");
-        val.add("Thomas");
-        val.add(21);
-        Record record = new Record(val);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Pour combien de valeur veux tu tester ?? ");
+        int nb = scanner.nextInt();
+
         dbmanag.SetCurrentDatabase("Université");
-        Relation relation = dbmanag.GetTableFromCurrentDatabase("Etudiant");
-        try{
-            relation.addDataPage();
-        }catch (Exception e){
-            e.printStackTrace();
+        Relation relation = dbmanag.GetTableFromCurrentDatabase("Salle");
+
+
+        for (int i = 0; i < nb; i++) {
+            float f = 1.5f;
+            ArrayList<Object> val = new ArrayList<>();
+            val.add("UFR");
+            val.add("Cordier");
+            val.add(i+f);
+            Record record = new Record(val);
+            try{
+                relation.addDataPage();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            relation.InsertRecord(record);
         }
-        relation.InsertRecord(record);
         System.out.println(relation.GetAllRecords());
-        System.out.println(dbmanag.GetTableFromCurrentDatabase("Etudiant").GetAllRecords());
+        System.out.println(dbmanag.GetTableFromCurrentDatabase("Salle").GetAllRecords());
 
     }
 
@@ -87,7 +93,7 @@ public class DBManagerTest {
 
         System.out.println("La header page est placé en "+headerPage);
 
-        int position= (int) ((int) headerPage.getPageIdx()*diskManager.getDbConfig().getPagesize());
+        int position= (int) ( headerPage.getPageIdx()*diskManager.getDbConfig().getPagesize());
 
 
         String cheminFichier = diskManager.getDbConfig().getDbpath()+"/F"+headerPage.getFileIdx()+".bin"; // Chemin du fichier à lire
@@ -109,7 +115,7 @@ public class DBManagerTest {
                 bufferManager.FreePage(headerPage,false);
             }
         }else{
-            System.out.println("Vous tentez de lireun fichier qui n'existe pas");
+            System.out.println("Vous tentez de lire un fichier qui n'existe pas");
         }
 
         return headerPage;
