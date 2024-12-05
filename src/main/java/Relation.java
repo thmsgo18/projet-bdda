@@ -412,7 +412,6 @@ public class Relation {
         return rid; // retour du rid
     }
 
-
     public List<Record> GetAllRecords(){
         System.out.println("\n**************  DEBUT Get All Records   *********************");
 
