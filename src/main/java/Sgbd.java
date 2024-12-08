@@ -5,7 +5,10 @@ import espaceDisque.PageId;
 import relationnel.ColInfo;
 import relationnel.Record;
 import relationnel.Relation;
+import requete.Condition;
 import requete.DBManager;
+import requete.ProjectOperator;
+import requete.RelationScanner;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -134,6 +137,10 @@ public class Sgbd {
             }else if(texteCommande.startsWith("BULKINSERT INTO")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 ProcessBulkInsertIntoCommand(texteCommande);
+
+            }else if(texteCommande.startsWith("SELECT")) {
+                System.out.println("La commande choisi est " + texteCommande);
+                ProcessSelectCommand(texteCommande);
             }
 
             else if (texteCommande.contains("QUIT")) {
@@ -391,6 +398,53 @@ public class Sgbd {
         }catch(IOException e){
             e.printStackTrace();
         }
+
+    }
+
+    public void ProcessSelectCommand(String texteCommande){
+        List<String> alias = new ArrayList<String>();
+        String texteInstance = texteCommande.replace("SELECT","").trim();
+        texteInstance = texteInstance.replaceAll("FROM.*","").trim();
+        System.out.println("Texte sans le SELECT ET LES FROM : "+texteInstance);
+        System.out.println(texteCommande);
+        if(texteInstance.contains("*")){
+            System.out.println("On va prendre tout les colones car l'alias est une etoile");
+            alias.add("*");
+        }
+        else{
+            StringTokenizer stz = new StringTokenizer(texteInstance, ",");
+            while(stz.hasMoreTokens()){
+                alias.add(stz.nextToken());
+            }
+        }
+        List<Condition> conditions = new ArrayList<>();
+        String texteTableEtAlias = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replaceAll("WHERE.*","").trim();
+        StringTokenizer stz = new StringTokenizer(texteTableEtAlias," ");
+        String nomTable = stz.nextToken();
+        Relation table = dbManager.getCurentDatabase().getTable(nomTable);
+        String aliasTable = stz.nextToken();
+        System.out.println("aliasTAble :"+aliasTable+" nomTable :"+ nomTable );
+
+        String texteApresTable = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replace(texteTableEtAlias,"");
+        System.out.println("voici le texte apres le table et son alias: "+texteApresTable);
+        if(!(texteApresTable.contains("WHERE"))){
+            System.out.println("Il n'y a pas de where ");
+        }
+        else{
+            texteApresTable = texteApresTable.replace("WHERE","").trim();
+            System.out.println("voici le texte apres le where  : "+texteApresTable);
+            String[] tableauConditionTexte = texteApresTable.split(" AND ");
+            for(String c : tableauConditionTexte){
+                System.out.println("Condition : "+c);
+                conditions.add(Condition.ajouteCondition(table,aliasTable,c)); // on ajoute la condition à la liste de conditions
+            }
+        }
+        System.out.println("La commande SELECT à été bien parser !");
+
+        RelationScanner relationScanner = new RelationScanner(table,conditions);
+        ProjectOperator projectOperator = new ProjectOperator(table,aliasTable,relationScanner,alias);
+        projectOperator.affiche();
+
 
     }
 

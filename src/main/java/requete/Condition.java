@@ -162,11 +162,11 @@ public class Condition {
 
     // il faudra prendre en compte le cas où l'on compare un alias à un autre
 
-    public boolean estRespecter(relationnel.Record record){
+    public boolean estRespecter(Record record){
 
         if(constante!=null){ // 1er cas où l'on compare une valeur d'un record à une constante
-            System.out.println("ValRecord = "+record.getTuple().get(indiceColonne)+"CONSTANTE  = "+constante);
-            System.out.println("Test affichage type constante = "+constante.getClass().getName());
+            //System.out.println("CONDITION : EST RESPCETER : ValRecord = "+record.getTuple().get(indiceColonne)+" CONSTANTE  = "+constante);
+            //System.out.println("CONDITION : EST RESPCETER : Test affichage type constante = "+constante.getClass().getName());
             // faire une fonction pour délimiter le code plus tard
             if( constante instanceof String ) {
                 return estRespecterConstanteString(record);
