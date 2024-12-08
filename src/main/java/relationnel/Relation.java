@@ -56,7 +56,7 @@ public class Relation {
             if (element instanceof String){
                 //System.out.println("VERIF : L'element "+element+" est une chaine de caractère ");
                 for( char c : element.toString().toCharArray() ) {
-                buff.putChar(c);
+                    buff.putChar(c);
                 }
             }else if( element instanceof Integer){
                 //System.out.println("VERIF : L'element "+element+" est un int ");
@@ -330,7 +330,7 @@ public class Relation {
                 int octetRestantDispo = buffHeader.getInt();
                 buffHeader.position(buffHeader.position()-4);
                 buffHeader.putInt( octetRestantDispo- tailleRecord -8); // on déduit du nombre d'octet libre, la taille du record plus 8 octets pris par l'espace du slot +taille du record
-               System.out.println("Octet Restant desormais: " +(octetRestantDispo - tailleRecord -8));
+                System.out.println("Octet Restant desormais: " +(octetRestantDispo - tailleRecord -8));
             }
             i++;
             if(buffHeader.position()+4 < buffHeader.capacity()){
