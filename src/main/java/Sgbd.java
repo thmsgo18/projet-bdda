@@ -1,7 +1,4 @@
-import java.io.EOFException;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -125,7 +122,11 @@ public class Sgbd {
                     System.out.println("Vous n'avez pas taper le nom de la table");
                 }
 
+            }else if(texteCommande.startsWith("BULKINSERT INTO")) {
+                System.out.println("La commande choisi est " + texteCommande);
+                ProcessBulkInsertIntoCommand(texteCommande);
             }
+
             else if (texteCommande.contains("QUIT")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 quit = true;
@@ -140,6 +141,7 @@ public class Sgbd {
 
 
     }
+
     public void ProcessCreateDatabaseCommand(String texteCommande){ // Methode permettant de crée une BDD
         String[] tok = texteCommande.trim().split("CREATE DATABASE ");//on recupère que le nom de la BDD
         String nomDB = tok[1];// tok[0] == ""
@@ -343,6 +345,69 @@ public class Sgbd {
         }*/
 
 
+
+    }
+
+    public void ProcessBulkInsertIntoCommand(String  texteCommande){
+        String caracAsupp = "(,)";
+        for(char c : caracAsupp.toCharArray()){
+            texteCommande = texteCommande.replace(String.valueOf(c)," ");
+        }
+        texteCommande = texteCommande.replace("BULKINSERT INTO ","");
+        System.out.println("Texte remplacé :"+texteCommande);
+        StringTokenizer stz = new StringTokenizer(texteCommande, " ");
+        String nomRelation = stz.nextToken().trim();
+        String nomFichier =stz.nextToken().trim();
+        System.out.println("nomRelation :"+nomRelation+" nomFichier :"+nomFichier+"     longueur relation = "+nomRelation.length()+" longueur fichier = "+nomFichier.length());
+
+        try {
+            // On lit le fichier csv ligne par ligne
+            FileReader fr = new FileReader(nomFichier);
+            BufferedReader br = new BufferedReader(fr);
+            String ligne;
+            ArrayList<Object> tuple = new ArrayList<>();
+            Record record = new Record();
+            Relation table=null;
+            for( Relation r : this.dbManager.getCurentDatabase().getTables()){
+                if(r.getNomRelation().equals(nomRelation)){
+                    table=r;
+                    break;
+                }
+            }
+            if (table!=null){
+                while( (ligne = br.readLine()) != null ) {
+                    tuple.clear();
+                    // pour une ligne, plus tard faire une boucle pour toutes les lignes
+                    System.out.println("ligne à lire (tuple) = " + ligne);
+                    StringTokenizer st = new StringTokenizer(ligne, ";");
+                    int i = 0;
+                    while (st.hasMoreTokens()) {
+                        if (table.getColonnes().get(i).getTypeColonne().equals("CHAR") || table.getColonnes().get(i).getTypeColonne().equals("VARCHAR")) {
+                            tuple.add(st.nextToken().trim()); // On ajoute au tuple le token sous le format par defaut string
+                        } else if (table.getColonnes().get(i).getTypeColonne().equals("INT") || table.getColonnes().get(i).getTypeColonne().equals("INTEGER")) {
+                            tuple.add(Integer.parseInt(st.nextToken().trim())); // On convertit le token en int pour l'ajouter au tuple
+
+                        } else if (table.getColonnes().get(i).getTypeColonne().equals("REAL")) {
+                            float passage = (float) Double.parseDouble(st.nextToken().trim()); // On convertit le double en float ( dans le fichier csv il n'y a pas de ".f" pour signifier que le type est un float, il faut faire explicitement la conversion)
+                            tuple.add(passage); // On convertit le token en float pour l'ajouter au tuple
+
+                        } else {
+                            System.out.println("SGBD : BULK INSERT RECORD INTO COMMAND : Erreur : Le type reçu n'est pas valide et ne fait pas partie des types suivant : CHAR, VARCHAR, INT, REAL");
+                        }
+                        i++;
+                    }
+
+                    // On insère le record correspondant à chaque ligne du fichier
+                    System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND tuple : " + tuple);
+                    record.setTuple(tuple);
+                    table.InsertRecord(record);
+                }
+                System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND l'ensemble des records de la page :"+table.GetAllRecords()); // On tente de lire l'ensemble des records inséré
+            }
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
 
     }
 

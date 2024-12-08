@@ -407,11 +407,35 @@ public class Relation {
             rid =writeRecordToDataPage(record,pageDispo);
             System.out.println("Insertion du record réussi !!  "+rid);
         }else{
-            System.out.println(" !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert Record) !!!!");
+            // On alloue une nouvelle page de données à la relation si la headerPage a assez de place
+            ByteBuffer buffHeader = bufferManager.GetPage(headerPageId);
+            int nombreMaxPages = buffHeader.capacity()/4 -4;
+            int nombrePageCourante = buffHeader.getInt(0);
+            if(nombrePageCourante<nombreMaxPages){
+                try{
+                    addDataPage(); // on ajoute la page de données à la relation
+                } catch (EOFException e) {
+                    System.out.println(e.getMessage());
+                }
+                // On recommence l'insertion et cette fois ci, getFreeDataPageId devrait retourner la page qu'on vient de lier
+
+                System.out.println("RELATION : INSERT RECORD : On insère une page de données supplémentaire à la relation pour insérer le record "+record);
+                PageId pageDispo2 =getFreeDataPageId(octetCumulerRecord); // On cherche la page de données qu'on vient de lier à la header page
+                System.out.println("Page Dispo : "+pageDispo2);
+                if (pageDispo!=null) {
+                    rid = writeRecordToDataPage(record, pageDispo2);
+                    System.out.println("Insertion du record réussi !!  " + rid);
+                }
+            }else{
+                System.out.println("RELATION : INSERT RECORD : !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert Record) !!!!");
+
+            }
+            // On remets le dirty dans la position qu'il avait au départ car on a juste lu ici la header page
+            boolean dirtyPage = bufferManager.getDirtyPage(headerPageId);
+            bufferManager.FreePage(headerPageId,dirtyPage);
         }
         return rid; // retour du rid
     }
-
     public List<Record> GetAllRecords(){
         System.out.println("\n**************  DEBUT Get All Records   *********************");
 
