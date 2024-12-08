@@ -213,6 +213,7 @@ public class Sgbd {
                 System.out.println("Le type n'existe pas\nRedirection au Menu SGBD");
             }
         }
+        
         /*for(relationnel.ColInfo c : infoColonne){
             c.affiche_ColInfo();
         }*/
