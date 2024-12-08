@@ -1,3 +1,10 @@
+package test;
+
+import buffer.BufferManager;
+import espaceDisque.DBConfig;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
+
 import java.nio.ByteBuffer;
 
 public class BufferManagerTests {

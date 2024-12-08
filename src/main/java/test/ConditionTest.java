@@ -1,3 +1,14 @@
+package test;
+
+import buffer.BufferManager;
+import espaceDisque.DBConfig;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
+import relationnel.ColInfo;
+import relationnel.Relation;
+import requete.Condition;
+import relationnel.Record;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -51,7 +62,7 @@ public class ConditionTest {
 
 
     public static void ConditionDeuxValeursRecordTest( Relation table){
-        System.out.println("*********** Condition valRecord OP valRecord ************");
+        System.out.println("*********** requete.Condition valRecord OP valRecord ************");
 
         System.out.println("*************** Condition1 ******************");
         Condition condition = Condition.ajouteCondition(table,"e","e.Age=e.nombrePreferer");
@@ -73,7 +84,7 @@ public class ConditionTest {
 
 
 
-        List<Condition > listeCondition = new ArrayList<>();
+        List<Condition> listeCondition = new ArrayList<>();
         listeCondition.add(condition);
         listeCondition.add(condition2);
         listeCondition.add(condition3);
@@ -97,7 +108,7 @@ public class ConditionTest {
         }
     }
     public static void ConditionConstanteTest(Relation table){
-        System.out.println("*********** Condition valRecord OP constnante ************");
+        System.out.println("*********** requete.Condition valRecord OP constnante ************");
 
         System.out.println("*************** Condition1 ******************");
         Condition condition = Condition.ajouteCondition(table,"e","e.Age=20");
@@ -129,7 +140,7 @@ public class ConditionTest {
 
 
 
-        List<Condition > listeCondition = new ArrayList<>();
+        List<Condition> listeCondition = new ArrayList<>();
         listeCondition.add(condition);
         listeCondition.add(condition2);
         listeCondition.add(condition3);
@@ -158,7 +169,7 @@ public class ConditionTest {
     }
 
 
-    public static PageId ajouteHeaderPage(DiskManager diskManager,BufferManager bufferManager) {
+    public static PageId ajouteHeaderPage(DiskManager diskManager, BufferManager bufferManager) {
         System.out.println("**************  Initialisation d'une headerPage   *********************");
         // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
         PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible

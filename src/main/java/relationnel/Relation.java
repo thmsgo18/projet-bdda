@@ -1,7 +1,12 @@
+package relationnel;
+
+import buffer.BufferManager;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
+
 import java.io.EOFException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Relation {
@@ -33,7 +38,7 @@ public class Relation {
     }
 
 
-    public int writeRecordToBuffer(Record record, ByteBuffer buff,int pos) {
+    public int writeRecordToBuffer(Record record, ByteBuffer buff, int pos) {
         return (varchar) ? writeVariable(record, buff, pos): writeFixe(record, buff, pos);
     }
 
@@ -427,7 +432,7 @@ public class Relation {
                     System.out.println("Insertion du record réussi !!  " + rid);
                 }
             }else{
-                System.out.println("RELATION : INSERT RECORD : !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert Record) !!!!");
+                System.out.println("RELATION : INSERT RECORD : !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert relationnel.Record) !!!!");
 
             }
             // On remets le dirty dans la position qu'il avait au départ car on a juste lu ici la header page

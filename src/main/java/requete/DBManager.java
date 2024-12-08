@@ -1,5 +1,13 @@
-import org.json.JSONArray;
+package requete;
+
+import buffer.BufferManager;
+import espaceDisque.DBConfig;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
 import org.json.JSONObject;
+import relationnel.ColInfo;
+import relationnel.Relation;
+
 import java.io.FileReader;
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -48,7 +56,7 @@ public class DBManager {
             tablesDb.remove(this.databases.get(this.courantDatabase).getTable(nomTable));
             this.databases.get(this.courantDatabase).setTables(tablesDb);
         }else{
-            System.out.println("ERREUR : DBMANAGER : REMOVE_TABLE_FROM_CURRENT_DATABASE La table n'existe pas dans la Database courante");
+            System.out.println("ERREUR : DBMANAGER : REMOVE_TABLE_FROM_CURRENT_DATABASE La table n'existe pas dans la requete.Database courante");
         }
     }
 
@@ -154,7 +162,7 @@ public class DBManager {
             bfw.write("}"); // fermeture de de la première accolade
             bfw.close();
         }catch (IOException e) {
-            System.out.println("DBManager : SAVE STATE : Le fichier n'a pas pu être sauvegarder");
+            System.out.println("requete.DBManager : SAVE STATE : Le fichier n'a pas pu être sauvegarder");
             e.printStackTrace();
         }
     }
@@ -175,20 +183,20 @@ public class DBManager {
             JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
             for(int bd=0; bd< js.getJSONObject("Bases de données").getInt("Nbr BD"); bd++){ // Parcours de toutes les bases de données
                 String nomBD = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getString("Nom BD"); // Nom de la base de donnée
-                this.CreateDatabase(nomBD); // Création d'un DB dans DBManager
+                this.CreateDatabase(nomBD); // Création d'un DB dans requete.DBManager
                 this.SetCurrentDatabase(nomBD); // La DB créée devient la CurrentDB
                 List<Relation> tables = new ArrayList<Relation>(); // Création de la liste des tables de la DB
                 for(int r=0; r<js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getInt("Nbr Relations");r++){ // Parcours de toute les relations de la DB
                     String nomRelation = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getString("Nom relation"); // Nom de la relation
                     PageId headerPage = new PageId(js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(0),js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONArray("Header page").getInt(1)); // Header Page de la relation
                     int nbrColonnes = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getInt("Nombre colonnes"); //Nombre de colonnes de la relation
-                    List<ColInfo> listeColonnesInfo= new ArrayList<>(); // Création de la liste des ColInfo des colonnes de la relation
+                    List<ColInfo> listeColonnesInfo= new ArrayList<>(); // Création de la liste des relationnel.ColInfo des colonnes de la relation
                     for(int c=0; c<nbrColonnes;c++){ // Parcours de toute les colonnes
                         String nomColonne = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONObject("Colonnes").getJSONObject(String.valueOf(c)).getString("Nom Colonne"); // Nom de la colonne
                         String typeColonne = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONObject("Colonnes").getJSONObject(String.valueOf(c)).getString("Type Colonne"); // Type de la colonne
                         int tailleColonne = js.getJSONObject("Bases de données").getJSONObject(String.valueOf(bd)).getJSONObject("info BD").getJSONObject("Relations").getJSONObject(String.valueOf(r)).getJSONObject("Colonnes").getJSONObject(String.valueOf(c)).getInt("Taille Colonne"); // Taille de la colonne
-                        ColInfo cI = new ColInfo(nomColonne, typeColonne, tailleColonne); // Création de la ColInfo de la colonne
-                        listeColonnesInfo.add(cI); // Ajout, de la ColInfo cI, à la liste des ColInfo des colonnes de la relation
+                        ColInfo cI = new ColInfo(nomColonne, typeColonne, tailleColonne); // Création de la relationnel.ColInfo de la colonne
+                        listeColonnesInfo.add(cI); // Ajout, de la relationnel.ColInfo cI, à la liste des relationnel.ColInfo des colonnes de la relation
                     }
                     Relation relation = new Relation(nomRelation, nbrColonnes, headerPage, this.diskManager, this.bufferManager,listeColonnesInfo); // Création de la relation
                     this.AddTableToCurrentDatabase(relation); // Ajout de la relation à la DB
@@ -200,7 +208,7 @@ public class DBManager {
         }
     }
 
-    public static PageId ajouteHeaderPage(DiskManager diskManager,BufferManager bufferManager) {
+    public static PageId ajouteHeaderPage(DiskManager diskManager, BufferManager bufferManager) {
         System.out.println("**************  Initialisation d'une headerPage   *********************");
         // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
         PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible

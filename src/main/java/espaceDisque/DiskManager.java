@@ -1,8 +1,11 @@
+package espaceDisque;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
+
 import org.json.*;
 
 public class DiskManager {

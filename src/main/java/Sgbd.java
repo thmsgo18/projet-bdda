@@ -1,3 +1,12 @@
+import buffer.BufferManager;
+import espaceDisque.DBConfig;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
+import relationnel.ColInfo;
+import relationnel.Record;
+import relationnel.Relation;
+import requete.DBManager;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.Scanner;
@@ -141,7 +150,6 @@ public class Sgbd {
 
 
     }
-
     public void ProcessCreateDatabaseCommand(String texteCommande){ // Methode permettant de crée une BDD
         String[] tok = texteCommande.trim().split("CREATE DATABASE ");//on recupère que le nom de la BDD
         String nomDB = tok[1];// tok[0] == ""
@@ -198,7 +206,7 @@ public class Sgbd {
                 System.out.println("Le type n'existe pas\nRedirection au Menu SGBD");
             }
         }
-        /*for(ColInfo c : infoColonne){
+        /*for(relationnel.ColInfo c : infoColonne){
             c.affiche_ColInfo();
         }*/
         PageId headerPage = ajouteHeaderPage(this.diskManager,this.bufferManager);// attribution d'un headerPage
@@ -285,9 +293,9 @@ public class Sgbd {
         String nom = stz.nextToken();
         System.out.println("Nom :"+nom);
         ArrayList<Object> values = new ArrayList<>();
-        Record record = new Record();
-        for(Relation r : this.dbManager.getCurentDatabase().getTables()){
-            if(r.getNomRelation().equals(nom)){
+        relationnel.Record record = new relationnel.Record();
+        for(Relation r : this.dbManager.getCurentDatabase().getTables()){ // On recherche la table correspondant au nom inscrit dans la commande
+            if(r.getNomRelation().equals(nom)){ // Si on la trouve, on continue le programme et on fait un break pour éviter de poursuivre la boucle inutilement
                 for(ColInfo c : r.getColonnes()){
                     if(c.getTypeColonne().equals("CHAR")){
                         String carac = stz.nextToken();
@@ -317,37 +325,12 @@ public class Sgbd {
                 }
                 record.setTuple(values);
                 r.InsertRecord(record);
-                r.GetAllRecords();
 
+                System.out.println("SGBD : PROCESS INSERT INTO COMMAND : ensemble des records "+r.GetAllRecords());
+                break;
             }
         }
-
-        /*while(stz.hasMoreTokens()){
-            String element = stz.nextToken();
-            if(element.contains("123456789")){
-                int num = Integer.parseInt(element);
-                values.add(num);
-            } else if (element.contains(".")) {
-                double num = Double.parseDouble(element);
-                values.add(num);
-            }
-            else{
-                values.add(element);
-            }
-        }
-
-        Record record = new Record(values);
-        for(Relation r : this.dbManager.getCurentDatabase().getTables()){
-            if(r.getNomRelation().equals(nom)){
-                r.InsertRecord(record);
-                r.GetAllRecords();
-            }
-        }*/
-
-
-
     }
-
     public void ProcessBulkInsertIntoCommand(String  texteCommande){
         String caracAsupp = "(,)";
         for(char c : caracAsupp.toCharArray()){
@@ -366,7 +349,7 @@ public class Sgbd {
             BufferedReader br = new BufferedReader(fr);
             String ligne;
             ArrayList<Object> tuple = new ArrayList<>();
-            Record record = new Record();
+            relationnel.Record record = new Record();
             Relation table=null;
             for( Relation r : this.dbManager.getCurentDatabase().getTables()){
                 if(r.getNomRelation().equals(nomRelation)){
@@ -379,7 +362,7 @@ public class Sgbd {
                     tuple.clear();
                     // pour une ligne, plus tard faire une boucle pour toutes les lignes
                     System.out.println("ligne à lire (tuple) = " + ligne);
-                    StringTokenizer st = new StringTokenizer(ligne, ";");
+                    StringTokenizer st = new StringTokenizer(ligne, ";,");
                     int i = 0;
                     while (st.hasMoreTokens()) {
                         if (table.getColonnes().get(i).getTypeColonne().equals("CHAR") || table.getColonnes().get(i).getTypeColonne().equals("VARCHAR")) {
@@ -459,3 +442,4 @@ public class Sgbd {
 
 
 }
+

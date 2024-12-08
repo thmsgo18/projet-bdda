@@ -1,3 +1,9 @@
+package test;
+
+import espaceDisque.DBConfig;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -10,13 +16,13 @@ public class DiskManagerTests {
         System.out.println("Thomas vaut 8 elixir");
         DBConfig config;
         config = DBConfig.LoadDBConfig("src/main/json/file-config.json"); // Création d'un objet DBconfig avec la config d'un fichier json
-        DiskManager dM = new DiskManager(config); // Création d'un DiskManager
+        DiskManager dM = new DiskManager(config); // Création d'un espaceDisque.DiskManager
 
 
 
        // Tests pour ajouter 1000 pages de données et les remplir de caractères
         TestAllocPage(dM,1000);
-        //dM.DeallocPage(new PageId(0,1));
+        //dM.DeallocPage(new espaceDisque.PageId(0,1));
 
 
         // ATTENTION !!! fonction permettant de supprimer tous les fichiers (à utiliser seulement pour les tests générant trop de fichier,
@@ -28,7 +34,7 @@ public class DiskManagerTests {
 
     }
 
-    public static void TestAllocPage(DiskManager dM,int n){
+    public static void TestAllocPage(DiskManager dM, int n){
         System.out.println("************* DEBUT Test de AllocPage *************");
 
         System.out.println("On va pour ce test alloué 1000 pages de données, où l'on va écrire pour remplir de caractère T chaque page");

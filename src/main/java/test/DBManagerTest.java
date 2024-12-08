@@ -1,3 +1,14 @@
+package test;
+
+import buffer.BufferManager;
+import espaceDisque.DBConfig;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
+import relationnel.ColInfo;
+import relationnel.Relation;
+import requete.DBManager;
+import relationnel.Record;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -84,7 +95,7 @@ public class DBManagerTest {
 
 
 
-    public static PageId ajouteHeaderPage(DiskManager diskManager,BufferManager bufferManager) {
+    public static PageId ajouteHeaderPage(DiskManager diskManager, BufferManager bufferManager) {
         System.out.println("**************  Initialisation d'une headerPage   *********************");
         // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
         PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible

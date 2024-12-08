@@ -1,6 +1,12 @@
+package requete;
+
+import inter.IRecordIterator;
+import relationnel.Record;
+import relationnel.Relation;
+
 import java.util.List;
 
-public class RelationScanner implements IRecordIterator<Record> {
+public class RelationScanner implements IRecordIterator<relationnel.Record> {
 
     private List<Record> allRecords;
     private int currentRecord;
@@ -10,7 +16,7 @@ public class RelationScanner implements IRecordIterator<Record> {
         this.currentRecord = 0;
     }
 
-    public Record GetNextRecord() {
+    public relationnel.Record GetNextRecord() {
         return allRecords.get(this.currentRecord++);
     }
 

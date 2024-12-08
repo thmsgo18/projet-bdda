@@ -1,3 +1,7 @@
+package requete;
+
+import relationnel.Relation;
+
 import java.util.ArrayList;
 import java.util.List;
 

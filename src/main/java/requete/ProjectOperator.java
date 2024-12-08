@@ -1,14 +1,17 @@
-import jdk.incubator.vector.VectorOperators;
+package requete;
 
-public class ProjectOperator implements IRecordIterator<Record> {
+import inter.IRecordIterator;
+import relationnel.Record;
+
+public class ProjectOperator implements IRecordIterator<relationnel.Record> {
 
     private IRecordIterator<Record> operateurFils;
 
-    public ProjectOperator(IRecordIterator<Record> operateurFils) {
+    public ProjectOperator(IRecordIterator<relationnel.Record> operateurFils) {
         this.operateurFils = operateurFils;
     }
 
-    public Record GetNextRecord(){
+    public relationnel.Record GetNextRecord(){
         return operateurFils.GetNextRecord();
     }
 

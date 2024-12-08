@@ -1,3 +1,13 @@
+package test;
+
+import buffer.BufferManager;
+import espaceDisque.DBConfig;
+import espaceDisque.DiskManager;
+import espaceDisque.PageId;
+import relationnel.ColInfo;
+import relationnel.Relation;
+import relationnel.Record;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
@@ -87,11 +97,11 @@ public class RelationTest {
         System.out.println("\n**************  on va récupérer les records de la page 0,1  *********************");
 
         ArrayList<Record> liste1 = relation.getRecordsInDataPage(new PageId(0,1));
-        //ArrayList<Record> liste2 =relation.getRecordsInDataPage(new PageId(1,0));
+        //ArrayList<relationnel.Record> liste2 =relation.getRecordsInDataPage(new espaceDisque.PageId(1,0));
         System.out.println(" Dans la page 0,1 on a les recors suivants :");
         int i =0;
         for(Record r : liste1) {
-            System.out.println("Record °"+i+" : "+r.toString());
+            System.out.println("relationnel.Record °"+i+" : "+r.toString());
             i++;
         }
         System.out.println("\n************** Fin Récupération de record dans des pages de donneés  *********************");
@@ -99,8 +109,8 @@ public class RelationTest {
         /*
         System.out.println(" Dans la page 1,0 on a les recors suivants :");
         int y =0;
-        for(Record r : liste2) {
-            System.out.println("Record °"+y+" : "+r.toString());
+        for(relationnel.Record r : liste2) {
+            System.out.println("relationnel.Record °"+y+" : "+r.toString());
             y++;
         }
         */
@@ -202,7 +212,7 @@ public class RelationTest {
     }
 
 
-    public static PageId ajouteHeaderPage(DiskManager diskManager,BufferManager bufferManager) {
+    public static PageId ajouteHeaderPage(DiskManager diskManager, BufferManager bufferManager) {
         System.out.println("**************  Initialisation d'une headerPage   *********************");
         // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
         PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible

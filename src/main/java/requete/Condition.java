@@ -1,4 +1,8 @@
-import java.util.Map;
+package requete;
+
+import relationnel.Record;
+import relationnel.Relation;
+
 import java.util.StringTokenizer;
 
 public class Condition {
@@ -158,7 +162,7 @@ public class Condition {
 
     // il faudra prendre en compte le cas où l'on compare un alias à un autre
 
-    public boolean estRespecter(Record record){
+    public boolean estRespecter(relationnel.Record record){
 
         if(constante!=null){ // 1er cas où l'on compare une valeur d'un record à une constante
             System.out.println("ValRecord = "+record.getTuple().get(indiceColonne)+"CONSTANTE  = "+constante);
@@ -199,7 +203,7 @@ public class Condition {
 
 
 
-    public boolean estRespecterConstanteNombre(Record record) {
+    public boolean estRespecterConstanteNombre(relationnel.Record record) {
         float constanteNombre= (float) constante;
         float element;
         // On utlilise le transtypage pour la comparaison entre int et float
@@ -311,7 +315,7 @@ public class Condition {
 
     }
 
-    public boolean estRespecterDeuxValeursRecordString(Record record) {
+    public boolean estRespecterDeuxValeursRecordString(relationnel.Record record) {
         String element = (String) record.getTuple().get(indiceColonne);
         String element2 = (String) record.getTuple().get(indiceColonne2);
         // on gère le cas où l'on souhaite comparer un string à un int ou float
@@ -346,7 +350,7 @@ public class Condition {
     }
 
 
-    public boolean estRespecterValeursRecordNombres(Record record) {
+    public boolean estRespecterValeursRecordNombres(relationnel.Record record) {
         float element = (int) record.getTuple().get(indiceColonne);
         float element2;
         // On gère le cas où l'on compare un int à un string

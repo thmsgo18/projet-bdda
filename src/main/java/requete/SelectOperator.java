@@ -1,9 +1,12 @@
+package requete;
 
+import inter.IRecordIterator;
+import relationnel.Record;
 
-public class SelectOperator implements IRecordIterator<Record> {
+public class SelectOperator implements IRecordIterator<relationnel.Record> {
 
-    private IRecordIterator<Record> operateurFils;
-    //private Condition condition; le temps que Ali finit la classe condition
+    private IRecordIterator<relationnel.Record> operateurFils;
+    //private requete.Condition condition; le temps que Ali finit la classe condition
     private boolean condition;
 
     public SelectOperator(IRecordIterator<Record> operateurFils, Boolean condition) {
@@ -14,12 +17,12 @@ public class SelectOperator implements IRecordIterator<Record> {
 
     //Vérifie si le record venant de l'operateur fils remplit les conditions "WHERE" pour le return
 
-    public SelectOperator(IRecordIterator<Record> operateurFils) {
+    public SelectOperator(IRecordIterator<relationnel.Record> operateurFils) {
         this.operateurFils = operateurFils;
     }
 
-    public Record GetNextRecord(){
-        Record record = new Record();
+    public relationnel.Record GetNextRecord(){
+        relationnel.Record record = new relationnel.Record();
 
         while((record = operateurFils.GetNextRecord()) != null){
             if(condition){

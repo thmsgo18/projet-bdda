@@ -1,3 +1,7 @@
+package relationnel;
+
+import espaceDisque.PageId;
+
 public class RecordId {
     private PageId pageId;
     private int slotIdx;
@@ -21,6 +25,6 @@ public class RecordId {
         this.pageId = pageId;
     }
     public String toString() {
-        return "[ PageId :{ "+ pageId + "} , Slot :{" + slotIdx+"} ]";
+        return "[ espaceDisque.PageId :{ "+ pageId + "} , Slot :{" + slotIdx+"} ]";
     }
 }
