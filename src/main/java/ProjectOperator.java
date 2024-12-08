@@ -4,6 +4,10 @@ public class ProjectOperator implements IRecordIterator<Record> {
 
     private IRecordIterator<Record> operateurFils;
 
+    public ProjectOperator(IRecordIterator<Record> operateurFils) {
+        this.operateurFils = operateurFils;
+    }
+
     public Record GetNextRecord(){
         return operateurFils.GetNextRecord();
     }

@@ -14,6 +14,10 @@ public class SelectOperator implements IRecordIterator<Record> {
 
     //Vérifie si le record venant de l'operateur fils remplit les conditions "WHERE" pour le return
 
+    public SelectOperator(IRecordIterator<Record> operateurFils) {
+        this.operateurFils = operateurFils;
+    }
+
     public Record GetNextRecord(){
         Record record = new Record();
 
