@@ -34,7 +34,9 @@ public class Sgbd {
 
     public static void main(String[]args) throws EOFException {
         DBConfig config;
-        config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        String cheminFichierConfig= args[0];
+        System.out.println("NOM FICHIER CONFIG : "+cheminFichierConfig);
+        config = DBConfig.LoadDBConfig(cheminFichierConfig);
         Sgbd sgbd = new Sgbd(config);
         sgbd.run();
     }
@@ -213,7 +215,7 @@ public class Sgbd {
                 System.out.println("Le type n'existe pas\nRedirection au Menu SGBD");
             }
         }
-        
+
         /*for(relationnel.ColInfo c : infoColonne){
             c.affiche_ColInfo();
         }*/
@@ -339,6 +341,7 @@ public class Sgbd {
             }
         }
     }
+
     public void ProcessBulkInsertIntoCommand(String  texteCommande){
         String caracAsupp = "(,)";
         for(char c : caracAsupp.toCharArray()){

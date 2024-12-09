@@ -5,7 +5,7 @@ SRC_DIR="src/main/java"
 OUTPUT_DIR="out"
 LIB_DIR="libs"
 JSON_JAR="$LIB_DIR/json-20240303.jar"  # Remplacez par le nom exact du fichier JAR
-CONFIG_FILE="src/main/json/file-config.json"  # Chemin du fichier JSON de configuration
+DEFAULT_CONFIG_FILE="file-config.json"  # Fichier JSON de configuration par défaut
 
 # Vérification de la bibliothèque JSON
 if [ ! -f "$JSON_JAR" ]; then
@@ -14,9 +14,9 @@ if [ ! -f "$JSON_JAR" ]; then
     exit 1
 fi
 
-# Vérification du fichier de configuration JSON
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Erreur : Le fichier de configuration $CONFIG_FILE est introuvable."
+# Vérification du fichier de configuration JSON par défaut
+if [ ! -f "$DEFAULT_CONFIG_FILE" ]; then
+    echo "Erreur : Le fichier de configuration par défaut $DEFAULT_CONFIG_FILE est introuvable."
     echo "Veuillez vérifier que le fichier JSON est bien placé."
     exit 1
 fi
@@ -35,7 +35,15 @@ fi
 
 echo "Compilation réussie."
 
+# Détection du fichier de configuration fourni en paramètre
+CONFIG_FILE="${1:-$DEFAULT_CONFIG_FILE}"
+
+# Vérification du fichier de configuration
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Erreur : Le fichier de configuration $CONFIG_FILE est introuvable."
+    exit 1
+fi
+
 # Exécution de l'application principale
-# Ajustez ici si Sgbd est dans un package, par exemple : java -cp "$OUTPUT_DIR:$JSON_JAR" monpackage.Sgbd "$CONFIG_FILE"
 echo "Exécution de l'application principale avec le fichier de configuration $CONFIG_FILE..."
 java -cp "$OUTPUT_DIR:$JSON_JAR" Sgbd "$CONFIG_FILE"
