@@ -1,17 +1,42 @@
-Pour executer le programme sur un terminal Linux(MacOS également) veuillez vous placer à la racine du projet : "projet-bdda"
+# Guide d'Exécution du Programme
 
-2 manières se présentent alors à vous pour exécuter le programme. 
+Ce guide explique comment exécuter le programme sur un terminal Linux ou macOS. **Assurez-vous de vous placer à la racine du projet : `projet-bdda`.**
 
-1. Executer le programme sans préciser de fichier de configuration
+---
+## Pré-requis
 
-Dans ce premier cas, le fichier de configuration choisi par defaut sera celui que vous retrouverez dans le répertoire courant : "file-config.json"
+Avant de lancer le programme, vérifiez les éléments suivants :
 
-Ligne de commande : ./run.sh
+### 1. Terminal Linux ou macOS
+Le script est compatible avec ces systèmes uniquement.
+### 2. Java
+Assurez-vous que Java est installé sur votre machine. Vous pouvez vérifier sa version avec la commande suivante :
+``` bash 
+java -version
+```
+### Script run.sh
+Si nécessaire, rendez le script exécutable avec la commande :
+```bash
+chmod +x run.sh
+```
+---
+## Modes d'Exécution
 
-2. Executer le programme avec fichier de configuration
+Le programme peut être lancé de deux manières différentes :
 
-Dans ce 2ème cas, il vous est possible de vous même placé un fichier de configuration que le programme utilisera
+### 1. Exécution avec le fichier de configuration par défaut
 
-Ligne de commande : ./run.sh cheminFichierConfiguration 
+Dans ce mode, le programme utilise automatiquement le fichier `file-config.json` situé dans le répertoire courant.
 
+### Commande :
+```bash
+./run.sh
+```
+### 2. Exécution avec un fichier de configuration personalisé
+Vous pouvez spécifier un fichier de configuration spécifique que le programme utilisera.
+
+### Commande :
+```bash
+./run.sh cheminFichierConfiguration
+```
 
