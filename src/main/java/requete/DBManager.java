@@ -93,7 +93,7 @@ public class DBManager {
     }
 
     public void SaveState(){
-        String chemin = dbConfig.getDbpath()+"/../databases.save.json";
+        String chemin = dbConfig.getDbpath()+"/databases.save.json";
         try{
             FileWriter fw = new FileWriter(chemin);
             BufferedWriter bfw = new BufferedWriter(fw);
@@ -168,7 +168,7 @@ public class DBManager {
     }
 
     public void LoadState(){
-        String chemin = dbConfig.getDbpath()+"/../databases.save.json";
+        String chemin = dbConfig.getDbpath()+"/databases.save.json";
         try{
             FileReader fr = new  FileReader(chemin); //Utilisation des classes FileReader et BufferReader pour lire le fichier
             BufferedReader bfr = new BufferedReader(fr);
