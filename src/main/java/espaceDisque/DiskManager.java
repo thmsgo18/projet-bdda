@@ -190,26 +190,29 @@ public class DiskManager {
                 bfw.write("{"); // ouverture de la première accolade
                 bfw.newLine(); // revient à la ligne
                 bfw.write("}"); // fermeture de de la première accolade
+                bfw.close();
+            }else{
+                FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
+                BufferedReader bfr = new BufferedReader(fr);
+                StringBuilder sb =new StringBuilder();
+                String ligne;
+                while((ligne = bfr.readLine())!=null){ //line vaut la ligne du fichier(ex: si fichier contient une ligne : "dbpath : ././DB" alors line vaut dbpath. boucle continue jusqu'a plus de ligne.
+                    sb.append(ligne); // on ajoute la ligne au StringBuffer car StringBuffer est plus flexible d'utilisation.
+                }
+                bfr.close();//Fermeture de la lecture du fichier
+                JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
+                pageCourante = new PageId(js.getJSONArray("pageCourante").getInt(0),js.getJSONArray("pageCourante").getInt(1));
+                pagesDesaloc.clear(); // supprime les éléments de la liste des pages désallou&s pour les remplir du fichier dm.save.json
+                JSONObject pagesDesallouesJson= js.getJSONObject("pageDesalloues"); // representation de l'objet Json pageDesalloues
+                JSONArray page;
+                // Parcourt l'ensemble des clés de l'objet JSON, puis enregistre les listes correspondants aux valeurs des pageID
+                for(String key : pagesDesallouesJson.keySet()){
+                    page = pagesDesallouesJson.getJSONArray(key);
+                    pagesDesaloc.add( new PageId(page.getInt(0),page.getInt(1)));
+                }
             }
             // Vérifier si le fichier existe si non le créer. je ne sais pas si on doit le faire aussi ici.
-            FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
-            BufferedReader bfr = new BufferedReader(fr);
-            StringBuilder sb =new StringBuilder();
-            String ligne;
-            while((ligne = bfr.readLine())!=null){ //line vaut la ligne du fichier(ex: si fichier contient une ligne : "dbpath : ././DB" alors line vaut dbpath. boucle continue jusqu'a plus de ligne.
-                sb.append(ligne); // on ajoute la ligne au StringBuffer car StringBuffer est plus flexible d'utilisation.
-            }
-            bfr.close();//Fermeture de la lecture du fichier
-            JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
-            pageCourante = new PageId(js.getJSONArray("pageCourante").getInt(0),js.getJSONArray("pageCourante").getInt(1));
-            pagesDesaloc.clear(); // supprime les éléments de la liste des pages désallou&s pour les remplir du fichier dm.save.json
-            JSONObject pagesDesallouesJson= js.getJSONObject("pageDesalloues"); // representation de l'objet Json pageDesalloues
-            JSONArray page;
-            // Parcourt l'ensemble des clés de l'objet JSON, puis enregistre les listes correspondants aux valeurs des pageID
-            for(String key : pagesDesallouesJson.keySet()){
-                page = pagesDesallouesJson.getJSONArray(key);
-                pagesDesaloc.add( new PageId(page.getInt(0),page.getInt(1)));
-            }
+
         }catch(IOException io){
             io.printStackTrace();
         }
