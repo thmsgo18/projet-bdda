@@ -182,7 +182,14 @@ public class DBManager {
                 BufferedWriter bfw = new BufferedWriter(fw);
                 bfw.write("{"); // ouverture de la première accolade
                 bfw.newLine(); // revient à la ligne
+                bfw.write("    \"Bases de données\":{"); // ouverture accolade Bases de données
+                bfw.newLine(); // revient à la ligne
+                bfw.write("        \"Nbr BD\": 0");
+                bfw.newLine();
+                bfw.write("    }"); // fermeture accolade Base de données
+                bfw.newLine();
                 bfw.write("}"); // fermeture de de la première accolade
+                bfw.close();
             }
             // Vérifier si le fichier existe et si non le créé.
             FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
