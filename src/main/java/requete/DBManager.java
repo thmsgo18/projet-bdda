@@ -178,6 +178,11 @@ public class DBManager {
             File file = new File(chemin);
             if(!file.exists()){
                 file.createNewFile();
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter bfw = new BufferedWriter(fw);
+                bfw.write("{"); // ouverture de la première accolade
+                bfw.newLine(); // revient à la ligne
+                bfw.write("}"); // fermeture de de la première accolade
             }
             // Vérifier si le fichier existe et si non le créé.
             FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
