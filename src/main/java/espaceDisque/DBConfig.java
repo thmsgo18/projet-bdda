@@ -36,7 +36,7 @@ public class DBConfig{
             JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
             String path = js.getString("dbpath");
             long pagesizeMax = js.getLong("pagesize");
-            long filesizeMax = js.getLong("filesize");
+            long filesizeMax = js.getLong("dm_maxfilesize");
             int bm_buffercount = js.getInt("bm_buffercount");
             String bm_policy = js.getString("bm_policy");
             return new DBConfig(path,pagesizeMax,filesizeMax, bm_buffercount,bm_policy);//recupere la valeur de la clé dbpath et retourne une nouvelle instance de espaceDisque.DBConfig.
