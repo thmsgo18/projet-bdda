@@ -189,11 +189,11 @@ public class DiskManager {
                 BufferedWriter bfw = new BufferedWriter(fw);
                 bfw.write("{"); // ouverture de la première accolade
                 bfw.newLine(); // revient à la ligne
-                bfw.write("    \"pageDesalloues\":\"\","); // ouverture accolade Desalloues
+                bfw.write("    \"pageDesalloues\":{},"); // ouverture accolade Desalloues
                 bfw.newLine(); // revient à la ligne
-                bfw.write("    \"pageCourante\":\"\"");
+                bfw.write("    \"pageCourante\":[0,0]");
                 bfw.newLine(); // revient à la ligne
-                bfw.write("}"); // fermeture de de la première accolade
+                bfw.write("}"); // fermeture de la première accolade
                 bfw.close();
             }else{
                 FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
@@ -215,7 +215,6 @@ public class DiskManager {
                     pagesDesaloc.add( new PageId(page.getInt(0),page.getInt(1)));
                 }
             }
-            // Vérifier si le fichier existe si non le créer. je ne sais pas si on doit le faire aussi ici.
 
         }catch(IOException io){
             io.printStackTrace();
