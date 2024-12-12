@@ -143,7 +143,7 @@ public class DiskManager {
 
 
     public void SaveState(){
-        String chemin = dbConfig.getDbpath()+"/../dm.save.json";
+        String chemin = dbConfig.getDbpath()+"/dm.save.json";
         try{
             FileWriter fw = new FileWriter(chemin);
             BufferedWriter bfw = new BufferedWriter(fw);
@@ -175,7 +175,7 @@ public class DiskManager {
     }
 
     public void LoadState(){
-        String chemin = dbConfig.getDbpath()+"/../dm.save.json";
+        String chemin = dbConfig.getDbpath()+"/dm.save.json";
         try{
             FileReader fr = new  FileReader(chemin); //Utilisation des classes FileReader et BufferReader pour lire le fichier
             BufferedReader bfr = new BufferedReader(fr);
