@@ -472,6 +472,10 @@ public class Sgbd {
         }
         else{
             texteApresTable = texteApresTable.replace("WHERE","").trim();
+            if(texteApresTable.contains("\"")||texteApresTable.contains("ʺ")){
+                texteApresTable = texteApresTable.replace("\"","").trim();
+                texteApresTable = texteApresTable.replace("ʺ","").trim();
+            }
             //System.out.println("voici le texte apres le where  : "+texteApresTable);
             String[] tableauConditionTexte = texteApresTable.split(" AND ");
             for(String c : tableauConditionTexte){
@@ -521,6 +525,10 @@ public class Sgbd {
         }
         else{
             texteApresWhere = texteApresWhere.replace("WHERE","").trim();
+            /*if(texteApresWhere.contains("\"")||texteApresWhere.contains("ʺ")){
+                texteApresWhere = texteApresWhere.replace("\"","").trim();
+                texteApresWhere = texteApresWhere.replace("ʺ","").trim();
+            }*/
            // System.out.println("voici le texte apres le where  : "+texteApresWhere);
             String[] tableauConditionTexte = texteApresWhere.split(" AND ");
             for(String c : tableauConditionTexte){
