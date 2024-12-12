@@ -30,6 +30,10 @@ public class Record {
         this.tuple = tuple;
     }
 
+    public void addTuple(List<Object> tuple) {
+        this.tuple.addAll(tuple);
+    }
+
 
     public void ajouteValeurTuple(Object valeur) {
         tuple.add(valeur);

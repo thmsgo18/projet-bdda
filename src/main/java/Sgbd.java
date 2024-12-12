@@ -2,13 +2,11 @@ import buffer.BufferManager;
 import espaceDisque.DBConfig;
 import espaceDisque.DiskManager;
 import espaceDisque.PageId;
+import espaceDisque.PageOrientedJoinOperator;
 import relationnel.ColInfo;
 import relationnel.Record;
 import relationnel.Relation;
-import requete.Condition;
-import requete.DBManager;
-import requete.ProjectOperator;
-import requete.RelationScanner;
+import requete.*;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -34,11 +32,20 @@ public class Sgbd {
 
     public static void main(String[]args) throws EOFException {
         DBConfig config;
-        String cheminFichierConfig= args[0];
-        System.out.println("NOM FICHIER CONFIG : "+cheminFichierConfig);
+        String cheminFichierConfig="";
+
+        if (args.length == 0) {
+            cheminFichierConfig = "file-config.json";
+        }else{
+            cheminFichierConfig = args[0];
+        }
+
+        // /System.out.println("NOM FICHIER CONFIG : "+cheminFichierConfig);
         config = DBConfig.LoadDBConfig(cheminFichierConfig);
+
         Sgbd sgbd = new Sgbd(config);
         sgbd.run();
+
     }
 
     public void run() throws EOFException {  //Méthode pour utiliser le SGDB
@@ -143,6 +150,9 @@ public class Sgbd {
             }else if(texteCommande.startsWith("SELECT")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 ProcessSelectCommand(texteCommande);
+            }else if (texteCommande.startsWith("TEST")) {
+                System.out.println("La commande choisi est " + texteCommande);
+                ProcessTestCommand(texteCommande);
             }
 
             else if (texteCommande.contains("QUIT")) {
@@ -159,23 +169,29 @@ public class Sgbd {
 
 
     }
+
+    private void ProcessTestCommand(String texteCommande) {
+
+
+    }
+
     public void ProcessCreateDatabaseCommand(String texteCommande){ // Methode permettant de crée une BDD
         String[] tok = texteCommande.trim().split("CREATE DATABASE ");//on recupère que le nom de la BDD
         String nomDB = tok[1];// tok[0] == ""
-        System.out.println("Le nom de la database : "+nomDB+" La taille est : "+nomDB.length());
+        //System.out.println("Le nom de la database : "+nomDB+" La taille est : "+nomDB.length());
         dbManager.CreateDatabase(nomDB);//methode pour instancier la BDD dans le SGBD
         for(String key : dbManager.getDatabases().keySet()){
-            System.out.println("Le nom de la database : "+key+" La taille est : "+key.length());
+            //System.out.println("Le nom de la database : "+key+" La taille est : "+key.length());
         }
     }
 
     public void ProcessSetDatabaseCommand(String texteCommande){
         String[] tok = texteCommande.trim().split("SET DATABASE ");//on recupère que le nom de la BDD
         String nomDB = tok[1];
-        System.out.println("Le nom de la database : "+nomDB+" La taille est : "+nomDB.length());
+        //System.out.println("Le nom de la database : "+nomDB+" La taille est : "+nomDB.length());
         dbManager.SetCurrentDatabase(nomDB);//methode pour mettre la BDD courant
         for(String key : dbManager.getDatabases().keySet()){
-            System.out.println("Le nom de la database1111 : "+key+" La taille est : "+key.length());
+           // System.out.println("Le nom de la database1111 : "+key+" La taille est : "+key.length());
         }
 
     }
@@ -183,7 +199,7 @@ public class Sgbd {
     public void ProcessCreateTableCommand(String texteCommande) throws EOFException {
         Relation r;
         String caracAsupp = "(:,)";
-        System.out.println("La commande avant :"+texteCommande);
+        //System.out.println("La commande avant :"+texteCommande);
 
         for(char c : caracAsupp.toCharArray()){
             texteCommande = texteCommande.replace(String.valueOf(c)," "); //On supprime les caractère (:,) pour faciliter le parsing
@@ -191,7 +207,7 @@ public class Sgbd {
 
         texteCommande = texteCommande.replace("CREATE TABLE ","");//on remplace CREATE TABLE par ""
 
-        System.out.println("La commande après :"+texteCommande);
+        //System.out.println("La commande après :"+texteCommande);
         StringTokenizer stz = new StringTokenizer(texteCommande, " "); //on tokenize, tout la chaine de caractere qui seront délimiter par des " ".
         List<ColInfo> infoColonne = new ArrayList<ColInfo>();
         String nomTab = stz.nextToken();//premier tok toujours le nom
@@ -199,27 +215,27 @@ public class Sgbd {
         while(stz.hasMoreTokens()){
 
             String nom = stz.nextToken();//nom de la colonne
-            System.out.println("Le nom : "+nom);
+            //System.out.println("Le nom : "+nom);
             String type = stz.nextToken();//type de la colonne
-            System.out.println("Le type : "+type);
+            //System.out.println("Le type : "+type);
 
             if(type.equals("REAL")||type.equals("INT")){
                 infoColonne.add(new ColInfo(nom,type,4));//cas pour INT ou REAL
             }
             else if(type.equals("VARCHAR")||type.equals("CHAR")){
                 int tailleCol = 2*Integer.parseInt(stz.nextToken());//cas pour CHAR ou VARCHAR
-                System.out.println("Le taille : "+tailleCol);
+                //System.out.println("Le taille : "+tailleCol);
                 infoColonne.add(new ColInfo(nom,type,tailleCol));
             }
             else{
-                System.out.println("Le type n'existe pas\nRedirection au Menu SGBD");
+                //System.out.println("Le type n'existe pas\nRedirection au Menu SGBD");
             }
         }
 
         /*for(relationnel.ColInfo c : infoColonne){
             c.affiche_ColInfo();
         }*/
-        PageId headerPage = ajouteHeaderPage(this.diskManager,this.bufferManager);// attribution d'un headerPage
+        PageId headerPage = ajouteHeaderPage(this.diskManager);// attribution d'un headerPage
         r = new Relation(nomTab,infoColonne.size(),headerPage,this.diskManager,this.bufferManager,infoColonne);
         r.addDataPage();
         this.dbManager.AddTableToCurrentDatabase(r);
@@ -265,7 +281,7 @@ public class Sgbd {
     public void ProcessDropDatabaseCommand(String texteCommande){//meme chose que la methode precedente mais on desalloue toute la database courant
         String[]tok = texteCommande.trim().split("DROP DATABASE ");
         String nombdd = tok[1];
-        System.out.println("Le nom de la bdd est : "+nombdd);
+        //System.out.println("Le nom de la bdd est : "+nombdd);
 
         for(Relation r : dbManager.getCurentDatabase().getTables()){
             for(PageId datapage : r.getDataPages()){
@@ -301,7 +317,7 @@ public class Sgbd {
         texteCommande = texteCommande.replace("VALUES","");
         StringTokenizer stz = new StringTokenizer(texteCommande, " ");
         String nom = stz.nextToken();
-        System.out.println("Nom :"+nom);
+        //System.out.println("Nom :"+nom);
         ArrayList<Object> values = new ArrayList<>();
         relationnel.Record record = new relationnel.Record();
         for(Relation r : this.dbManager.getCurentDatabase().getTables()){ // On recherche la table correspondant au nom inscrit dans la commande
@@ -309,14 +325,17 @@ public class Sgbd {
                 for(ColInfo c : r.getColonnes()){
                     if(c.getTypeColonne().equals("CHAR")){
                         String carac = stz.nextToken();
-                        carac = carac.replace("\"","");
+                        carac = carac.substring(1, carac.length()-1);
+                        //System.out.println("Caracteres : "+carac+ "Taille : "+carac.length());
                         values.add(carac);
 
                     }
                     else if(c.getTypeColonne().equals("VARCHAR")){
                         String carac = stz.nextToken();
-                        carac = carac.replace("\"","");
+                        carac = carac.substring(1, carac.length()-1);
                         values.add(carac);
+                        //System.out.println("Caracteres : "+carac+ "Taille : "+carac.length());
+
 
                     }
                     else if(c.getTypeColonne().equals("INT") ||c.getTypeColonne().equals("INTEGER") ){
@@ -336,7 +355,7 @@ public class Sgbd {
                 record.setTuple(values);
                 r.InsertRecord(record);
 
-                System.out.println("SGBD : PROCESS INSERT INTO COMMAND : ensemble des records "+r.GetAllRecords());
+                System.out.println("SGBD : PROCESS INSERT INTO COMMAND : ensemble des record à cette table "+r.GetAllRecords());
                 break;
             }
         }
@@ -348,11 +367,11 @@ public class Sgbd {
             texteCommande = texteCommande.replace(String.valueOf(c)," ");
         }
         texteCommande = texteCommande.replace("BULKINSERT INTO ","");
-        System.out.println("Texte remplacé :"+texteCommande);
+        //System.out.println("Texte remplacé :"+texteCommande);
         StringTokenizer stz = new StringTokenizer(texteCommande, " ");
         String nomRelation = stz.nextToken().trim();
         String nomFichier =stz.nextToken().trim();
-        System.out.println("nomRelation :"+nomRelation+" nomFichier :"+nomFichier+"     longueur relation = "+nomRelation.length()+" longueur fichier = "+nomFichier.length());
+        //System.out.println("nomRelation :"+nomRelation+" nomFichier :"+nomFichier+"     longueur relation = "+nomRelation.length()+" longueur fichier = "+nomFichier.length());
 
         try {
             // On lit le fichier csv ligne par ligne
@@ -372,7 +391,7 @@ public class Sgbd {
                 while( (ligne = br.readLine()) != null ) {
                     tuple.clear();
                     // pour une ligne, plus tard faire une boucle pour toutes les lignes
-                    System.out.println("ligne à lire (tuple) = " + ligne);
+                   // System.out.println("ligne à lire (tuple) = " + ligne);
                     StringTokenizer st = new StringTokenizer(ligne, ";,");
                     int i = 0;
                     while (st.hasMoreTokens()) {
@@ -386,17 +405,17 @@ public class Sgbd {
                             tuple.add(passage); // On convertit le token en float pour l'ajouter au tuple
 
                         } else {
-                            System.out.println("SGBD : BULK INSERT RECORD INTO COMMAND : Erreur : Le type reçu n'est pas valide et ne fait pas partie des types suivant : CHAR, VARCHAR, INT, REAL");
+                            //System.out.println("SGBD : BULK INSERT RECORD INTO COMMAND : Erreur : Le type reçu n'est pas valide et ne fait pas partie des types suivant : CHAR, VARCHAR, INT, REAL");
                         }
                         i++;
                     }
 
                     // On insère le record correspondant à chaque ligne du fichier
-                    System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND tuple : " + tuple);
+                   // System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND tuple : " + tuple);
                     record.setTuple(tuple);
                     table.InsertRecord(record);
                 }
-                System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND l'ensemble des records de la page :"+table.GetAllRecords()); // On tente de lire l'ensemble des records inséré
+                //System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND l'ensemble des records de la page :"+table.GetAllRecords()); // On tente de lire l'ensemble des records inséré
             }
 
         }catch(IOException e){
@@ -406,13 +425,75 @@ public class Sgbd {
     }
 
     public void ProcessSelectCommand(String texteCommande){
-        List<String> alias = new ArrayList<String>();
+
         String texteInstance = texteCommande.replace("SELECT","").trim();
         texteInstance = texteInstance.replaceAll("FROM.*","").trim();
-        System.out.println("Texte sans le SELECT ET LES FROM : "+texteInstance);
-        System.out.println(texteCommande);
+        String commande = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replaceAll("WHERE.*","").trim();
+        String []joinouPas = commande.split(" ");
+        if(joinouPas.length==2){
+            SelectMono(texteCommande);
+        }else{
+            SelectJoin(texteCommande);
+        }
+
+
+    }
+
+    private void SelectMono(String texteCommande){
+        String texteInstance = texteCommande.replace("SELECT","").trim();
+        texteInstance = texteInstance.replaceAll("FROM.*","").trim();
+        List<String> alias = new ArrayList<String>();
+        //System.out.println("Texte sans le SELECT ET LES FROM : "+texteInstance);
+       // System.out.println(texteCommande);
         if(texteInstance.contains("*")){
-            System.out.println("On va prendre tout les colones car l'alias est une etoile");
+           // System.out.println("On va prendre tout les colones car l'alias est une etoile");
+            alias.add("*");
+        }
+        else{
+            StringTokenizer stz = new StringTokenizer(texteInstance, ",");
+            while(stz.hasMoreTokens()){
+                alias.add(stz.nextToken());
+            }
+        }
+
+        List<Condition> conditions = new ArrayList<>();
+        String texteTableEtAlias = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replaceAll("WHERE.*","").trim();
+        StringTokenizer stz = new StringTokenizer(texteTableEtAlias," ");
+        String nomTable = stz.nextToken();
+        Relation table = dbManager.getCurentDatabase().getTable(nomTable);
+        String aliasTable = stz.nextToken();
+        //System.out.println("aliasTAble :"+aliasTable+" nomTable :"+ nomTable );
+
+
+        String texteApresTable = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replace(texteTableEtAlias,"");
+        //System.out.println("voici le texte apres le table et son alias: "+texteApresTable);
+        if(!(texteApresTable.contains("WHERE"))){
+           // System.out.println("Il n'y a pas de where ");
+        }
+        else{
+            texteApresTable = texteApresTable.replace("WHERE","").trim();
+            //System.out.println("voici le texte apres le where  : "+texteApresTable);
+            String[] tableauConditionTexte = texteApresTable.split(" AND ");
+            for(String c : tableauConditionTexte){
+                //System.out.println("Condition : "+c);
+                conditions.add(Condition.ajouteCondition(table,aliasTable,c)); // on ajoute la condition à la liste de conditions
+            }
+        }
+       // System.out.println("La commande SELECT à été bien parser !");
+
+        RelationScanner relationScanner = new RelationScanner(table,conditions);
+        ProjectOperator projectOperator = new ProjectOperator(table,aliasTable,relationScanner,alias);
+        projectOperator.affiche();
+    }
+
+    private void SelectJoin(String texteCommande){
+        String texteInstance = texteCommande.replace("SELECT","").trim();
+        texteInstance = texteInstance.replaceAll("FROM.*","").trim();
+        List<String> alias = new ArrayList<String>();
+        //System.out.println("Texte sans le SELECT ET LES FROM : "+texteInstance);
+       // System.out.println(texteCommande);
+        if(texteInstance.contains("*")){
+           // System.out.println("On va prendre tout les colones car l'alias est une etoile");
             alias.add("*");
         }
         else{
@@ -422,33 +503,43 @@ public class Sgbd {
             }
         }
         List<Condition> conditions = new ArrayList<>();
-        String texteTableEtAlias = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replaceAll("WHERE.*","").trim();
-        StringTokenizer stz = new StringTokenizer(texteTableEtAlias," ");
-        String nomTable = stz.nextToken();
-        Relation table = dbManager.getCurentDatabase().getTable(nomTable);
-        String aliasTable = stz.nextToken();
-        System.out.println("aliasTAble :"+aliasTable+" nomTable :"+ nomTable );
-
-        String texteApresTable = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replace(texteTableEtAlias,"");
-        System.out.println("voici le texte apres le table et son alias: "+texteApresTable);
-        if(!(texteApresTable.contains("WHERE"))){
-            System.out.println("Il n'y a pas de where ");
+        String tableETALias = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replaceAll("WHERE.*","").trim();
+        String table_alias = tableETALias.replace(","," ");
+       // System.out.println("Voici la commande : "+table_alias);
+        StringTokenizer stz = new StringTokenizer(table_alias," ");
+        String nomTable1 = stz.nextToken();
+        Relation table1 = dbManager.getCurentDatabase().getTable(nomTable1);
+        String aliasTab1 = stz.nextToken();
+        String nomTable2 = stz.nextToken();
+        Relation table2 = dbManager.getCurentDatabase().getTable(nomTable2);
+        String aliasTab2 = stz.nextToken();
+    //    System.out.println("Alias 1 : "+aliasTab1+", NomTable : "+nomTable1);
+      //  System.out.println("Alias 2 : "+aliasTab2+", NomTable : "+nomTable2);
+        String texteApresWhere = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replace(tableETALias,"");
+        if(!texteApresWhere.contains("WHERE")){
+           // System.out.println("Il n'y a pas de where ");
         }
         else{
-            texteApresTable = texteApresTable.replace("WHERE","").trim();
-            System.out.println("voici le texte apres le where  : "+texteApresTable);
-            String[] tableauConditionTexte = texteApresTable.split(" AND ");
+            texteApresWhere = texteApresWhere.replace("WHERE","").trim();
+           // System.out.println("voici le texte apres le where  : "+texteApresWhere);
+            String[] tableauConditionTexte = texteApresWhere.split(" AND ");
             for(String c : tableauConditionTexte){
-                System.out.println("Condition : "+c);
-                conditions.add(Condition.ajouteCondition(table,aliasTable,c)); // on ajoute la condition à la liste de conditions
+           //     System.out.println("Condition : "+c);
+                conditions.add(Condition.ajouteCondition(table1,aliasTab1,table2,aliasTab2,c));
             }
+            PageOrientedJoinOperator pageOrientedJoinOperator = new PageOrientedJoinOperator(diskManager,bufferManager,table1,table2,conditions);
+            Record recordTest = new Record();
+            RecordPrinter printer = null;
+            while(recordTest!=null){
+                recordTest =pageOrientedJoinOperator.GetNextRecord();
+                if (recordTest!=null){
+                    printer = new RecordPrinter(recordTest);
+                    printer.affiche();
+                }
+
+            }
+
         }
-        System.out.println("La commande SELECT à été bien parser !");
-
-        RelationScanner relationScanner = new RelationScanner(table,conditions);
-        ProjectOperator projectOperator = new ProjectOperator(table,aliasTable,relationScanner,alias);
-        projectOperator.affiche();
-
 
     }
 
@@ -459,40 +550,8 @@ public class Sgbd {
     }
 
 
-    public static PageId ajouteHeaderPage(DiskManager diskManager,BufferManager bufferManager) {
-        System.out.println("**************  Initialisation d'une headerPage   *********************");
-        // On initialisie les valeurs de la header page, le nombre de page est à 0 au début, suivi de l'emplacement de l'octet pour écrire une nouvelle case de page de données
-        PageId headerPage = diskManager.AllocPage(); // On alloue une page disponible
-
-        ByteBuffer buff =bufferManager.GetPage(headerPage);
-
-        System.out.println("La header page est placé en "+headerPage);
-
-        int position= (int) ((int) headerPage.getPageIdx()*diskManager.getDbConfig().getPagesize());
-
-
-        String cheminFichier = diskManager.getDbConfig().getDbpath()+"/F"+headerPage.getFileIdx()+".bin"; // Chemin du fichier à lire
-        File fichier = new File(cheminFichier);
-        if(fichier.exists()) {
-            try {
-                RandomAccessFile raf = new RandomAccessFile(fichier, "rw"); // Ouverture du fichier
-                raf.seek(position);  // Positionnement sur le premier octet de la page voulu
-
-                //System.out.println(Arrays.toString(buff.array()));
-
-                raf.seek(position);
-                System.out.println(raf.readInt());
-                System.out.println(raf.readInt());
-                raf.close();
-            }catch(IOException e){
-                e.printStackTrace();
-            }finally{
-                bufferManager.FreePage(headerPage,false);
-            }
-        }else{
-            System.out.println("Vous tentez de lireun fichier qui n'existe pas");
-        }
-
+    public static PageId ajouteHeaderPage(DiskManager diskManager) {
+        PageId headerPage = diskManager.AllocPage();
         return headerPage;
 
     }
@@ -500,4 +559,3 @@ public class Sgbd {
 
 
 }
-

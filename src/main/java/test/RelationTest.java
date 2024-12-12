@@ -23,7 +23,7 @@ public class RelationTest {
         ColInfo cI1 = new ColInfo("Nom", "CHAR", 12);
         ColInfo cI2 = new ColInfo("Prenom", "CHAR", 6);
         ColInfo cI3 = new ColInfo("Age", "INT", 4);
-        DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DBConfig config = DBConfig.LoadDBConfig("file-config.json");
         DiskManager diskManager = new DiskManager(config);
         BufferManager bufferManager = new BufferManager(config,diskManager);
         PageId headerPageId =ajouteHeaderPage(diskManager,bufferManager);
@@ -138,7 +138,7 @@ public class RelationTest {
         }
         // On va la chercher ici
         pageDispo = relation.getFreeDataPageId(38); // On cherche un octet pouvant accueilir {Traore Ali 20}
-        System.out.println("Page Dispo : "+pageDispo);
+        //System.out.println("Page Dispo : "+pageDispo);
 
         // {Traore Ali 20}
 

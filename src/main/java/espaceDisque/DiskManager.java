@@ -22,8 +22,8 @@ public class DiskManager {
         // Initialisation :
         PageId pageAlloue; // la page qu'on va renvoyer
         long currentSizeTotalPages = dbConfig.getPagesize()*(pageCourante.getPageIdx()+1); // la taille courante de l'accumulation des octets des pages , ex : pour page 3 -> currentSize = 4* la taille d'une page
-        File repertoire = new File(dbConfig.getDbpath()); // Initialisation du rerpertoire
-        String cheminFichier = dbConfig.getDbpath()+"/F"+pageCourante.getFileIdx()+".bin"; // Initialisation du chemin du fichier
+        File repertoire = new File(dbConfig.getDbpath()+"/BinData"); // Initialisation du rerpertoire
+        String cheminFichier = dbConfig.getDbpath()+"/BinData"+"/F"+pageCourante.getFileIdx()+".bin"; // Initialisation du chemin du fichier
         File fichier = new File(cheminFichier); // Création d'un object fichier
 
         ByteBuffer buffTemp = ByteBuffer.allocate( (int) dbConfig.getPagesize());  //
@@ -84,7 +84,7 @@ public class DiskManager {
     }
 
     public void ReadPage(PageId pageId, ByteBuffer buff){
-        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à lire
+        String cheminFichier = dbConfig.getDbpath()+"/BinData"+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à lire
         File fichier = new File(cheminFichier);
         if(fichier.exists()) {
             long position = dbConfig.getPagesize() * pageId.getPageIdx(); // Calcule de la position en octet de debut de la page
@@ -108,7 +108,7 @@ public class DiskManager {
     }
 
     public void WritePage(PageId pageId,ByteBuffer buff){
-        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à écrire
+        String cheminFichier = dbConfig.getDbpath()+"/BinData"+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à écrire
         File fichier = new File(cheminFichier);
         long position = dbConfig.getPagesize()*pageId.getPageIdx(); // Calcule de la position en octet de debut de la page
         try {
@@ -123,7 +123,7 @@ public class DiskManager {
 
     // supprime les elements de la page et mets la page dans pagesDesaloc
     public void DeallocPage(PageId pageId) {
-        String cheminFichier = dbConfig.getDbpath()+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à désalouer
+        String cheminFichier = dbConfig.getDbpath()+"/BinData"+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à désalouer
         File fichier = new File(cheminFichier); // Création d'un object fichier
         long position = dbConfig.getPagesize()*pageId.getPageIdx(); // Calcule de la position en octet de debut de la page
         ByteBuffer buffTemp = ByteBuffer.allocate( (int) dbConfig.getPagesize());  //
@@ -146,10 +146,9 @@ public class DiskManager {
         String chemin = dbConfig.getDbpath()+"/dm.save.json";
         try{
             File file = new File(chemin);
-            if(!file.exists()){
+            if(!file.exists()) {
                 file.createNewFile();
             }
-            // Vérifier si le fichier existe si non le créer.
             FileWriter fw = new FileWriter(file);
             BufferedWriter bfw = new BufferedWriter(fw);
             bfw.write("{"); // ouverture de la première accolade
@@ -215,7 +214,6 @@ public class DiskManager {
                     pagesDesaloc.add( new PageId(page.getInt(0),page.getInt(1)));
                 }
             }
-
         }catch(IOException io){
             io.printStackTrace();
         }
@@ -230,12 +228,12 @@ public class DiskManager {
 
 
     public void newFile(int numeroFichier) {
-        File nouveauFichier = new File(dbConfig.getDbpath()+"/F"+numeroFichier+".bin"); // Chemin du fichier à désalouer
+        File nouveauFichier = new File(dbConfig.getDbpath()+"/BinData"+"/F"+numeroFichier+".bin"); // Chemin du fichier à désalouer
             try {
                 if (nouveauFichier.createNewFile()) { // Création du fichier
-                    System.out.println("DISK MANAGER : NEW FILE : Création du fichier : " + nouveauFichier.getName());
+                    //System.out.println("DISK MANAGER : NEW FILE : Création du fichier : " + nouveauFichier.getName());
                 } else {
-                    System.out.println("DISK MANAGER : NEW FILE : La création du fichier n'as pas fonctionné, existe t'il deja ?"); // Error
+                   // System.out.println("DISK MANAGER : NEW FILE : La création du fichier n'as pas fonctionné, existe t'il deja ?"); // Error
                 }
             }catch(IOException e){
                 e.printStackTrace();

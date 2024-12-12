@@ -23,7 +23,7 @@ public class ConditionTest {
         ColInfo cI1 = new ColInfo("Nom", "VARCHAR", 12);
         ColInfo cI2 = new ColInfo("Prenom", "VARCHAR", 6);
         ColInfo cI3 = new ColInfo("Age", "INT", 4);
-        DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DBConfig config = DBConfig.LoadDBConfig("file-config.json");
         DiskManager diskManager = new DiskManager(config);
         BufferManager bufferManager = new BufferManager(config,diskManager);
         PageId headerPageId =ajouteHeaderPage(diskManager,bufferManager);

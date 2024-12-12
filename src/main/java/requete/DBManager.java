@@ -191,7 +191,6 @@ public class DBManager {
                 bfw.write("}"); // fermeture de de la première accolade
                 bfw.close();
             }
-            // Vérifier si le fichier existe et si non le créé.
             FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
             BufferedReader bfr = new BufferedReader(fr);
             StringBuilder sb =new StringBuilder();
@@ -200,7 +199,6 @@ public class DBManager {
                 sb.append(ligne); // on ajoute la ligne au StringBuffer car StringBuffer est plus flexible d'utilisation.
             }
             bfr.close();//Fermeture de la lecture du fichier
-
 
             JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
             for(int bd=0; bd< js.getJSONObject("Bases de données").getInt("Nbr BD"); bd++){ // Parcours de toutes les bases de données

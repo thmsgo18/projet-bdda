@@ -1,5 +1,5 @@
 {
-  "dbpath" : "Database/BinData",
+  "dbpath" : "Database",
   "pagesize" : 4096,
   "dm_maxfilesize" : 12288,
   "bm_buffercount" : 2,

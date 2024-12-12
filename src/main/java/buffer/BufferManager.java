@@ -55,7 +55,7 @@ public class BufferManager {
         if (frameDispo.isEmpty()) { // Si plus de frame libre
 
             if(!framePC0.isEmpty()){ // Vérification de la présence d'au moins un buffer avec un pin count =O
-                System.out.println("$$$$$$$$$$$$$$$$$ PCO a des éléments $$$$$$$$$$$$$$$$$$$$$");
+                //System.out.println("$$$$$$$$$$$$$$$$$ PCO a des éléments $$$$$$$$$$$$$$$$$$$$$");
                 int indiceBuffer= indicePolicy(framePC0); // Indice de la page à remplacer selon la politique
                 //System.out.println("$$$$$$$$$$$$$$$$$ indice element PCO a enlever "+indiceBuffer+" $$$$$$$$$$$$$$$$$$$$$" +bufferMap.get(indiceBuffer)+"$$$$"+"le buffer en question"+ Arrays.toString(bufferPool[indiceBuffer].array()));
 
@@ -85,8 +85,8 @@ public class BufferManager {
 
             bufferMap.get( indiceBuffer ).set(2,1); // Mise du pin count à 1
             bufferMap.get(indiceBuffer ).set(0,pageId); // On ajout le pageId correspondante dans la map.
-            System.out.println("indiceBuffer : "+indiceBuffer+"  bufferMap.get (indiceBuffer)+ : " +bufferMap.get(indiceBuffer )+"buffPosition(indiceBuffer) : "+bufferPool[indiceBuffer].position());
-            System.out.println("buffer a retourner pour le getPage() : "+bufferPool[indiceBuffer]);
+            //System.out.println("indiceBuffer : "+indiceBuffer+"  bufferMap.get (indiceBuffer)+ : " +bufferMap.get(indiceBuffer )+"buffPosition(indiceBuffer) : "+bufferPool[indiceBuffer].position());
+            //System.out.println("buffer a retourner pour le getPage() : "+bufferPool[indiceBuffer]);
             diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // Strockage de la page dans le buffer
             return bufferPool[indiceBuffer]; // Retourne le buffer
 
@@ -187,8 +187,9 @@ public class BufferManager {
 
     public int getIndiceBufferMap(PageId pageId){ // retourne l'indice du buffer contenant la page indiqué en argumant
        for(int i =0; i<bufferMap.size(); i++){
-           System.out.println("i = "+i+" "+bufferMap.get(i));
+           //System.out.println("i = "+i+" "+bufferMap.get(i));
            if (bufferMap.get(i).get(0)!=null) {
+               //System.out.println(bufferMap.get(i).get(0));
                if (pageId.egale((PageId) bufferMap.get(i).get(0))) {
                    return i;
                }
@@ -200,8 +201,9 @@ public class BufferManager {
 
     public boolean getDirtyPage(PageId pageId){
         int indicePage =getIndiceBufferMap(pageId);
+        //System.out.println("indicePage : "+indicePage);
+        //System.out.println(bufferMap);
         boolean rep =(boolean) bufferMap.get(indicePage).get(1) ;
-
         /*if(rep){
             System.out.println("RELATION : BUffER MANAGER : GET DIRTY PAGE : le dirty de la header page était anciennement true, donc il restera true");
         }else{
