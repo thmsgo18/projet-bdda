@@ -184,7 +184,17 @@ public class DiskManager {
         try{
             File file = new File(chemin);
             if(!file.exists()){
-                this.SaveState();
+                file.createNewFile();
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter bfw = new BufferedWriter(fw);
+                bfw.write("{"); // ouverture de la première accolade
+                bfw.newLine(); // revient à la ligne
+                bfw.write("    \"pageDesalloues\":\"\""); // ouverture accolade Desalloues
+                bfw.newLine(); // revient à la ligne
+                bfw.write("    \"pageCourante\":\"\"");
+                bfw.newLine(); // revient à la ligne
+                bfw.write("}"); // fermeture de de la première accolade
+                bfw.close();
             }else{
                 FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
                 BufferedReader bfr = new BufferedReader(fr);
