@@ -189,7 +189,7 @@ public class DiskManager {
                 BufferedWriter bfw = new BufferedWriter(fw);
                 bfw.write("{"); // ouverture de la première accolade
                 bfw.newLine(); // revient à la ligne
-                bfw.write("    \"pageDesalloues\":\"\""); // ouverture accolade Desalloues
+                bfw.write("    \"pageDesalloues\":\"\","); // ouverture accolade Desalloues
                 bfw.newLine(); // revient à la ligne
                 bfw.write("    \"pageCourante\":\"\"");
                 bfw.newLine(); // revient à la ligne
