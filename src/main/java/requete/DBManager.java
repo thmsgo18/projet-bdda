@@ -95,7 +95,12 @@ public class DBManager {
     public void SaveState(){
         String chemin = dbConfig.getDbpath()+"/databases.save.json";
         try{
-            FileWriter fw = new FileWriter(chemin);
+            File file = new File(chemin);
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            // Vérifier si le fichier existe et si non le créé.
+            FileWriter fw = new FileWriter(file);
             BufferedWriter bfw = new BufferedWriter(fw);
             bfw.write("{"); // ouverture de la première accolade
             bfw.newLine(); // revient à la ligne
@@ -170,7 +175,12 @@ public class DBManager {
     public void LoadState(){
         String chemin = dbConfig.getDbpath()+"/databases.save.json";
         try{
-            FileReader fr = new  FileReader(chemin); //Utilisation des classes FileReader et BufferReader pour lire le fichier
+            File file = new File(chemin);
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            // Vérifier si le fichier existe et si non le créé.
+            FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
             BufferedReader bfr = new BufferedReader(fr);
             StringBuilder sb =new StringBuilder();
             String ligne;
