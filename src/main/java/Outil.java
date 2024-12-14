@@ -7,7 +7,7 @@ public class Outil {
     // Sert uniquement pour les test, ne pas ublier de remettre la page courante à 0.
     public static void SuprimeTousFichier(DiskManager diskManager) {
         // Spécifiez le chemin du répertoire contenant les fichiers à supprimer
-        String cheminFichier = diskManager.getDbConfig().getDbpath();// Initialisation du chemin du fichier
+        String cheminFichier = diskManager.getDbConfig().getDbpath()+"/BinData";// Initialisation du chemin du fichier
         File directory = new File(cheminFichier);
 
         // Vérifiez si le répertoire existe et s'il s'agit bien d'un dossier

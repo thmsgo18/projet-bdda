@@ -382,7 +382,7 @@ public class Condition {
 
             case "<":
                 if(placementAlias==1) {
-                    System.out.println("1 : "+element+" 2: "+constanteString);
+                   // System.out.println("1 : "+element+" 2: "+constanteString);
                     return element.compareTo(constanteString) < 0;
 
                 }else{

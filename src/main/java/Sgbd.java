@@ -45,6 +45,7 @@ public class Sgbd {
 
         Sgbd sgbd = new Sgbd(config);
         sgbd.run();
+        //Outil.SuprimeTousFichier(sgbd.diskManager);
 
     }
 
@@ -387,6 +388,7 @@ public class Sgbd {
                     break;
                 }
             }
+            int compteurLigne=0;
             if (table!=null){
                 while( (ligne = br.readLine()) != null ) {
                     tuple.clear();
@@ -414,7 +416,9 @@ public class Sgbd {
                    // System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND tuple : " + tuple);
                     record.setTuple(tuple);
                     table.InsertRecord(record);
+                    compteurLigne++;
                 }
+                System.out.println("SGBD BULKINSERT INTO : nombre de ligne : "+compteurLigne);
                 //System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND l'ensemble des records de la page :"+table.GetAllRecords()); // On tente de lire l'ensemble des records inséré
             }
 

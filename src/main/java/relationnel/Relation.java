@@ -434,7 +434,7 @@ public class Relation {
                    // System.out.println("Insertion du record réussi !!  " + rid);
                 }
             }else{
-                //System.out.println("RELATION : INSERT RECORD : !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert relationnel.Record) !!!!");
+                System.out.println("RELATION : INSERT RECORD : !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert relationnel.Record) !!!!");
 
             }
             // On remets le dirty dans la position qu'il avait au départ car on a juste lu ici la header page
