@@ -60,13 +60,13 @@ public class Sgbd {
             texteCommande = sc.nextLine(); //Entrez une commande SQL tout en majuscule
             if (texteCommande.startsWith("CREATE DATABASE")) {
 
-                if(texteCommande.replace("CREATE DATABASE", "").length() > 0) { //vérifier si il y a le nom de la BDD apres la commande CREATE DATABASE
+                if(texteCommande.replace("CREATE DATABASE", "").length() > 0) { //vérification si il y a le nom de la BDD apres la commande CREATE DATABASE
 
-                    System.out.println("La commande choisi est " + texteCommande);
+                    System.out.println("La commande choisie est " + texteCommande);
                     ProcessCreateDatabaseCommand(texteCommande); //Methode permettant de parser la commande
                 }
                 else{
-                    System.out.println("Vous n'avez pas taper le nom de la database");// retaper la commande en respectant les la syntaxe
+                    System.out.println("Vous n'avez pas taper le nom de la database");// retaper la commande en respectant la syntaxe
                 }
 
             } else if (texteCommande.startsWith("CREATE TABLE")) {
@@ -166,7 +166,7 @@ public class Sgbd {
             }
 
         }
-        System.out.println("Vous allez quitter le SGBD");
+        System.out.println("Vous avez quitter le SGBD");
 
 
     }
@@ -253,7 +253,7 @@ public class Sgbd {
     }
 
     public void ProcessDropTableCommand(String texteCommande){
-        String[]tok = texteCommande.trim().split("DROP TABLE ");//recuperatuin du nom de la table
+        String[]tok = texteCommande.trim().split("DROP TABLE ");//recuperation du nom de la table
         String nomtable = tok[1];
 
         for(Relation r : this.dbManager.getCurentDatabase().getTables()){
@@ -272,14 +272,14 @@ public class Sgbd {
     public void ProcessDropTablesCommand(String texteCommande){
         for(Relation r : this.dbManager.getCurentDatabase().getTables()){
             for(PageId datapage : r.getDataPages()){
-                this.diskManager.DeallocPage(datapage);//desalloué tout les page affecté à cette Page
+                this.diskManager.DeallocPage(datapage);//désalloué toutes les pages affectées à cette Page
             }
-            this.diskManager.DeallocPage(r.getHeaderPageId());//desalloué la headerPage
+            this.diskManager.DeallocPage(r.getHeaderPageId());//désalloué la headerPage
         }
         this.dbManager.RemoveTablesFromCurrentDatabase();
     }
 
-    public void ProcessDropDatabaseCommand(String texteCommande){//meme chose que la methode precedente mais on desalloue toute la database courant
+    public void ProcessDropDatabaseCommand(String texteCommande){//meme chose que la methode precedent mais on desalloue toute la database courant
         String[]tok = texteCommande.trim().split("DROP DATABASE ");
         String nombdd = tok[1];
         //System.out.println("Le nom de la bdd est : "+nombdd);
@@ -398,7 +398,11 @@ public class Sgbd {
                     int i = 0;
                     while (st.hasMoreTokens()) {
                         if (table.getColonnes().get(i).getTypeColonne().equals("CHAR") || table.getColonnes().get(i).getTypeColonne().equals("VARCHAR")) {
-                            tuple.add(st.nextToken().trim()); // On ajoute au tuple le token sous le format par defaut string
+                            String value = st.nextToken();
+                            value=value.replace("\"", "");
+                            value=value.replace("“", "");
+                            value=value.replace("ʺ", "");
+                            tuple.add(value.trim()); // On ajoute au tuple le token sous le format par defaut string
                         } else if (table.getColonnes().get(i).getTypeColonne().equals("INT") || table.getColonnes().get(i).getTypeColonne().equals("INTEGER")) {
                             tuple.add(Integer.parseInt(st.nextToken().trim())); // On convertit le token en int pour l'ajouter au tuple
 
@@ -451,7 +455,7 @@ public class Sgbd {
         texteInstance = texteInstance.replaceAll("FROM.*","").trim();
         List<String> alias = new ArrayList<String>();
         //System.out.println("Texte sans le SELECT ET LES FROM : "+texteInstance);
-       // System.out.println(texteCommande);
+        // System.out.println(texteCommande);
         if(texteInstance.contains("*")){
            // System.out.println("On va prendre tout les colones car l'alias est une etoile");
             alias.add("*");
@@ -545,14 +549,17 @@ public class Sgbd {
             PageOrientedJoinOperator pageOrientedJoinOperator = new PageOrientedJoinOperator(diskManager,bufferManager,table1,table2,conditions);
             Record recordTest = new Record();
             RecordPrinter printer = null;
+            int compteurRecord =0;
             while(recordTest!=null){
                 recordTest =pageOrientedJoinOperator.GetNextRecord();
                 if (recordTest!=null){
+                    compteurRecord++;
                     printer = new RecordPrinter(recordTest);
                     printer.affiche();
                 }
 
             }
+            System.out.println("Total records ="+compteurRecord);
 
         }
 
