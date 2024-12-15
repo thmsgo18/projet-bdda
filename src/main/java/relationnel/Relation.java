@@ -419,6 +419,8 @@ public class Relation {
             ByteBuffer buffHeader = bufferManager.GetPage(headerPageId);
             int nombreMaxPages = buffHeader.capacity()/4 -4;
             int nombrePageCourante = buffHeader.getInt(0);
+            boolean dirtyPage = bufferManager.getDirtyPage(headerPageId);
+            bufferManager.FreePage(headerPageId,dirtyPage);
             if(nombrePageCourante<nombreMaxPages){
                 try{
                     addDataPage(); // on ajoute la page de données à la relation
@@ -439,8 +441,7 @@ public class Relation {
 
             }
             // On remets le dirty dans la position qu'il avait au départ car on a juste lu ici la header page
-            boolean dirtyPage = bufferManager.getDirtyPage(headerPageId);
-            bufferManager.FreePage(headerPageId,dirtyPage);
+
         }
         return rid; // retour du rid
     }
