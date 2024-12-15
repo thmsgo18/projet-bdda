@@ -429,9 +429,9 @@ public class Relation {
                 //System.out.println("RELATION : INSERT RECORD : On insère une page de données supplémentaire à la relation pour insérer le record "+record);
                 PageId pageDispo2 =getFreeDataPageId(octetCumulerRecord); // On cherche la page de données qu'on vient de lier à la header page
                 //System.out.println("Page Dispo : "+pageDispo2);
-                if (pageDispo!=null) {
+                if (pageDispo2!=null) {
                     rid = writeRecordToDataPage(record, pageDispo2);
-                   // System.out.println("Insertion du record réussi !!  " + rid);
+                   //System.out.println("Insertion du record réussi !!  " + rid);
                 }
             }else{
                 System.out.println("RELATION : INSERT RECORD : !!!! Erreur lors de l'insertion d'un record : Aucune page ne semble disponible (Insert relationnel.Record) !!!!");

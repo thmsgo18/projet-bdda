@@ -136,12 +136,12 @@ public class Sgbd {
 
 
             }else if(texteCommande.startsWith("INSERT INTO")) {
-                if(texteCommande.replace("INSERT INTO", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande INSERT INTO
+                if(texteCommande.replace("INSERT INTO", "").length() > 0 && texteCommande.contains("VALUES")) {//vérifier si il y a le nom de la BDD apres la commande INSERT INTO
                     System.out.println("La commande choisi est " + texteCommande);
                     ProcessInsertIntoCommand(texteCommande);
                 }
                 else{
-                    System.out.println("Vous n'avez pas taper le nom de la table");
+                    System.out.println("La commande tapé est mauvaise");
                 }
 
             }else if(texteCommande.startsWith("BULKINSERT INTO")) {
@@ -380,7 +380,7 @@ public class Sgbd {
             BufferedReader br = new BufferedReader(fr);
             String ligne;
             ArrayList<Object> tuple = new ArrayList<>();
-            relationnel.Record record = new Record();
+            Record record = new Record();
             Relation table=null;
             for( Relation r : this.dbManager.getCurentDatabase().getTables()){
                 if(r.getNomRelation().equals(nomRelation)){
@@ -418,6 +418,8 @@ public class Sgbd {
                     table.InsertRecord(record);
                     compteurLigne++;
                 }
+                List<Record> r = table.GetAllRecords();
+                System.out.println("Il y a : "+r.size()+" dans la table ");
                 System.out.println("SGBD BULKINSERT INTO : nombre de ligne : "+compteurLigne);
                 //System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND l'ensemble des records de la page :"+table.GetAllRecords()); // On tente de lire l'ensemble des records inséré
             }
@@ -434,6 +436,7 @@ public class Sgbd {
         texteInstance = texteInstance.replaceAll("FROM.*","").trim();
         String commande = texteCommande.replace("SELECT","").replace(texteInstance,"").replace("FROM","").replaceAll("WHERE.*","").trim();
         String []joinouPas = commande.split(" ");
+        //System.out.println("Taille du split : "+joinouPas.length);
         if(joinouPas.length==2){
             SelectMono(texteCommande);
         }else{
