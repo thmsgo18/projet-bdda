@@ -51,7 +51,6 @@ public class DBManager {
     }
 
     public void RemoveTableFromCurrentDatabase (String nomTable){
-        bufferManager.FlushBuffers();
         List<Relation> tablesDb = this.databases.get(this.courantDatabase).getTables();
         if(this.databases.get(this.courantDatabase).getTable(nomTable) != null){
             tablesDb.remove(this.databases.get(this.courantDatabase).getTable(nomTable));
@@ -62,7 +61,6 @@ public class DBManager {
     }
 
     public void RemoveDatabase (String nomBdd){
-        bufferManager.FlushBuffers();
         for(String key : this.databases.keySet()){
             if(nomBdd.equals(key)){
                 this.databases.remove(key);
@@ -74,13 +72,11 @@ public class DBManager {
     }
 
     public void RemoveTablesFromCurrentDatabase (){
-        bufferManager.FlushBuffers();
         this.databases.get(this.courantDatabase).setTables(new ArrayList<Relation>());
 
     }
 
     public void RemoveDatabases (){
-        bufferManager.FlushBuffers();
         this.databases.clear();
         this.courantDatabase = null;
 

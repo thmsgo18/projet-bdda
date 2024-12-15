@@ -260,8 +260,10 @@ public class Sgbd {
             if(r.getNomRelation().equals(nomtable)){
                 for(PageId dataPage : r.getDataPages()){
                     this.diskManager.DeallocPage(dataPage);
+                    bufferManager.FlushBuffers();
                 }
                 this.diskManager.DeallocPage(r.getHeaderPageId());
+                bufferManager.FlushBuffers();
             }
         }
 
@@ -273,8 +275,10 @@ public class Sgbd {
         for(Relation r : this.dbManager.getCurentDatabase().getTables()){
             for(PageId datapage : r.getDataPages()){
                 this.diskManager.DeallocPage(datapage);//désalloué toutes les pages affectées à cette Page
+                bufferManager.FlushBuffers();
             }
             this.diskManager.DeallocPage(r.getHeaderPageId());//désalloué la headerPage
+            bufferManager.FlushBuffers();
         }
         this.dbManager.RemoveTablesFromCurrentDatabase();
     }
@@ -287,8 +291,10 @@ public class Sgbd {
         for(Relation r : dbManager.getCurentDatabase().getTables()){
             for(PageId datapage : r.getDataPages()){
                 this.diskManager.DeallocPage(datapage);
+                bufferManager.FlushBuffers();
             }
             this.diskManager.DeallocPage(r.getHeaderPageId());
+            bufferManager.FlushBuffers();
         }
         this.dbManager.RemoveDatabase(nombdd);
 
@@ -300,8 +306,10 @@ public class Sgbd {
             for(Relation r : dbManager.getDatabases().get(key).getTables()){
                 for(PageId datapage : r.getDataPages()){
                     this.diskManager.DeallocPage(datapage);
+                    bufferManager.FlushBuffers();
                 }
                 this.diskManager.DeallocPage(r.getHeaderPageId());
+                bufferManager.FlushBuffers();
             }
         }
         this.dbManager.RemoveDatabases();
@@ -355,6 +363,8 @@ public class Sgbd {
                 }
                 record.setTuple(values);
                 r.InsertRecord(record);
+                List<Record> records = r.GetAllRecords();
+                System.out.println("Taille de l'ensemble des records : "+ records.size());
 
                 System.out.println("SGBD : PROCESS INSERT INTO COMMAND : ensemble des record à cette table "+r.GetAllRecords());
                 break;
@@ -576,7 +586,6 @@ public class Sgbd {
     public static PageId ajouteHeaderPage(DiskManager diskManager) {
         PageId headerPage = diskManager.AllocPage();
         return headerPage;
-
     }
 
 
