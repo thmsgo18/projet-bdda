@@ -75,7 +75,7 @@ public class DBManager {
 
     public void RemoveTablesFromCurrentDatabase (){
         bufferManager.FlushBuffers();
-        this.databases.get(this.courantDatabase).setTables(null);
+        this.databases.get(this.courantDatabase).setTables(new ArrayList<Relation>());
 
     }
 

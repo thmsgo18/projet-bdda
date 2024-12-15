@@ -195,6 +195,12 @@ public class DiskManager {
                 bfw.write("}"); // fermeture de la première accolade
                 bfw.close();
             }
+            File dossier = new File(dbConfig.getDbpath()+"/BinData");
+            if(dossier.mkdir()){
+                System.out.println("Le dossier BinData est bien créé");
+            }else{
+                System.out.println("Le dossier n'a pas été créé");
+            }
             FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
             BufferedReader bfr = new BufferedReader(fr);
             StringBuilder sb =new StringBuilder();

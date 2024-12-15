@@ -421,6 +421,7 @@ public class Sgbd {
                     record.setTuple(tuple);
                     table.InsertRecord(record);
                     compteurLigne++;
+                    System.out.println("Compteur ligne :"+ compteurLigne);
                 }
                 List<Record> r = table.GetAllRecords();
                 System.out.println("Il y a : "+r.size()+" dans la table ");

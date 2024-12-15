@@ -198,7 +198,7 @@ public class Relation {
 
     public void addDataPage() throws EOFException {
 
-        //System.out.println("\n**************  Debut AJout d'une page de données   *********************");
+        //System.out.println("\n**************  Debut Ajout d'une page de données   *********************");
 
         int taillePage =(int) diskManager.getDbConfig().getPagesize();
         ByteBuffer buffHeader = bufferManager.GetPage(headerPageId);
@@ -400,6 +400,7 @@ public class Relation {
     }
 
     public RecordId InsertRecord(Record record){
+        System.out.println("Relation Insert Record: "+ record+" BufferManager : "+ bufferManager.getBufferMap());
         RecordId rid=null;  // initialisation du rid
         int octetCumulerRecord=0;
         for( ColInfo c : colonnes){ // on obtient la somme en terme d'octet que la colonne fait
