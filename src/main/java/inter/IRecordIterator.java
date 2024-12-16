@@ -1,6 +1,6 @@
 package inter;
 
-public interface IRecordIterator<T> {
+public interface IRecordIterator<T> {//
 
     T GetNextRecord();
 

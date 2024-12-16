@@ -4,7 +4,7 @@ public class ColInfo {
     private String nomColonne;
     private String typeColonne;
     private int tailleColonne;
-
+    //
     public ColInfo(String nomColonne, String typeColonne, int tailleColonne) {
         this.nomColonne = nomColonne; // Nom de la colonne
         this.typeColonne = typeColonne; // Type des variables de la colonne

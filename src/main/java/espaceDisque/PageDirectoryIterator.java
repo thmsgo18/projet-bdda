@@ -5,7 +5,7 @@ import inter.IRecordIterator;
 import relationnel.Record;
 
 import java.nio.ByteBuffer;
-
+//
 public class PageDirectoryIterator  {
     private int nombrePagesVu = 0;
     private BufferManager bufferManager;

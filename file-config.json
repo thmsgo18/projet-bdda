@@ -2,7 +2,7 @@
   "dbpath" : "Scenario1",
   "pagesize" : 4096,
   "dm_maxfilesize" : 12288,
-  "bm_buffercount" : 10,
+  "bm_buffercount" : 1,
   "bm_policy" : "LRU",
   "_comment" : "Ceci est un commentaire, j'ai modifié pageSize et filesize pour correspondre à l'exemple de fichier 0,(ps : ça va créer automatiquement un nouveau fichier)"
 }

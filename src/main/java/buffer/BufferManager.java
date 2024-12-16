@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+//
 public class BufferManager {
     private DBConfig config; // configuration du SGBD
     private DiskManager diskManager;

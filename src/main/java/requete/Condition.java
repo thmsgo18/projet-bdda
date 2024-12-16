@@ -448,7 +448,7 @@ public class Condition {
         }else{
             element = (String) record.getTuple().get(indiceColonne2);
             element2 = (String) record2.getTuple().get(indiceColonne);
-        }
+        }//
 
 
         // on gère le cas où l'on souhaite comparer un string à un int ou float

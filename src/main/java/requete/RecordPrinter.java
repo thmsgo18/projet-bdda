@@ -1,5 +1,6 @@
 package requete;
 import relationnel.Record;
+//
 public class RecordPrinter {
     private Record record;
     public RecordPrinter(Record record ) {

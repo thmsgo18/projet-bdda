@@ -266,7 +266,7 @@ public class Sgbd {
                 bufferManager.FlushBuffers();
             }
         }
-
+        bufferManager.FlushBuffers();
         this.dbManager.RemoveTableFromCurrentDatabase(nomtable);
 
     }
@@ -280,6 +280,7 @@ public class Sgbd {
             this.diskManager.DeallocPage(r.getHeaderPageId());//désalloué la headerPage
             bufferManager.FlushBuffers();
         }
+        bufferManager.FlushBuffers();
         this.dbManager.RemoveTablesFromCurrentDatabase();
     }
 
@@ -296,6 +297,7 @@ public class Sgbd {
             this.diskManager.DeallocPage(r.getHeaderPageId());
             bufferManager.FlushBuffers();
         }
+        bufferManager.FlushBuffers();
         this.dbManager.RemoveDatabase(nombdd);
 
 
@@ -312,10 +314,12 @@ public class Sgbd {
                 bufferManager.FlushBuffers();
             }
         }
+        bufferManager.FlushBuffers();
         this.dbManager.RemoveDatabases();
 
 
     }
+
 
     public void ProcessInsertIntoCommand(String texteCommande){//methode pour inserer les valeur dans un relation
         String caracAsupp = "(,)";
@@ -346,7 +350,7 @@ public class Sgbd {
                         //System.out.println("Caracteres : "+carac+ "Taille : "+carac.length());
 
 
-                    }
+                    }//
                     else if(c.getTypeColonne().equals("INT") ||c.getTypeColonne().equals("INTEGER") ){
                         Integer number = Integer.parseInt(stz.nextToken());
                         values.add(number);
@@ -371,7 +375,6 @@ public class Sgbd {
             }
         }
     }
-
     public void ProcessBulkInsertIntoCommand(String  texteCommande){
         String caracAsupp = "(,)";
         for(char c : caracAsupp.toCharArray()){

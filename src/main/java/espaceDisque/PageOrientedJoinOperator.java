@@ -9,7 +9,7 @@ import requete.Condition;
 import javax.security.sasl.RealmCallback;
 import java.util.ArrayList;
 import java.util.List;
-
+//
 public class PageOrientedJoinOperator implements IRecordIterator<Record> {
     private Relation table1;
     private Relation table2;

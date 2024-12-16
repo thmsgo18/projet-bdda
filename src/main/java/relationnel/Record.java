@@ -14,7 +14,7 @@ public class Record {
     public Record(){
         tuple = new ArrayList<Object>();
     }
-
+//
     public Object getValeurTuple(int i) {
         return tuple.get(i);
     }

@@ -69,7 +69,7 @@ public class DBManager {
                 }
             }
         }
-    }
+    }//
 
     public void RemoveTablesFromCurrentDatabase (){
         this.databases.get(this.courantDatabase).setTables(new ArrayList<Relation>());

@@ -58,7 +58,7 @@ public class ProjectOperator implements IRecordIterator<Record> {
             while(i<listeIndiceColonnes.size()){
                 System.out.print(" ; "+recordCourant.getTuple().get(listeIndiceColonnes.get(i))); // on affiche la valeur lié à la  colonne désigné dans la ligne de colonnes
                 i++;
-            }
+            }//
             System.out.println(".");
             recordCourant = GetNextRecord();
             nombreRecords++;

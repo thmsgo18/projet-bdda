@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import org.json.*;
-
+//
 public class DBConfig{
 
     private String dbpath; //chemin d'accès sous forme de string

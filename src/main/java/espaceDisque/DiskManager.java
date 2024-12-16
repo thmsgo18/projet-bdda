@@ -106,7 +106,7 @@ public class DiskManager {
             //System.out.println("DISK MANAGER : READ PAGE : Vous tentez de lire un fichier qui n'existe pas");
         }
     }
-
+//
     public void WritePage(PageId pageId,ByteBuffer buff){
         String cheminFichier = dbConfig.getDbpath()+"/BinData"+"/F"+pageId.getFileIdx()+".bin"; // Chemin du fichier à écrire
         File fichier = new File(cheminFichier);

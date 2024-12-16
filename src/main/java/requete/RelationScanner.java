@@ -6,7 +6,7 @@ import relationnel.Relation;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//
 public class RelationScanner implements IRecordIterator<Record> {
 
     private List<Record> records;
