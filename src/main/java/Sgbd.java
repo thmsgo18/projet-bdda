@@ -72,7 +72,7 @@ public class Sgbd {
 
                 if(texteCommande.replace("CREATE TABLE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande CREATE TABLE
 
-                    System.out.println("La commande choisi est " + texteCommande);
+                    //System.out.println("La commande choisi est " + texteCommande);
                     ProcessCreateTableCommand(texteCommande);//Methode permettant de parser la commande (meme chose pour tout commande)
                 }
                 else{
@@ -83,7 +83,7 @@ public class Sgbd {
 
             } else if (texteCommande.startsWith("SET DATABASE")) {
                 if(texteCommande.replace("SET DATABASE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande CREATE TABLE
-                    System.out.println("La commande choisi est " + texteCommande);
+                   // System.out.println("La commande choisi est " + texteCommande);
                     ProcessSetDatabaseCommand(texteCommande); //Methode permettant de parser la commande
                 }
                 else{
@@ -94,31 +94,31 @@ public class Sgbd {
 
             } else if (texteCommande.startsWith("LIST TABLES")) {
 
-                System.out.println("La commande choisi est " + texteCommande);
+               // System.out.println("La commande choisi est " + texteCommande);
                 ProcessListTablesCommand(texteCommande);
 
             }else if (texteCommande.startsWith("LIST DATABASES")) {
-                System.out.println("La commande choisi est " + texteCommande);
+                //System.out.println("La commande choisi est " + texteCommande);
                 ProcessListDatabasesCommand(texteCommande);
 
             } else if (texteCommande.startsWith("DROP TABLES")) {
-                System.out.println("La commande choisi est " + texteCommande);
+               // System.out.println("La commande choisi est " + texteCommande);
                 ProcessDropTablesCommand(texteCommande);
 
             } else if (texteCommande.startsWith("DROP TABLE")) {
 
                 if(texteCommande.replace("DROP TABLE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande DROP TABLE
 
-                    System.out.println("La commande choisi est " + texteCommande);
+                    //System.out.println("La commande choisi est " + texteCommande);
                     ProcessDropTableCommand(texteCommande);
                 }
                 else{
-                    System.out.println("Vous n'avez pas taper le nom de la table");
+                    //System.out.println("Vous n'avez pas taper le nom de la table");
                 }
 
 
             }  else if (texteCommande.startsWith("DROP DATABASES")) {
-                System.out.println("La commande choisi est " + texteCommande);
+               // System.out.println("La commande choisi est " + texteCommande);
                 ProcessDropDatabasesCommand(texteCommande);
 
             } else if (texteCommande.startsWith("DROP DATABASE")) {
@@ -130,33 +130,33 @@ public class Sgbd {
 
                 }
                 else{
-                    System.out.println("Vous n'avez pas taper le nom de la database");
+                   // System.out.println("Vous n'avez pas taper le nom de la database");
                 }
 
 
             }else if(texteCommande.startsWith("INSERT INTO")) {
                 if(texteCommande.replace("INSERT INTO", "").length() > 0 && texteCommande.contains("VALUES")) {//vérifier si il y a le nom de la BDD apres la commande INSERT INTO
-                    System.out.println("La commande choisi est " + texteCommande);
+                    //System.out.println("La commande choisi est " + texteCommande);
                     ProcessInsertIntoCommand(texteCommande);
                 }
                 else{
-                    System.out.println("La commande tapé est mauvaise");
+                    //System.out.println("La commande tapé est mauvaise");
                 }
 
             }else if(texteCommande.startsWith("BULKINSERT INTO")) {
-                System.out.println("La commande choisi est " + texteCommande);
+               // System.out.println("La commande choisi est " + texteCommande);
                 ProcessBulkInsertIntoCommand(texteCommande);
 
             }else if(texteCommande.startsWith("SELECT")) {
-                System.out.println("La commande choisi est " + texteCommande);
+              //  System.out.println("La commande choisi est " + texteCommande);
                 ProcessSelectCommand(texteCommande);
             }
             else if (texteCommande.contains("QUIT")) {
-                System.out.println("La commande choisi est " + texteCommande);
+              //  System.out.println("La commande choisi est " + texteCommande);
                 quit = true;
                 ProcessQuitCommand(texteCommande);//on va quitter le SGBD
             } else {
-                System.out.println("Vous avez taper la mauvaise commande");
+             //   System.out.println("Vous avez taper la mauvaise commande");
 
             }
 
@@ -356,9 +356,9 @@ public class Sgbd {
                 record.setTuple(values);
                 r.InsertRecord(record);
                 List<Record> records = r.GetAllRecords();
-                System.out.println("Taille de l'ensemble des records : "+ records.size());
+                //System.out.println("Taille de l'ensemble des records : "+ records.size());
 
-                System.out.println("SGBD : PROCESS INSERT INTO COMMAND : ensemble des record à cette table "+r.GetAllRecords());
+                //System.out.println("SGBD : PROCESS INSERT INTO COMMAND : ensemble des record à cette table "+r.GetAllRecords());
                 break;
             }
         }
@@ -422,11 +422,11 @@ public class Sgbd {
                     record.setTuple(tuple);
                     table.InsertRecord(record);
                     compteurLigne++;
-                    System.out.println("Compteur ligne :"+ compteurLigne);
+                    //System.out.println("Compteur ligne :"+ compteurLigne);
                 }
                 List<Record> r = table.GetAllRecords();
-                System.out.println("Il y a : "+r.size()+" dans la table ");
-                System.out.println("SGBD BULKINSERT INTO : nombre de ligne : "+compteurLigne);
+                //System.out.println("Il y a : "+r.size()+" dans la table ");
+                //System.out.println("SGBD BULKINSERT INTO : nombre de ligne : "+compteurLigne);
                 //System.out.println("SGBD : PROCESS BULK INSERT INTO COMMAND l'ensemble des records de la page :"+table.GetAllRecords()); // On tente de lire l'ensemble des records inséré
             }
 

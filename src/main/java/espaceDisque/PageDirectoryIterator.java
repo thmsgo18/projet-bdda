@@ -18,7 +18,10 @@ public class PageDirectoryIterator  {
         this.headerPage = headerPage;
         this.nombrePagesVu = 0;
         this.nombrePageDonnees = bufferHeader.getInt(0);
-        bufferManager.FreePage(headerPage, false);
+
+        boolean dirtyPage = bufferManager.getDirtyPage(headerPage);
+
+        bufferManager.FreePage(headerPage,dirtyPage);
     }
 
     public PageId GetNextDataPageId(){
@@ -29,7 +32,9 @@ public class PageDirectoryIterator  {
             bufferHeader.position(4 + nombrePagesVu * 12); // on se met au premier octet pour lire la page
             int numeroFichier = bufferHeader.getInt();
             int numeroPage = bufferHeader.getInt();
-            bufferManager.FreePage(headerPage,false);
+
+            boolean dirtyPage = bufferManager.getDirtyPage(headerPage);
+            bufferManager.FreePage(headerPage,dirtyPage);
 
             nombrePagesVu++;
             pageDonnee = new PageId(numeroFichier, numeroPage); // On crée la page de données à partir des 2 int

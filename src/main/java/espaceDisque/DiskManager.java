@@ -134,10 +134,10 @@ public class DiskManager {
             WritePage(pageId,buffTemp);
 
             pagesDesaloc.add(pageId);
-            System.out.println("DISK MANAGER : DEALLOCPAGE : La pageID : "+pageId.toString()+" a été correctement désalloué");
+            //System.out.println("DISK MANAGER : DEALLOCPAGE : La pageID : "+pageId.toString()+" a été correctement désalloué");
             SaveState();
         }else{
-            System.out.println("DISK MANAGER : DEALLOCPAGE : La pageID : "+pageId.toString()+" est deja desalloué");
+            //System.out.println("DISK MANAGER : DEALLOCPAGE : La pageID : "+pageId.toString()+" est deja desalloué");
         }
     }
 
@@ -197,9 +197,9 @@ public class DiskManager {
             }
             File dossier = new File(dbConfig.getDbpath()+"/BinData");
             if(dossier.mkdir()){
-                System.out.println("Le dossier BinData est bien créé");
+                //System.out.println("Le dossier BinData est bien créé");
             }else{
-                System.out.println("Le dossier n'a pas été créé");
+                //System.out.println("Le dossier n'a pas été créé");
             }
             FileReader fr = new  FileReader(file); //Utilisation des classes FileReader et BufferReader pour lire le fichier
             BufferedReader bfr = new BufferedReader(fr);
@@ -211,7 +211,7 @@ public class DiskManager {
             bfr.close();//Fermeture de la lecture du fichier
             JSONObject js = new JSONObject(sb.toString());//Creer une instance de JsonObject pour recuperer la ligne qui sera transformer en Json
             pageCourante = new PageId(js.getJSONArray("pageCourante").getInt(0),js.getJSONArray("pageCourante").getInt(1));
-            System.out.println("DISK MANAGER : LoadState : PageCourante: "+pageCourante.toString());
+            //System.out.println("DISK MANAGER : LoadState : PageCourante: "+pageCourante.toString());
             pagesDesaloc.clear(); // supprime les éléments de la liste des pages désallou&s pour les remplir du fichier dm.save.json
             JSONObject pagesDesallouesJson= js.getJSONObject("pageDesalloues"); // representation de l'objet Json pageDesalloues
             JSONArray page;
