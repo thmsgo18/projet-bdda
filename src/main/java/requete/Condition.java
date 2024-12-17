@@ -276,7 +276,8 @@ public class Condition {
         //System.out.println(" indiceColonne2 = "+indiceColonne2);
         //System.out.println("valRecord1 = "+record.getTuple().get(indiceColonne)+" Operateur : "+operateur+" valRecord2 = "+record2.getTuple().get(indiceColonne2));
 
-
+        //System.out.println("R : "+record+" S : "+record2);
+        //System.out.println("indiceColonne R : "+indiceColonne+" S : "+indiceColonne2);
         // on suppose que l'on compare un string à un autre un int à
         if ( record.getTuple().get(indiceColonne) instanceof String ) {
             return estRespecterDeuxValeursRecordString(record,record2);
@@ -442,14 +443,8 @@ public class Condition {
     public boolean estRespecterDeuxValeursRecordString(Record record,Record record2) {
         String element,element2;
 
-        if(placementAlias==1) {
-            element = (String) record.getTuple().get(indiceColonne);
-            element2 = (String) record2.getTuple().get(indiceColonne2);
-        }else{
-            element = (String) record.getTuple().get(indiceColonne2);
-            element2 = (String) record2.getTuple().get(indiceColonne);
-        }//
-
+        element = (String) record.getTuple().get(indiceColonne);
+        element2 = (String) record2.getTuple().get(indiceColonne2);
 
         // on gère le cas où l'on souhaite comparer un string à un int ou float
         if (!(record2.getTuple().get(indiceColonne2) instanceof String)) {

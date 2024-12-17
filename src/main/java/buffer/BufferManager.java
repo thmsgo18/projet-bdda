@@ -213,5 +213,9 @@ public class BufferManager {
         return rep;
     }
 
+    public ByteBuffer [] getBufferPool(){
+        return bufferPool;
+    }
+
 
 }

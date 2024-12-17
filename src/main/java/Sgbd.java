@@ -25,7 +25,6 @@ public class Sgbd {
         this.diskManager = new DiskManager(config);
         this.bufferManager = new BufferManager(config, diskManager);
         this.dbManager = new DBManager(config,diskManager,bufferManager);
-        diskManager.LoadState();
         dbManager.LoadState();
 
     }
@@ -151,11 +150,7 @@ public class Sgbd {
             }else if(texteCommande.startsWith("SELECT")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 ProcessSelectCommand(texteCommande);
-            }else if (texteCommande.startsWith("TEST")) {
-                System.out.println("La commande choisi est " + texteCommande);
-                ProcessTestCommand(texteCommande);
             }
-
             else if (texteCommande.contains("QUIT")) {
                 System.out.println("La commande choisi est " + texteCommande);
                 quit = true;
@@ -167,11 +162,6 @@ public class Sgbd {
 
         }
         System.out.println("Vous avez quitter le SGBD");
-
-
-    }
-
-    private void ProcessTestCommand(String texteCommande) {
 
 
     }
@@ -237,6 +227,9 @@ public class Sgbd {
             c.affiche_ColInfo();
         }*/
         PageId headerPage = ajouteHeaderPage(this.diskManager);// attribution d'un headerPage
+        //System.out.println("SGBD PROCCESS CREATE TABLE COMMAND : HeaderPage : "+headerPage);
+        //System.out.println("SGBD PROCCESS CREATE TABLE COMMAND : bufferManager : "+bufferManager.getBufferMap());
+
         r = new Relation(nomTab,infoColonne.size(),headerPage,this.diskManager,this.bufferManager,infoColonne);
         r.addDataPage();
         this.dbManager.AddTableToCurrentDatabase(r);
@@ -253,6 +246,7 @@ public class Sgbd {
     }
 
     public void ProcessDropTableCommand(String texteCommande){
+        bufferManager.FlushBuffers();
         String[]tok = texteCommande.trim().split("DROP TABLE ");//recuperation du nom de la table
         String nomtable = tok[1];
 
@@ -260,31 +254,27 @@ public class Sgbd {
             if(r.getNomRelation().equals(nomtable)){
                 for(PageId dataPage : r.getDataPages()){
                     this.diskManager.DeallocPage(dataPage);
-                    bufferManager.FlushBuffers();
                 }
                 this.diskManager.DeallocPage(r.getHeaderPageId());
-                bufferManager.FlushBuffers();
             }
         }
-        bufferManager.FlushBuffers();
         this.dbManager.RemoveTableFromCurrentDatabase(nomtable);
 
     }
 
     public void ProcessDropTablesCommand(String texteCommande){
+        bufferManager.FlushBuffers();
         for(Relation r : this.dbManager.getCurentDatabase().getTables()){
             for(PageId datapage : r.getDataPages()){
                 this.diskManager.DeallocPage(datapage);//désalloué toutes les pages affectées à cette Page
-                bufferManager.FlushBuffers();
             }
             this.diskManager.DeallocPage(r.getHeaderPageId());//désalloué la headerPage
-            bufferManager.FlushBuffers();
         }
-        bufferManager.FlushBuffers();
         this.dbManager.RemoveTablesFromCurrentDatabase();
     }
 
     public void ProcessDropDatabaseCommand(String texteCommande){//meme chose que la methode precedent mais on desalloue toute la database courant
+        bufferManager.FlushBuffers();
         String[]tok = texteCommande.trim().split("DROP DATABASE ");
         String nombdd = tok[1];
         //System.out.println("Le nom de la bdd est : "+nombdd);
@@ -292,18 +282,16 @@ public class Sgbd {
         for(Relation r : dbManager.getCurentDatabase().getTables()){
             for(PageId datapage : r.getDataPages()){
                 this.diskManager.DeallocPage(datapage);
-                bufferManager.FlushBuffers();
             }
             this.diskManager.DeallocPage(r.getHeaderPageId());
-            bufferManager.FlushBuffers();
         }
-        bufferManager.FlushBuffers();
         this.dbManager.RemoveDatabase(nombdd);
 
 
 
     }
     public void ProcessDropDatabasesCommand(String texteCommande){//meme chose que la methode precedente mais on desalloue toute les databases
+        bufferManager.FlushBuffers();
         for(String key : this.dbManager.getDatabases().keySet()){
             for(Relation r : dbManager.getDatabases().get(key).getTables()){
                 for(PageId datapage : r.getDataPages()){
@@ -314,7 +302,6 @@ public class Sgbd {
                 bufferManager.FlushBuffers();
             }
         }
-        bufferManager.FlushBuffers();
         this.dbManager.RemoveDatabases();
 
 
@@ -365,6 +352,7 @@ public class Sgbd {
                     }
 
                 }
+
                 record.setTuple(values);
                 r.InsertRecord(record);
                 List<Record> records = r.GetAllRecords();

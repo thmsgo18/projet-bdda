@@ -20,7 +20,7 @@ import java.util.Scanner;
 public class DBManagerTest {
 
     public static void main(String [] args){
-        DBConfig config = DBConfig.LoadDBConfig("src/main/json/file-config.json");
+        DBConfig config = DBConfig.LoadDBConfig("file-config.json");
         DiskManager diskManager = new DiskManager(config);
         BufferManager bufferManager = new BufferManager(config,diskManager);
         DBManager dbmanag = new DBManager(config, diskManager, bufferManager);
@@ -107,7 +107,7 @@ public class DBManagerTest {
         int position= (int) ( headerPage.getPageIdx()*diskManager.getDbConfig().getPagesize());
 
 
-        String cheminFichier = diskManager.getDbConfig().getDbpath()+"/F"+headerPage.getFileIdx()+".bin"; // Chemin du fichier à lire
+        String cheminFichier = diskManager.getDbConfig().getDbpath()+"/BinData"+"/F"+headerPage.getFileIdx()+".bin"; // Chemin du fichier à lire
         File fichier = new File(cheminFichier);
         if(fichier.exists()) {
             try {
