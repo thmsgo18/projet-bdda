@@ -1,8 +1,8 @@
 {
-  "dbpath" : "Scenario1",
+  "dbpath" : "",
   "pagesize" : 4096,
   "dm_maxfilesize" : 12288,
   "bm_buffercount" : 2,
   "bm_policy" : "MRU",
-  "_comment" : "Ceci est un commentaire, j'ai modifié pageSize et filesize pour correspondre à l'exemple de fichier 0,(ps : ça va créer automatiquement un nouveau fichier)"
+  "_comment" : "dbpath doit correspondre au nom du dossier de base de donnees"
 }
