@@ -61,11 +61,11 @@ public class Sgbd {
 
                 if(texteCommande.replace("CREATE DATABASE", "").length() > 0) { //vérification si il y a le nom de la BDD apres la commande CREATE DATABASE
 
-                    System.out.println("La commande choisie est " + texteCommande);
+                    //System.out.println("La commande choisie est " + texteCommande);
                     ProcessCreateDatabaseCommand(texteCommande); //Methode permettant de parser la commande
                 }
                 else{
-                    System.out.println("Vous n'avez pas taper le nom de la database");// retaper la commande en respectant la syntaxe
+                    //System.out.println("Vous n'avez pas taper le nom de la database");// retaper la commande en respectant la syntaxe
                 }
 
             } else if (texteCommande.startsWith("CREATE TABLE")) {
@@ -76,7 +76,7 @@ public class Sgbd {
                     ProcessCreateTableCommand(texteCommande);//Methode permettant de parser la commande (meme chose pour tout commande)
                 }
                 else{
-                    System.out.println("Vous n'avez pas taper le nom de la table");// retaper la commande en respectant les la syntaxe(meme chose pour tout les commandes contenant un nom ou valeur)
+                    //System.out.println("Vous n'avez pas taper le nom de la table");// retaper la commande en respectant les la syntaxe(meme chose pour tout les commandes contenant un nom ou valeur)
                 }
 
 
@@ -87,7 +87,7 @@ public class Sgbd {
                     ProcessSetDatabaseCommand(texteCommande); //Methode permettant de parser la commande
                 }
                 else{
-                    System.out.println("Vous n'avez pas taper le nom de la database");
+                    //System.out.println("Vous n'avez pas taper le nom de la database");
                 }
 
 
@@ -125,7 +125,7 @@ public class Sgbd {
 
                 if(texteCommande.replace("DROP DATABASE", "").length() > 0) {//vérifier si il y a le nom de la BDD apres la commande DROP DATABASE
 
-                    System.out.println("La commande choisi est " + texteCommande);
+                    //System.out.println("La commande choisi est " + texteCommande);
                     ProcessDropDatabaseCommand(texteCommande);
 
                 }
