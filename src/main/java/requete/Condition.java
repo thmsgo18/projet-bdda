@@ -14,13 +14,13 @@ public class Condition {
     private Object constante;
     private int indiceColonne;
     private int indiceColonne2;
-    // Il sera important de sauvegarder les emplacements de l'alias et de la constante pour effecuter la verifaction de la condition (ex: 2<3 mais pas 3<2)
+    // Il sera important de sauvegarder les emplacements de l'alias et de la constante pour effectuer la verification de la condition (ex: 2<3 mais pas 3<2)
     private int placementAlias;
-    private int placementAlias2; // cas où l'on compare un élément de la table à un autre élément de la table  (on sauvegarde le placment de la 2ème valeur de la table  par rapport à l'operateur (à gauche ou à droite)
+    private int placementAlias2; // cas où l'on compare un élément de la table à un autre élément de la table (on sauvegarde le placement de la 2ème valeur de la table  par rapport à l'operateur (à gauche ou à droite)
     private String condi;
 
-    private int placementConstante; // cas où l'on compare un élément de la table à une constante (on sauvegarde le placment de la cosntante par rapport à l'operateur (à gauche ou à droite)
-    // constructeur dans le cas où l'on compare  une valeur d'un record à une autre valeur de ce record
+    private int placementConstante; // cas où l'on compare un élément de la table à une constante (on sauvegarde le placement de la constante par rapport à l'operateur (à gauche ou à droite)
+    // constructeur dans le cas où l'on compare une valeur d'un record à une autre valeur de ce record
     public Condition (Relation table,String alias,String operateur,int indiceColonne, int indiceColonne2 ,int placementAlias,int placementintAlias2,String condi) {
         this.table = table;
         this.alias = alias;
@@ -208,7 +208,7 @@ public class Condition {
         }
         return operateur1;
     }
-    // Méthode permattant de trouver le type de la constante auquel on compare un élément de la table
+    // Méthode permettant de trouver le type de la constante auquel on compare un élément de la table
     private static Object trouveTypeConstante(Relation table,int indiceColonne,String terme) {
         String typeConstante;
         typeConstante=table.getColonnes().get(indiceColonne).getTypeColonne();
@@ -232,7 +232,7 @@ public class Condition {
         return indiceColonne;
     }
 
-    // Méthode importante permmettant de vérfier si un record rempli la condition
+    // Méthode importante permettant de vérifier si un record rempli la condition
 
     // il faudra prendre en compte le cas où l'on compare un alias à un autre
 
@@ -283,10 +283,10 @@ public class Condition {
         //bSystem.out.println("indiceColonne R : "+indiceColonne+" S : "+indiceColonne2);
         // on suppose que l'on compare un string à un autre un int à
 
-System.out.println("----------------------");
-        System.out.println("record : "+record.getTuple()+" / record2 : "+record2);
-        System.out.println("indice : "+indiceColonne);
-        System.out.println("condition : "+condi);
+        //System.out.println("----------------------");
+        //System.out.println("record : "+record.getTuple()+" / record2 : "+record2);
+        //System.out.println("indice : "+indiceColonne);
+        //System.out.println("condition : "+condi);
 
         if ( record.getTuple().get(indiceColonne) instanceof String ) {
             return estRespecterDeuxValeursRecordString(record,record2);
@@ -306,7 +306,7 @@ System.out.println("----------------------");
     public boolean estRespecterConstanteNombre(Record record) {
         float constanteNombre= (float) constante;
         float element;
-        // On utlilise le transtypage pour la comparaison entre int et float
+        // On utilise le transtypage pour la comparaison entre int et float
         Object value = record.getTuple().get(indiceColonne);
         if (value instanceof Double) {
             element = ((Double) value).floatValue();
@@ -322,9 +322,9 @@ System.out.println("----------------------");
 
         switch (operateur){
             case "<=" :
-                if ( placementAlias==1){ // l'element du record est a gauche
+                if ( placementAlias==1){ // l'element du record est à gauche
                     return element< constanteNombre || element == constanteNombre;
-                }else { // l'element du record est a droite (placementAlias =2)
+                }else { // l'element du record est à droite (placementAlias =2)
                     return constanteNombre< element || constanteNombre == element;
                 }
             case ">=":
