@@ -140,7 +140,7 @@ public class BufferManager {
             }
             bufferMap.get(i).set(0,null);
             bufferMap.get(i).set(2,0);
-            bufferMap.get(i).set(3,0);
+            bufferMap.get(i).set(3,0L);
         }
         for(int i =0;i<bufferPool.length;i++){
             bufferPool[i].clear();
