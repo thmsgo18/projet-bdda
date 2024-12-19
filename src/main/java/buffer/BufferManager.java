@@ -71,6 +71,7 @@ public class BufferManager {
                 }
                 bufferMap.get( indiceBuffer ).set(2,1); // Mise du pin count à 1
                 bufferMap.get(indiceBuffer ).set(0,pageId); // Rajout de la pageId correspondante dans la map.
+
                 diskManager.ReadPage(pageId,bufferPool[indiceBuffer]); // Strockage de la page dans le buffer
                 return bufferPool[indiceBuffer]; // Retourne le buffer
             }else{// Plus de frame dispo dans le buffer et aucune frame avec un pin count=0
@@ -104,6 +105,9 @@ public class BufferManager {
                     int pinCount =  (Integer) bufferMap.get(i).get(2);
                     bufferMap.get(i).set(1,valDirty);
                     bufferMap.get(i).set(2,pinCount-1);  // Décrémentation de pin count
+                    if( (int) bufferMap.get(i).get(2)==0){
+                        bufferMap.get(i).set(3,System.currentTimeMillis());
+                    }
                     bufferPool[i].position(0); // il faut remettre au premier octet
                     bufferPool[i].limit(bufferPool[i].capacity()); // Remets la limite à jour
                 }
@@ -114,8 +118,8 @@ public class BufferManager {
 
     public void SetCurrentReplacementPolicy (String policy){
 
-        if ( ( !policy.equals("LRU") && ( !policy.equals("MRU") ) ) ){ // Vérification de la politique de remplacement
-            System.out.println(policy+" ne fait partie des politiques acceptés : LRU / MRU");
+        if ( ( !policy.equals("LRU") && ( !policy.equals("MRU") ) && ( !policy.equals("FIFO") ) && ( !policy.equals("LIFO") )) ){ // Vérification de la politique de remplacement
+            System.out.println(policy+" ne fait partie des politiques acceptés : LRU / MRU/FIFO/LIFO");
         }else {
             // Vérification que la politique de remplacement renseigné est la même que celle actuelle
             if( policy.equals( getPolicy() ) ){
@@ -136,6 +140,7 @@ public class BufferManager {
             }
             bufferMap.get(i).set(0,null);
             bufferMap.get(i).set(2,0);
+            bufferMap.get(i).set(3,0);
         }
         for(int i =0;i<bufferPool.length;i++){
             bufferPool[i].clear();
@@ -145,11 +150,13 @@ public class BufferManager {
 
     private void initBufferPoolAndMap() {
         // Initialisation du tableau de buffer et de la map
+        long zero = (long) 0;
         for (int i = 0; i < config.getBm_buffercount(); i++) {
             List<Object> bufferInfo = new ArrayList<>();
             bufferInfo.add(null);  // pageId (initialisé à null)
             bufferInfo.add(false); // dirty (initialisé à false)
             bufferInfo.add(0);     // pin_count (initialisé à 0)
+            bufferInfo.add(zero); //le temps
             bufferMap.put(i, bufferInfo);  // Associe la liste à l'indice dans bufferMap
         }
 
@@ -169,14 +176,33 @@ public class BufferManager {
     }
 
     private int indicePolicy(List<Integer> frames){
-        // Pour LRU: on prends la première frame qui a un pin count =0
+        // Pour LRU: on prends la première frame qui a un pin count =0 dans la liste trié par anciennté
         if (getPolicy().equals("LRU")) {
+            frames.sort((a, b) -> {
+                long timeA = (long) bufferMap.get(a).get(3);
+                long timeB = (long) bufferMap.get(b).get(3);
+                return Long.compare(timeA, timeB);
+            });
             return frames.get(0);
         }
-        else{
-        // Pour MRU, on prends la dernière frame qui a un pin count =0
+        else if (getPolicy().equals("MRU")) {
+        // Pour MRU, on prends la dernière frame qui a un pin count =0 dans la liste trié par anciennté
+            frames.sort((a, b) -> {
+                long timeA = (long) bufferMap.get(a).get(3);
+                long timeB = (long) bufferMap.get(b).get(3);
+                return Long.compare(timeA, timeB);
+            });
             return frames.get(frames.size()-1);
+            // Pour FIFO et LIFO on ne trie pas par ancienneté mais simplement dans un ordre d'arrivé
+        }else if (getPolicy().equals("FIFO")) {
+            return frames.get(0);
+        } else if (getPolicy().equals("LIFO")) { // last in first out
+            return frames.get(frames.size() - 1);
+        }else{
+            System.out.println(getPolicy()+" ne correspond pas aux algos de remplacement de pages pris en compte : {LRU,MRU,FIFO,LIFO}");
+            return 0;
         }
+
         // plus tard si le code est bon, on rajoutera surement d'autres politiques pour prendre le bonus
     }
 
