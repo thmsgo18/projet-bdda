@@ -17,10 +17,11 @@ public class Condition {
     // Il sera important de sauvegarder les emplacements de l'alias et de la constante pour effecuter la verifaction de la condition (ex: 2<3 mais pas 3<2)
     private int placementAlias;
     private int placementAlias2; // cas où l'on compare un élément de la table à un autre élément de la table  (on sauvegarde le placment de la 2ème valeur de la table  par rapport à l'operateur (à gauche ou à droite)
+    private String condi;
 
     private int placementConstante; // cas où l'on compare un élément de la table à une constante (on sauvegarde le placment de la cosntante par rapport à l'operateur (à gauche ou à droite)
     // constructeur dans le cas où l'on compare  une valeur d'un record à une autre valeur de ce record
-    public Condition (Relation table,String alias,String operateur,int indiceColonne, int indiceColonne2 ,int placementAlias,int placementintAlias2) {
+    public Condition (Relation table,String alias,String operateur,int indiceColonne, int indiceColonne2 ,int placementAlias,int placementintAlias2,String condi) {
         this.table = table;
         this.alias = alias;
         this.operateur = operateur;
@@ -28,9 +29,10 @@ public class Condition {
         this.indiceColonne2 = indiceColonne2;
         this.placementAlias = placementAlias;
         this.placementAlias2 = placementAlias2;
+        this.condi = condi;
     }
     // constructeur dans le cas où l'on compare une valeur d'un record à une constante
-    public Condition (Relation table,String alias,String operateur,Object constante,int indiceColonne ,int placementAlias,int placementConstante) {
+    public Condition (Relation table,String alias,String operateur,Object constante,int indiceColonne ,int placementAlias,int placementConstante,String condi) {
         this.table = table;
         this.alias = alias;
         this.operateur = operateur;
@@ -38,9 +40,10 @@ public class Condition {
         this.indiceColonne = indiceColonne;
         this.placementAlias = placementAlias;
         this.placementConstante = placementConstante;
+        this.condi = condi;
     }
     // Constructeur dans le cas où l'on compare 2 records de tables différentes (tp8)
-    public Condition(Relation table1, String alias1, Relation table2, String alias2, String operateur,int indiceColonne, int indiceColonne2,int emplacementAlias1,int emplacementAlias2) {
+    public Condition(Relation table1, String alias1, Relation table2, String alias2, String operateur,int indiceColonne, int indiceColonne2,int emplacementAlias1,int emplacementAlias2,String condi) {
         this.table = table1;
         this.alias = alias1;
         this.table2 = table2;
@@ -50,6 +53,7 @@ public class Condition {
         this.indiceColonne2 = indiceColonne2;
         this.placementAlias = emplacementAlias1;
         this.placementAlias2 = emplacementAlias2;
+        this.condi = condi;
 
     }
 
@@ -81,7 +85,7 @@ public class Condition {
             emplacementConstante = 2;
 
             //System.out.println("table = "+table.getNomRelation()+" Alias = "+alias+" operateur = "+operateur+" indiceColonne = "+indiceColonne+ "indiceColonne2 = "+indiceColonne2+ " emplacementAlias = "+emplacementAlias+"emplacementAlias2 = "+emplacementAlias2+" emplacementConstante = "+emplacementConstante);
-            return new Condition(table,alias,operateur,constanteL,indiceColonne,emplacementAlias,emplacementConstante); // on retourne le second constructeur
+            return new Condition(table,alias,operateur,constanteL,indiceColonne,emplacementAlias,emplacementConstante,condition); // on retourne le second constructeur
 
             // 2ème cas : l'alias est placé à droite dans l'operation et la constante à gauche retourner 2ème constructeur
         }else if( ( !terme1.contains(alias+".") ) && (terme2.contains(alias+".") ) ){
@@ -97,7 +101,7 @@ public class Condition {
             emplacementConstante = 1;
 
             //System.out.println("table = "+table.getNomRelation()+" Alias = "+alias+" operateur = "+operateur+" indiceColonne = "+indiceColonne+ "indiceColonne2 = "+indiceColonne2+ " emplacementAlias = "+emplacementAlias+"emplacementAlias2 = "+emplacementAlias2+" emplacementConstante = "+emplacementConstante);
-            return new Condition(table,alias,operateur,constanteL,indiceColonne,emplacementAlias,emplacementConstante); // on retourne le second constructeur
+            return new Condition(table,alias,operateur,constanteL,indiceColonne,emplacementAlias,emplacementConstante,condition); // on retourne le second constructeur
 
 
             //3ème cas Les 2 termes contienne l'alias faudra retourner le permier constructeur
@@ -114,7 +118,7 @@ public class Condition {
 
             //System.out.println("table = "+table.getNomRelation()+" Alias = "+alias+" operateur = "+operateur+" indiceColonne = "+indiceColonne+ "indiceColonne2 = "+indiceColonne2+ " emplacementAlias = "+emplacementAlias+"emplacementAlias2 = "+emplacementAlias2+" emplacementConstante = "+emplacementConstante);
 
-            return new Condition(table,alias,operateur,indiceColonne,indiceColonne2,emplacementAlias,emplacementAlias2); // on retourne le premier constructeur
+            return new Condition(table,alias,operateur,indiceColonne,indiceColonne2,emplacementAlias,emplacementAlias2,condition); // on retourne le premier constructeur
 
             //Devrait être impossible
         }else{
@@ -169,7 +173,7 @@ public class Condition {
 
         //System.out.println("table = "+table1.getNomRelation()+" table2 = "+table2.getNomRelation()+" Alias = "+alias1+" Alias2 = "+alias2+" operateur = "+operateur+" indiceColonne = "+indiceColonne+ "indiceColonne2 = "+indiceColonne2);
 
-        return new Condition(table1,alias1,table2,alias2,operateur,indiceColonne,indiceColonne2,emplacementAlias1,emplacementAlias2); // on retourne une instance de Condition prenant en compte 2 tables
+        return new Condition(table1,alias1,table2,alias2,operateur,indiceColonne,indiceColonne2,emplacementAlias1,emplacementAlias2,condition); // on retourne une instance de Condition prenant en compte 2 tables
 
 
     }
@@ -250,7 +254,6 @@ public class Condition {
             }
         }else{ // 2ème cas où on l'on compare 2 valeurs du record
 
-            //System.out.println("valRecord1 = "+record.getTuple().get(indiceColonne)+" valRecord2 = "+record.getTuple().get(indiceColonne2));
             // on suppose que l'on compare un string à un autre un int à
             if ( record.getTuple().get(indiceColonne) instanceof String ) {
                 return estRespecterDeuxValeursRecordString(record);
@@ -277,8 +280,14 @@ public class Condition {
         //System.out.println("valRecord1 = "+record.getTuple().get(indiceColonne)+" Operateur : "+operateur+" valRecord2 = "+record2.getTuple().get(indiceColonne2));
 
         //System.out.println("R : "+record+" S : "+record2);
-        //System.out.println("indiceColonne R : "+indiceColonne+" S : "+indiceColonne2);
+        //bSystem.out.println("indiceColonne R : "+indiceColonne+" S : "+indiceColonne2);
         // on suppose que l'on compare un string à un autre un int à
+
+System.out.println("----------------------");
+        System.out.println("record : "+record.getTuple()+" / record2 : "+record2);
+        System.out.println("indice : "+indiceColonne);
+        System.out.println("condition : "+condi);
+
         if ( record.getTuple().get(indiceColonne) instanceof String ) {
             return estRespecterDeuxValeursRecordString(record,record2);
         }
@@ -538,7 +547,7 @@ public class Condition {
             }
 
         }else{
-            if (record.getTuple().get(indiceColonne2) instanceof Float){
+            if (record2.getTuple().get(indiceColonne2) instanceof Float){
                 element = (float) record2.getTuple().get(indiceColonne2);
                 value = record.getTuple().get(indiceColonne);
             }else{
