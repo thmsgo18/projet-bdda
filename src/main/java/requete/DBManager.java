@@ -67,6 +67,7 @@ public class DBManager {
                 if (this.courantDatabase.equals(key)){
                     this.courantDatabase = null;
                 }
+                break;
             }
         }
     }//
