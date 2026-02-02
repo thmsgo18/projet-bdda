@@ -1,8 +1,8 @@
 {
-  "dbpath" : "",
-  "pagesize" : 4096,
-  "dm_maxfilesize" : 12288,
+  "dbpath" : "Scenario7",
+  "pagesize" : 13310,
+  "dm_maxfilesize" : 30000,
   "bm_buffercount" : 2,
-  "bm_policy" : "MRU",
+  "bm_policy" : "LRU",
   "_comment" : "dbpath doit correspondre au nom du dossier de base de donnees"
 }
