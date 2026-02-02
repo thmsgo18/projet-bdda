@@ -1,8 +1,7 @@
-# 🗄️ DBMS - Database Management System
+# DBMS - Database Management System
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-blue.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-Academic-green.svg)]()
 
 > *[Version française](README.fr.md)*
 
@@ -10,7 +9,7 @@ A relational database management system developed in Java, implementing fundamen
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Architecture](#-architecture)
@@ -22,7 +21,7 @@ A relational database management system developed in Java, implementing fundamen
 
 ---
 
-## ✨ Features
+## Features
 
 ### Disk Management
 - **DiskManager**: Page allocation and management on disk
@@ -48,7 +47,7 @@ A relational database management system developed in Java, implementing fundamen
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a modular layered architecture:
 
@@ -81,7 +80,7 @@ The project follows a modular layered architecture:
 
 ---
 
-## 🔧 Prerequisites
+## Prerequisites
 
 - **Java**: Version 17 or higher
 - **Maven**: Version 3.6 or higher
@@ -99,7 +98,7 @@ mvn -version
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### 1. Clone the repository
 
@@ -122,7 +121,7 @@ chmod +x run.sh
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ### Default mode
 
@@ -163,7 +162,7 @@ Example structure of `file-config.json`:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 projet-bdda/
@@ -194,7 +193,7 @@ projet-bdda/
 
 ---
 
-## 👥 Authors
+## Authors
 
 This project was developed as part of a university project in Computer Science Bachelor's degree (Licence 3).
 
@@ -205,12 +204,12 @@ This project was developed as part of a university project in Computer Science B
 
 ---
 
-## 📄 License
+## License
 
 Academic Project - University of Paris
 
 ---
 
 <div align="center">
-  <sub>Developed with ☕ and 💻</sub>
+  <sub>Developed with Java</sub>
 </div>

@@ -1,8 +1,7 @@
-# 🗄️ SGBD - Système de Gestion de Base de Données
+# SGBD - Système de Gestion de Base de Données
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-blue.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-Academic-green.svg)]()
 
 > *[English version](README.md)*
 
@@ -10,7 +9,7 @@ Un système de gestion de base de données relationnel développé en Java, impl
 
 ---
 
-## 📋 Table des matières
+## Table des matières
 
 - [Fonctionnalités](#-fonctionnalités)
 - [Architecture](#-architecture)
@@ -22,7 +21,7 @@ Un système de gestion de base de données relationnel développé en Java, impl
 
 ---
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 ### Gestion du Disque
 - **DiskManager** : Allocation et gestion des pages sur disque
@@ -48,7 +47,7 @@ Un système de gestion de base de données relationnel développé en Java, impl
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 Le projet suit une architecture modulaire en couches :
 
@@ -81,7 +80,7 @@ Le projet suit une architecture modulaire en couches :
 
 ---
 
-## 🔧 Prérequis
+## Prérequis
 
 - **Java** : Version 17 ou supérieure
 - **Maven** : Version 3.6 ou supérieure
@@ -99,7 +98,7 @@ mvn -version
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### 1. Cloner le dépôt
 
@@ -122,7 +121,7 @@ chmod +x run.sh
 
 ---
 
-## 🚀 Utilisation
+## Utilisation
 
 ### Mode par défaut
 
@@ -163,7 +162,7 @@ Exemple de structure du fichier `file-config.json` :
 
 ---
 
-## 📁 Structure du projet
+## Structure du projet
 
 ```
 projet-bdda/
@@ -194,7 +193,7 @@ projet-bdda/
 
 ---
 
-## 👥 Auteurs
+## Auteurs
 
 Ce projet a été développé dans le cadre d'un projet universitaire de Licence 3 Informatique.
 
@@ -205,13 +204,13 @@ Ce projet a été développé dans le cadre d'un projet universitaire de Licence
 
 ---
 
-## 📄 Licence
+## Licence
 
 Projet académique - Université de Paris
 
 ---
 
 <div align="center">
-  <sub>Développé avec ☕ et 💻</sub>
+  <sub>Développé avec Java</sub>
 </div>
 
