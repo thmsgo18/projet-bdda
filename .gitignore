@@ -1,9 +1,28 @@
+# Compiled class files
+*.class
+
+# Maven
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Binary data files and databases
+BinData/
+DataBase/
+*.bin
+
+# Save files
+*.save.json
+
+# Logs
+*.log
+
 ### IntelliJ IDEA ###
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
@@ -11,6 +30,7 @@ target/
 *.iws
 *.iml
 *.ipr
+.idea/*.xml
 
 ### Eclipse ###
 .apt_generated
