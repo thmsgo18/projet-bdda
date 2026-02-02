@@ -4,7 +4,7 @@
 [![Maven](https://img.shields.io/badge/Maven-3.6+-blue.svg)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-Academic-green.svg)]()
 
-> *[Version française](README.md)*
+> *[Version française](README.fr.md)*
 
 A relational database management system developed in Java, implementing fundamental DBMS concepts: disk management, buffer manager, query processing, and relational operations.
 
