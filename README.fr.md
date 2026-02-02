@@ -195,8 +195,6 @@ projet-bdda/
 
 ## Auteurs
 
-Ce projet a été développé dans le cadre d'un projet universitaire de Licence 3 Informatique.
-
 - [**Thomas Gourmelen**](https://github.com/thmsgo18)
 - [**Ali Traore**](https://github.com/Taliii7)
 - [**Valentin Ponnoussamy**](https://github.com/Yvngval)

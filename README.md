@@ -195,8 +195,6 @@ projet-bdda/
 
 ## Authors
 
-This project was developed as part of a university project in Computer Science Bachelor's degree (Licence 3).
-
 - [**Thomas Gourmelen**](https://github.com/thmsgo18)
 - [**Ali Traore**](https://github.com/Taliii7)
 - [**Valentin Ponnoussamy**](https://github.com/Yvngval)
